@@ -1,0 +1,22 @@
+{
+  "name": "AZRI SNACK - Aneka Kue & Snack Box",
+  "short_name": "AZRI SNACK",
+  "description": "Pesan Aneka Kue Tradisional dan Snack Box Acara di AZRI SNACK Tebet",
+  "start_url": "/Azri-snack/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=192&auto=format&fit=crop&q=80",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=512&auto=format&fit=crop&q=80",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
