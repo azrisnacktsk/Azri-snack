@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AZRI SNACK - Aneka Kue Basah & Snack Box Premium</title>
 
-  <!-- Konfigurasi PWA & Web App Meta -->
+  <!-- Konfigurasi PWA & Web App Meta dengan Logo Lokal -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#f59e0b">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="AZRI SNACK">
-  <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=192&auto=format&fit=crop&q=80">
+  <link rel="apple-touch-icon" href="./logo.png">
+  <link rel="icon" type="image/png" href="./logo.png">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -58,7 +59,7 @@
 </head>
 <body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
 
-  <!-- Banner PWA Install (Muncul Otomatis Jika Didukung Browser) -->
+  <!-- Banner PWA Install -->
   <div id="pwa-install-banner" class="hidden bg-gray-900 text-white px-4 py-2.5 shadow-md sticky top-0 z-40">
     <div class="max-w-5xl mx-auto flex items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
@@ -85,7 +86,7 @@
         <div id="store-logo-container" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md shadow-amber-500/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
           <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden">
             <span id="store-logo-fallback" class="text-xl">🍰</span>
-            <img id="store-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden">
+            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-cover hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
         <div>
