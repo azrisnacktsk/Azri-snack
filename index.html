@@ -100,7 +100,7 @@
           <span>✨</span> Menerima Pesanan Partai & Acara
         </div>
         <h2 class="text-base sm:text-xl font-bold mt-1.5">Snack Box Rapat, Pengajian & Hajatan</h2>
-        <p class="text-xs text-amber-50 mt-0.5">Pesan H-1 / H-2 untuk menjaga kesegaran dan rasa terbaik.</p>
+        <p class="text-xs text-amber-50 mt-0.5">Pesan H-1 / H-2 untuk menjaga kesegaran dan kualitas kue.</p>
       </div>
       <div class="flex flex-col sm:items-end gap-1 text-xs">
         <div class="flex items-center gap-2 bg-black/15 px-3 py-1.5 rounded-xl backdrop-blur-sm">
@@ -117,7 +117,7 @@
   <!-- Loading State -->
   <div id="loading" class="max-w-5xl mx-auto px-4 py-16 text-center">
     <div class="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-    <p class="mt-3 text-xs sm:text-sm text-gray-500 font-medium">Memuat aneka kue lezat AZRI SNACK...</p>
+    <p class="mt-3 text-xs sm:text-sm text-gray-500 font-medium">Memuat katalog menu AZRI SNACK...</p>
   </div>
 
   <!-- Product Catalog Grid -->
@@ -162,13 +162,14 @@
   <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
-      <!-- Detail Header / Close Button -->
+      <!-- Detail Header / Image -->
       <div class="relative w-full h-56 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
         <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
         <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
         <span id="detail-category" class="absolute bottom-3 left-3 bg-amber-500 text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-md">Kategori</span>
+        <span id="detail-stock-badge" class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-gray-800 text-[11px] font-bold px-2.5 py-1 rounded-md shadow-md">Sisa Stok: 50 pcs</span>
       </div>
 
       <!-- Detail Body -->
@@ -230,7 +231,7 @@
         <div>
           <div class="flex items-center justify-between mb-2">
             <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Item Yang Dipilih</h4>
-            <span class="text-[11px] text-gray-400">Ketik angka untuk ubah jumlah</span>
+            <span class="text-[11px] text-gray-400">Ketik angka untuk ubah porsi</span>
           </div>
 
           <div id="cart-items-container" class="space-y-2 max-h-52 overflow-y-auto pr-1">
@@ -249,7 +250,7 @@
 
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan / Instansi *</label>
-            <input type="text" id="cust-name" required placeholder="Contoh: Ibu Rina / Kantor Kecamatan" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+            <input type="text" id="cust-name" required placeholder="Contoh: Ibu Rina / Kantor Kelurahan" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
           </div>
 
           <div>
@@ -283,7 +284,7 @@
 
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Tambahan (Opsional)</label>
-            <input type="text" id="order-notes" placeholder="Misal: Mohon bungkus per 3 kue dalam 1 box" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+            <input type="text" id="order-notes" placeholder="Misal: Pisahkan 5 box pedas, packing rapi" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
           </div>
 
           <div class="pt-3">
@@ -344,7 +345,7 @@
     let cart = {}; // Format: { productId: { ...product, qty: Number } }
     let selectedModalProduct = null;
 
-    // 1. Sinkronisasi Logo Toko Real-time dari Firestore
+    // 1. Sinkronisasi Logo Toko Real-time
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -358,7 +359,7 @@
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
-    // 2. Sinkronisasi Real-time Produk dari Firestore
+    // 2. Sinkronisasi Real-time Produk & Ketersediaan Stok dari Firestore
     onSnapshot(collection(db, "products"), (snapshot) => {
       allProducts = [];
       snapshot.forEach(docSnap => {
@@ -373,20 +374,19 @@
       loadFallbackProducts();
     });
 
-    // Data cadangan jika database offline
     function loadFallbackProducts() {
       allProducts = [
-        { id: "1", name: "Risol Mayo Keju", category: "Snack", price: 3500, description: "Isian telur, smoked beef, keju lumer & saus mayo.", image_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=60" },
-        { id: "2", name: "Pastel Sayur Spesial", category: "Snack", price: 3000, description: "Kulit renyah dengan isian wortel, kentang & telur.", image_url: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&q=60" },
-        { id: "3", name: "Lemper Ayam Bakar", category: "Kue Basah", price: 4000, description: "Ketan pulen wangi daun pisang isi ayam suwir gurih.", image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60" },
-        { id: "4", name: "Kue Lapis Legit Mini", category: "Kue Basah", price: 4500, description: "Lapis legit manis legit beraroma rempah pilihan.", image_url: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=60" }
+        { id: "1", name: "Risol Mayo Keju", category: "Snack", price: 3500, stock: 40, status: "AVAILABLE", description: "Isian telur, smoked beef, keju lumer & saus mayo.", image_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=60" },
+        { id: "2", name: "Pastel Sayur Spesial", category: "Snack", price: 3000, stock: 25, status: "AVAILABLE", description: "Kulit renyah dengan isian wortel, kentang & telur.", image_url: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&q=60" },
+        { id: "3", name: "Lemper Ayam Bakar", category: "Kue Basah", price: 4000, stock: 30, status: "AVAILABLE", description: "Ketan pulen wangi daun pisang isi ayam suwir gurih.", image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60" },
+        { id: "4", name: "Kue Lapis Legit Mini", category: "Kue Basah", price: 4500, stock: 0, status: "OUT_OF_STOCK", description: "Lapis legit manis legit beraroma rempah pilihan.", image_url: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=60" }
       ];
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
     }
 
-    // 3. Render Produk ke Grid
+    // 3. Render Produk ke Grid (Mendukung Deteksi Stok Habis Real-time)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -417,6 +417,8 @@
       }
 
       filtered.forEach(p => {
+        const stock = p.stock !== undefined ? p.stock : 50;
+        const isSoldOut = p.status === "OUT_OF_STOCK" || stock <= 0;
         const qty = cart[p.id]?.qty || 0;
         const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
         
@@ -424,34 +426,43 @@
         card.className = "bg-white rounded-2xl p-2.5 sm:p-3 border border-gray-100 shadow-xs hover:shadow-md transition flex flex-col justify-between group";
         
         card.innerHTML = `
-          <!-- Klik Gambar / Judul untuk Buka Pop-up Detail -->
-          <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
+          <!-- Klik Gambar / Judul untuk Buka Pop-up Detail (Jika Ready) -->
+          <div onclick="${isSoldOut ? '' : `openProductDetailModal('${p.id}')`}" class="${isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}">
             <div class="relative w-full h-32 sm:h-36 rounded-xl bg-amber-50 overflow-hidden mb-2">
-              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
+              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover ${isSoldOut ? 'grayscale opacity-50' : 'group-hover:scale-105'} transition duration-300" onerror="this.src='${fallbackImg}'">
               <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-gray-700 text-[10px] font-semibold px-2 py-0.5 rounded-md shadow-xs">
                 ${p.category || 'Kue'}
               </span>
+              ${isSoldOut ? `
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <span class="bg-red-600 text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full shadow-md tracking-wide">STOK HABIS</span>
+                </div>
+              ` : ''}
             </div>
-            <h3 class="font-bold text-gray-900 text-xs sm:text-sm line-clamp-1 group-hover:text-amber-600 transition">${p.name}</h3>
+            <h3 class="font-bold text-xs sm:text-sm line-clamp-1 ${isSoldOut ? 'text-gray-400 line-through' : 'text-gray-900 group-hover:text-amber-600'} transition">${p.name}</h3>
             <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
           </div>
 
-          <!-- Bottom Price & Interactive Quantity Button -->
+          <!-- Bottom Price & Quantity / Sold Out Action -->
           <div class="mt-3 pt-2 border-t border-gray-50 flex items-center justify-between">
-            <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
+            <span class="font-bold text-xs sm:text-sm ${isSoldOut ? 'text-gray-400' : 'text-amber-600'}">Rp${Number(p.price).toLocaleString('id-ID')}</span>
             
             <div id="btn-container-${p.id}">
-              ${qty > 0 ? `
+              ${isSoldOut ? `
+                <button disabled class="bg-gray-100 text-gray-400 text-[11px] font-semibold px-3 py-1.5 rounded-lg cursor-not-allowed border border-gray-200">
+                  Habis
+                </button>
+              ` : (qty > 0 ? `
                 <div class="flex items-center bg-amber-50 border border-amber-200 rounded-lg p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded bg-white text-amber-700 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" value="${qty}" onchange="setQtyManual('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-amber-900 bg-transparent outline-none">
+                  <input type="number" min="0" max="${stock}" value="${qty}" onchange="setQtyManual('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-amber-900 bg-transparent outline-none">
                   <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
                 </div>
               ` : `
                 <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition active:scale-95">
                   <i class="fa-solid fa-plus text-[10px]"></i> Pesan
                 </button>
-              `}
+              `)}
             </div>
           </div>
         `;
@@ -459,22 +470,27 @@
       });
     }
 
-    // 4. Buka / Tutup Pop-Up Detail Produk
+    // 4. Pop-Up Detail Produk (Top-up Modal)
     window.openProductDetailModal = function(productId) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
+
+      const stock = prod.stock !== undefined ? prod.stock : 50;
+      if (prod.status === "OUT_OF_STOCK" || stock <= 0) return;
 
       selectedModalProduct = prod;
       const currentQty = cart[productId]?.qty || 1;
 
       document.getElementById("detail-img").src = prod.image_url || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
       document.getElementById("detail-category").innerText = prod.category || "Menu AZRI SNACK";
+      document.getElementById("detail-stock-badge").innerText = `Sisa Stok: ${stock} pcs`;
       document.getElementById("detail-title").innerText = prod.name;
       document.getElementById("detail-price").innerText = "Rp" + Number(prod.price).toLocaleString("id-ID") + " / pcs";
       document.getElementById("detail-desc").innerText = prod.description || "Dibuat dengan bahan baku segar pilihan dan resep tradisional istimewa dari AZRI SNACK.";
       
       const qtyInput = document.getElementById("detail-qty-input");
       qtyInput.value = currentQty;
+      qtyInput.setAttribute("max", stock);
 
       document.getElementById("product-detail-modal").classList.remove("hidden");
     };
@@ -486,14 +502,19 @@
 
     window.changeModalQty = function(delta) {
       const input = document.getElementById("detail-qty-input");
+      const maxVal = selectedModalProduct && selectedModalProduct.stock !== undefined ? selectedModalProduct.stock : 9999;
       let val = parseInt(input.value) || 1;
       val += delta;
       if (val < 1) val = 1;
+      if (val > maxVal) val = maxVal;
       input.value = val;
     };
 
     window.validateInputNumber = function(input) {
-      if (input.value < 1 && input.value !== "") input.value = 1;
+      const maxVal = selectedModalProduct && selectedModalProduct.stock !== undefined ? selectedModalProduct.stock : 9999;
+      let val = parseInt(input.value);
+      if (isNaN(val) || val < 1) input.value = 1;
+      else if (val > maxVal) input.value = maxVal;
     };
 
     window.confirmAddToCartFromModal = function() {
@@ -505,16 +526,25 @@
       closeProductDetailModal();
     };
 
-    // 5. Fungsi Logika Keranjang (Tambah, Kurang, Manual & Hapus)
+    // 5. Logika Keranjang (Tambah, Kurang, Manual & Hapus)
     window.updateQty = function(productId, delta) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
+
+      const maxStock = prod.stock !== undefined ? prod.stock : 9999;
 
       if (!cart[productId]) {
         cart[productId] = { ...prod, qty: 0 };
       }
 
-      cart[productId].qty += delta;
+      const nextQty = cart[productId].qty + delta;
+
+      if (nextQty > maxStock) {
+        alert(`Maaf, stok ${prod.name} yang tersedia saat ini hanya ${maxStock} pcs.`);
+        return;
+      }
+
+      cart[productId].qty = nextQty;
 
       if (cart[productId].qty <= 0) {
         delete cart[productId];
@@ -528,7 +558,13 @@
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const qty = parseInt(rawValue) || 0;
+      const maxStock = prod.stock !== undefined ? prod.stock : 9999;
+      let qty = parseInt(rawValue) || 0;
+
+      if (qty > maxStock) {
+        alert(`Maaf, jumlah stok ${prod.name} yang tersedia hanya ${maxStock} pcs.`);
+        qty = maxStock;
+      }
 
       if (qty <= 0) {
         delete cart[productId];
@@ -548,10 +584,10 @@
       }
     };
 
-    // 6. Update Seluruh Tampilan UI Keranjang
+    // 6. Update UI Keranjang & Counter Jenis Kue
     function updateCartUI() {
       const itemKeys = Object.keys(cart);
-      const totalJenisKue = itemKeys.length; // Jumlah variasi kue
+      const totalJenisKue = itemKeys.length;
       const totalPcs = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
       const grandTotal = Object.values(cart).reduce((sum, item) => sum + (item.qty * item.price), 0);
 
@@ -616,7 +652,7 @@
       });
     }
 
-    // 7. Filter & Search Event Handlers
+    // 7. Filter & Search Handlers
     window.filterCategory = function(cat) {
       currentFilter = cat;
       document.querySelectorAll(".cat-btn").forEach(btn => {
@@ -653,7 +689,7 @@
       }
     };
 
-    // 9. Submit Order (Simpan Firestore & Buka WhatsApp Otomatis)
+    // 9. Submit Order
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
@@ -700,7 +736,7 @@
           created_at: serverTimestamp()
         });
 
-        // Susun Pesan WhatsApp
+        // Format Teks WhatsApp
         let itemText = "";
         items.forEach(i => {
           itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
@@ -725,11 +761,11 @@
         waMessage += `*TOTAL SEMENTARA:* Rp${grandTotal.toLocaleString('id-ID')}\n\n`;
         waMessage += `_Halo Admin AZRI SNACK, mohon konfirmasi ketersediaan pesanan saya. Terima kasih!_`;
 
-        // Buka Tautan WhatsApp
+        // Buka Chat WhatsApp
         const waUrl = `https://wa.me/${WA_STORE_PHONE}?text=${encodeURIComponent(waMessage)}`;
         window.open(waUrl, "_blank");
 
-        // Bersihkan Keranjang & Reset Modal
+        // Reset Keranjang & Form
         cart = {};
         updateCartUI();
         document.getElementById("order-form").reset();
@@ -739,7 +775,7 @@
 
       } catch (err) {
         console.error("Gagal simpan pesanan:", err);
-        // Fallback tetap buka WA jika firestore offline
+        // Fallback buka WA langsung jika database offline
         let itemText = "";
         items.forEach(i => {
           itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
