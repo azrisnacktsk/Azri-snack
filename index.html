@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AZRI SNACK - Katalog Kue & Snack Box</title>
-  
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <!-- Font Awesome Icons CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
   <!-- Google Font Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -30,6 +32,15 @@
     .animate-slide-up {
       animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    /* Sembunyikan panah input type number */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800 pb-32 min-h-screen">
@@ -38,390 +49,407 @@
   <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-orange-100">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       
-      <!-- Brand Logo & Name (Terhubung ke Admin) -->
+      <!-- Brand Logo & Identity -->
       <div class="flex items-center gap-3">
-        <div id="header-logo-box" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-orange-200 overflow-hidden">
-          <span id="header-logo-emoji">🍰</span>
-          <img id="header-logo-img" class="w-full h-full object-cover hidden" alt="Logo Toko">
+        <div id="store-logo-container" class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-inner overflow-hidden flex-shrink-0">
+          <span id="store-logo-fallback">🍰</span>
+          <img id="store-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden">
         </div>
         <div>
-          <h1 class="font-bold text-lg text-gray-900 leading-tight tracking-tight">AZRI SNACK</h1>
-          <p class="text-[11px] text-gray-500 font-medium">Kue Tradisional & Snack Box</p>
+          <h1 class="font-bold text-base sm:text-lg text-gray-900 leading-tight">AZRI SNACK</h1>
+          <p class="text-[11px] sm:text-xs text-gray-500">Kue Tradisional & Snack Box</p>
         </div>
       </div>
 
-      <!-- Quick Actions (WA Contact & Cart Button) -->
+      <!-- Quick Contact & Floating Cart Button -->
       <div class="flex items-center gap-2">
-        <a href="https://wa.me/6285892022079" target="_blank" class="hidden sm:flex items-center gap-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold transition">
-          <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
+        <a href="https://wa.me/6285892022079" target="_blank" class="hidden sm:flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-green-100 transition border border-green-200">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
           <span>0858-9202-2079</span>
         </a>
-
-        <button onclick="openCartModal()" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-600 hover:bg-amber-100 transition active:scale-95 border border-amber-200/60">
-          <i class="fa-solid fa-basket-shopping text-lg"></i>
-          <!-- Badge counter variasi jenis produk unik -->
-          <span id="cart-badge-header" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md hidden border-2 border-white">0</span>
+        
+        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-full text-amber-600 hover:bg-amber-100 transition focus:outline-none">
+          <i class="fa-solid fa-basket-shopping text-lg sm:text-xl"></i>
+          <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm hidden">0</span>
         </button>
       </div>
+    </div>
 
+    <!-- Search & Category Filters -->
+    <div class="max-w-5xl mx-auto px-4 pb-3 pt-1 space-y-2">
+      <!-- Search Input -->
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Cari kue favorit (misal: Risol, Lemper, Bolu)..." class="w-full bg-gray-100/80 pl-9 pr-4 py-2 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 outline-none transition border border-transparent focus:border-amber-400">
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
+        <button onclick="filterCategory('All')" class="cat-btn active px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-amber-500 text-white shadow-sm transition">Semua Menu</button>
+        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 transition">Snack & Gorengan</button>
+        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 transition">Kue Basah</button>
+      </div>
     </div>
   </header>
 
-  <!-- Hero Promo Banner -->
+  <!-- Hero Banner Info -->
   <section class="max-w-5xl mx-auto px-4 mt-4">
-    <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-5 sm:p-6 text-white shadow-xl shadow-orange-200/50 relative overflow-hidden">
-      <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
-      <div class="absolute right-20 -top-10 w-24 h-24 bg-amber-300/20 rounded-full blur-lg"></div>
-
-      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-medium tracking-wide text-amber-50 mb-2 border border-white/20">
-            <i class="fa-solid fa-utensils text-[10px]"></i>
-            <span>Menerima Pesanan Harian & Event</span>
-          </div>
-          <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">Snack Box & Jajanan Pasar Lezat</h2>
-          <p class="text-xs sm:text-sm text-amber-50/90 mt-1 max-w-xl">
-            Sedia aneka kue basah, gorengan, & paket box arisan / hajatan. Pesan H-1/H-2 untuk kualitas terbaik!
-          </p>
+    <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-2xl p-4 sm:p-5 text-white shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div>
+        <div class="inline-flex items-center gap-1.5 bg-white/20 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide uppercase backdrop-blur-sm">
+          <span>✨</span> Menerima Pesanan Partai & Acara
         </div>
-
-        <div class="flex items-center gap-3">
-          <a href="https://wa.me/6285892022079?text=Halo%20AZRI%20SNACK,%20saya%20mau%20tanya%20info%20pemesanan%20kue" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-lg transition active:scale-95">
-            <i class="fa-brands fa-whatsapp text-sm"></i>
-            <span>Chat Admin WA</span>
-          </a>
-        </div>
+        <h2 class="text-base sm:text-xl font-bold mt-1.5">Snack Box Rapat, Pengajian & Hajatan</h2>
+        <p class="text-xs text-amber-50 mt-0.5">Pesan H-1 / H-2 untuk menjaga kesegaran dan rasa terbaik.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- Search & Category Filter Section -->
-  <section class="max-w-5xl mx-auto px-4 mt-5 space-y-3">
-    <!-- Search Bar -->
-    <div class="relative">
-      <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-      <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Cari kue lezat... (misal: Pastel, Lemper, Lapis)" class="w-full pl-9 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none shadow-sm transition">
-    </div>
-
-    <!-- Category Tabs -->
-    <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
-      <button onclick="selectCategory('All')" class="cat-tab active px-4 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap bg-amber-500 text-white shadow-md shadow-amber-200 transition">Semua Menu</button>
-      <button onclick="selectCategory('Snack')" class="cat-tab px-4 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap bg-white text-gray-600 hover:bg-amber-50 border border-gray-200 transition">Snack & Gorengan</button>
-      <button onclick="selectCategory('Kue Basah')" class="cat-tab px-4 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap bg-white text-gray-600 hover:bg-amber-50 border border-gray-200 transition">Kue Basah</button>
+      <div class="flex flex-col sm:items-end gap-1 text-xs">
+        <div class="flex items-center gap-2 bg-black/15 px-3 py-1.5 rounded-xl backdrop-blur-sm">
+          <i class="fa-solid fa-clock text-amber-200"></i>
+          <span>Buka: 06.00 - 18.00 WIB</span>
+        </div>
+        <a href="https://wa.me/6285892022079" target="_blank" class="text-white hover:text-amber-200 font-semibold underline text-[11px] flex items-center gap-1">
+          <i class="fa-brands fa-whatsapp"></i> Hubungi WA: 0858-9202-2079
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- Loading State -->
-  <div id="loading-state" class="max-w-5xl mx-auto px-4 py-16 text-center">
-    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 text-amber-600 mb-3">
-      <i class="fa-solid fa-circle-notch fa-spin text-xl"></i>
-    </div>
-    <p class="text-xs text-gray-500 font-medium">Memuat katalog menu real-time AZRI SNACK...</p>
+  <div id="loading" class="max-w-5xl mx-auto px-4 py-16 text-center">
+    <div class="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+    <p class="mt-3 text-xs sm:text-sm text-gray-500 font-medium">Memuat aneka kue lezat AZRI SNACK...</p>
   </div>
 
   <!-- Product Catalog Grid -->
-  <main class="max-w-5xl mx-auto px-4 mt-4">
-    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5 hidden">
-      <!-- Diisi otomatis secara real-time oleh Firestore -->
+  <main class="max-w-5xl mx-auto px-4 mt-6">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-bold text-gray-800 text-sm sm:text-base flex items-center gap-2">
+        <span>Katalog Menu</span>
+        <span id="product-count-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-semibold">0 Menu</span>
+      </h3>
+      <span class="text-[11px] text-gray-400">Klik kue untuk lihat foto besar & detail</span>
+    </div>
+
+    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 hidden">
+      <!-- Diisi otomatis oleh JavaScript -->
     </div>
   </main>
 
-  <!-- Floating Sticky Bottom Cart Overlay -->
-  <div id="sticky-cart-bar" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto z-40 hidden">
-    <div class="bg-gray-900 text-white rounded-2xl p-3.5 shadow-2xl flex items-center justify-between border border-gray-800 backdrop-blur-xl bg-opacity-95">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white font-bold text-sm flex items-center justify-center shadow-md">
-          <i class="fa-solid fa-basket-shopping"></i>
-        </div>
-        <div>
-          <p class="text-[11px] text-gray-400 font-medium"><span id="sticky-cart-qty">0 Jenis (0 Pcs)</span></p>
-          <p id="sticky-cart-price" class="text-sm font-bold text-amber-400">Rp0</p>
-        </div>
+  <!-- Sticky Bottom Cart Bar -->
+  <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
+    <div class="bg-gray-900/95 text-white rounded-2xl p-3.5 shadow-2xl flex items-center justify-between backdrop-blur-md border border-gray-800">
+      <div>
+        <p class="text-xs text-gray-300 font-medium">
+          <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis Kue</span> (<span id="cart-qty-total">0</span> Pcs)
+        </p>
+        <p id="cart-price-total" class="text-base font-bold text-amber-400">Rp0</p>
       </div>
-
-      <button onclick="openCartModal()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition active:scale-95 shadow-md">
-        <span>Lihat Keranjang</span>
-        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+      <button onclick="toggleCartModal(true)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-md">
+        <span>Rincian Pesanan</span>
+        <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
   </div>
 
-  <!-- Checkout Modal & Cart Drawer -->
+  <!-- Floating Direct WhatsApp Button -->
+  <a href="https://wa.me/6285892022079" target="_blank" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-green-500 hover:bg-green-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition transform hover:scale-105 active:scale-95">
+    <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
+  </a>
+
+  <!-- ============================================== -->
+  <!-- MODAL 1: POP-UP DETAIL PRODUK (TOP-UP MODAL)    -->
+  <!-- ============================================== -->
+  <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+      
+      <!-- Detail Header / Close Button -->
+      <div class="relative w-full h-56 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
+        <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
+        <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+        <span id="detail-category" class="absolute bottom-3 left-3 bg-amber-500 text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-md">Kategori</span>
+      </div>
+
+      <!-- Detail Body -->
+      <div class="p-5 overflow-y-auto space-y-4">
+        <div>
+          <h3 id="detail-title" class="font-bold text-lg text-gray-900">Nama Produk</h3>
+          <p id="detail-price" class="text-base font-bold text-amber-600 mt-0.5">Rp0</p>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Deskripsi Kue</h4>
+          <p id="detail-desc" class="text-xs text-gray-600 leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-100">Deskripsi lengkap kue...</p>
+        </div>
+
+        <!-- Quantity Selector in Modal -->
+        <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+          <span class="text-xs font-semibold text-gray-700">Atur Jumlah Pesanan:</span>
+          
+          <div class="flex items-center gap-1 bg-amber-50 border border-amber-200 rounded-xl p-1">
+            <button onclick="changeModalQty(-1)" class="w-8 h-8 rounded-lg bg-white text-amber-700 font-bold text-sm flex items-center justify-center shadow-sm hover:bg-amber-100 active:scale-95 transition">-</button>
+            <input type="number" id="detail-qty-input" min="1" max="9999" value="1" oninput="validateInputNumber(this)" class="w-14 text-center text-sm font-bold text-amber-900 bg-transparent outline-none">
+            <button onclick="changeModalQty(1)" class="w-8 h-8 rounded-lg bg-amber-500 text-white font-bold text-sm flex items-center justify-center shadow-sm hover:bg-amber-600 active:scale-95 transition">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Footer Button -->
+      <div class="p-4 bg-gray-50 border-t border-gray-100">
+        <button id="btn-add-modal-cart" onclick="confirmAddToCartFromModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span>Masukkan ke Keranjang</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL 2: CHECKOUT & RINCIAN KERANJANG          -->
+  <!-- ============================================== -->
   <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
       <!-- Modal Header -->
-      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xs font-bold">
-            <i class="fa-solid fa-receipt"></i>
-          </div>
-          <div>
-            <h3 class="font-bold text-sm text-gray-900">Rincian Pesanan Kue</h3>
-            <p id="modal-item-count" class="text-[11px] text-gray-400 font-medium">0 Jenis Produk</p>
-          </div>
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bag-shopping text-amber-500"></i>
+          <h3 class="font-bold text-gray-900 text-sm sm:text-base">Rincian Belanja & Checkout</h3>
         </div>
-        <button onclick="closeCartModal()" class="w-8 h-8 rounded-full bg-gray-200/70 text-gray-500 hover:bg-gray-300 flex items-center justify-center transition text-xs">
+        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <!-- Modal Content (Scrollable) -->
+      <!-- Modal Body -->
       <div class="p-5 overflow-y-auto space-y-5">
         
         <!-- Cart Items List -->
         <div>
-          <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5">Daftar Kue Dipilih</h4>
-          <div id="modal-cart-items" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Item Yang Dipilih</h4>
+            <span class="text-[11px] text-gray-400">Ketik angka untuk ubah jumlah</span>
+          </div>
+
+          <div id="cart-items-container" class="space-y-2 max-h-52 overflow-y-auto pr-1">
             <!-- Diisi JavaScript -->
           </div>
 
           <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
-            <span class="text-gray-700">Total Belanja Kue</span>
+            <span>Total Tagihan Sementara</span>
             <span id="modal-subtotal" class="text-amber-600 text-base">Rp0</span>
           </div>
         </div>
 
-        <!-- Customer Data Form -->
-        <form id="checkout-form" onsubmit="handleFormSubmit(event)" class="space-y-3.5 pt-3 border-t border-gray-100">
-          <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Data Pemesan & Acara</h4>
+        <!-- Order Form Customer -->
+        <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3 pt-2 border-t border-gray-100">
+          <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Data Pemesan</h4>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan *</label>
-            <input type="text" id="cust-name" required placeholder="Contoh: Ibu Siti Rahma" class="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan / Instansi *</label>
+            <input type="text" id="cust-name" required placeholder="Contoh: Ibu Rina / Kantor Kecamatan" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Nomor WhatsApp *</label>
-            <input type="tel" id="cust-phone" required placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Nomor WhatsApp Aktif *</label>
+            <input type="tel" id="cust-phone" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Acara *</label>
-              <input type="date" id="order-date" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none bg-white">
+              <input type="date" id="order-date" required class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-700 mb-1">Jam Diambil/Kirim *</label>
-              <input type="time" id="order-time" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none bg-white">
+              <input type="time" id="order-time" required class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
             </div>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Metode Pengambilan *</label>
-            <select id="delivery-type" onchange="onDeliveryTypeChange()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none bg-white">
+            <select id="delivery-type" onchange="toggleAddressField()" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none bg-white">
               <option value="Ambil Sendiri">Ambil Sendiri di Toko AZRI SNACK</option>
               <option value="Diantar / Delivery">Diantar ke Alamat (Ongkir dihitung via WA)</option>
             </select>
           </div>
 
-          <div id="address-container" class="hidden">
+          <div id="address-box" class="hidden">
             <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
-            <textarea id="cust-address" rows="2" placeholder="Nama jalan, nomor rumah, RT/RW, patokan..." class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"></textarea>
+            <textarea id="cust-address" rows="2" placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, patokan..." class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Pesanan (Opsional)</label>
-            <input type="text" id="order-notes" placeholder="Contoh: Tolong pisahkan 5 box pedas / bungkus mika" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Tambahan (Opsional)</label>
+            <input type="text" id="order-notes" placeholder="Misal: Mohon bungkus per 3 kue dalam 1 box" class="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
           </div>
 
-          <button type="submit" id="btn-submit" class="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition active:scale-98">
-            <i class="fa-brands fa-whatsapp text-lg"></i>
-            <span>Kirim Pesanan ke WhatsApp Toko</span>
-          </button>
+          <div class="pt-3">
+            <button type="submit" id="btn-submit-order" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98">
+              <i class="fa-brands fa-whatsapp text-lg"></i>
+              <span>Kirim Pesanan ke WhatsApp Toko</span>
+            </button>
+          </div>
         </form>
 
       </div>
     </div>
   </div>
 
-  <!-- Footer & Contact Section -->
-  <footer class="mt-16 bg-white border-t border-gray-200/80 py-8 px-4 text-center">
-    <div class="max-w-5xl mx-auto space-y-4">
-      <div class="flex items-center justify-center gap-2">
-        <div id="footer-logo-box" class="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center text-white text-sm overflow-hidden font-bold">
-          <span id="footer-logo-emoji">🍰</span>
-          <img id="footer-logo-img" class="w-full h-full object-cover hidden" alt="Logo Toko">
-        </div>
-        <span class="font-bold text-gray-900 tracking-tight">AZRI SNACK</span>
+  <!-- Footer Contact Info -->
+  <footer class="max-w-5xl mx-auto px-4 mt-12 text-center text-xs text-gray-500">
+    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+      <div class="flex items-center justify-center gap-2 font-bold text-gray-800 text-sm">
+        <span>🍰 AZRI SNACK</span>
       </div>
-      
-      <p class="text-xs text-gray-500 max-w-md mx-auto">
-        Layanan pemesanan kue basah & snack box tepercaya. Menerima pesanan rapat kantor, arisan, syukuran, dan hajatan.
+      <p class="text-gray-500 max-w-md mx-auto">
+        Menyajikan aneka kue basah tradisional dan paket snack box berkualitas untuk memeriahkan setiap momen istimewa Anda.
       </p>
-
-      <div class="flex flex-wrap justify-center items-center gap-4 text-xs font-medium text-gray-600 pt-2">
-        <a href="https://wa.me/6285892022079" target="_blank" class="flex items-center gap-1.5 hover:text-emerald-600 transition">
-          <i class="fa-brands fa-whatsapp text-emerald-500 text-sm"></i>
-          <span>0858-9202-2079</span>
+      <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-gray-600 pt-1">
+        <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-amber-500"></i> 06.00 - 18.00 WIB</span>
+        <a href="https://wa.me/6285892022079" target="_blank" class="flex items-center gap-1 text-green-600 font-semibold hover:underline">
+          <i class="fa-brands fa-whatsapp text-base"></i> 0858-9202-2079
         </a>
-        <span class="text-gray-300">•</span>
-        <div class="flex items-center gap-1.5">
-          <i class="fa-regular fa-clock text-amber-500"></i>
-          <span>Buka 06:00 - 18:00 WIB</span>
-        </div>
       </div>
-
-      <p class="text-[10px] text-gray-400 pt-4">© 2026 AZRI SNACK. All rights reserved.</p>
     </div>
+    <p class="mt-4 text-[11px] text-gray-400">© 2026 AZRI SNACK. All Rights Reserved.</p>
   </footer>
 
-  <!-- Floating WA Button (Fixed Bottom Right) -->
-  <a href="https://wa.me/6285892022079?text=Halo%20Admin%20AZRI%20SNACK,%20saya%20mau%20bertanya%20mengenai%20produk%20kue" target="_blank" class="fixed bottom-20 right-4 z-30 w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-600 transition active:scale-95 border-2 border-white">
-    <i class="fa-brands fa-whatsapp text-2xl"></i>
-  </a>
-
-  <!-- JavaScript Firebase & Application Logic -->
+  <!-- Firebase & App Script Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getFirestore, collection, doc, onSnapshot, addDoc, serverTimestamp 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Konfigurasi Firebase Proyek azri-snack-db
+    // Kredensial Firebase Project
     const firebaseConfig = {
-      projectId: "azri-snack-db"
+      apiKey: "AIzaSyAzriSnackPlaceholderKey",
+      authDomain: "azri-snack-db.firebaseapp.com",
+      projectId: "azri-snack-db",
+      storageBucket: "azri-snack-db.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
     };
 
-    // Nomor WA Admin AZRI SNACK
+    // Nomor WhatsApp Toko AZRI SNACK
     const WA_STORE_PHONE = "6285892022079";
 
-    // Fallback data jika Firestore belum terisi
-    const fallbackProducts = [
-      { id: "snack_001", name: "Pastel", category: "Snack", price: 2500, description: "Pastel gurih renyah dengan isian lezat", image_url: "https://drive.google.com/file/d/1G3FLULOq36duSKs8yFBU76Mq0i5Pi_kG/view?usp=drive_link" },
-      { id: "snack_002", name: "Panada Ikan Tuna", category: "Snack", price: 2500, description: "Panada khas dengan isian ikan tuna berbumbu gurih", image_url: "" },
-      { id: "snack_003", name: "Lemper Ayam", category: "Snack", price: 3000, description: "Ketan pulen dengan isian ayam suwir melimpah", image_url: "https://drive.google.com/file/d/1VQ939hOlRDScrQnmEJml5qs4buFwYa1N/view?usp=drive_link" },
-      { id: "snack_004", name: "Arem-Arem", category: "Snack", price: 2000, description: "Arem-arem beras pulen dengan isian gurih", image_url: "https://drive.google.com/file/d/1qnnreaF9XvI1McYaZEo6TCFbCljyJ0x4/view?usp=drive_link" },
-      { id: "snack_005", name: "Sosis Solo", category: "Snack", price: 2000, description: "Kulit dadar lembut dengan isian daging ayam bumbu gurih", image_url: "https://drive.google.com/file/d/14Jrbfam8rX4uEb8wYAQ8Sy3SXGDR3tJr/view?usp=drive_link" },
-      { id: "snack_006", name: "Risol Smoke Beef", category: "Snack", price: 3000, description: "Risol renyah berisi smoke beef lezat dan saus creamy", image_url: "https://drive.google.com/file/d/1fXWVUphku9z7JYF5CEliEw5ghTl_JMCy/view?usp=drive_link" },
-      { id: "snack_007", name: "Lumpia Sayur", category: "Snack", price: 2500, description: "Lumpia goreng renyah dengan isian sayuran segar gurih", image_url: "" },
-      { id: "snack_008", name: "Lapis Legit", category: "Kue Basah", price: 3000, description: "Kue lapis legit harum aroma rempah khas", image_url: "https://drive.google.com/file/d/1VrXNhqyoFLuxuzOhm8xgc32kfBcMI3Y3/view?usp=drivesdk" },
-      { id: "snack_009", name: "Lapis Surabaya", category: "Kue Basah", price: 3000, description: "Kue lapis surabaya lembut 3 lapis dengan selai manis", image_url: "" },
-      { id: "snack_010", name: "Bolu Gulung", category: "Kue Basah", price: 3000, description: "Bolu gulung tekstur lembut dengan isian manis", image_url: "" },
-      { id: "snack_011", name: "Lapis Beras", category: "Kue Basah", price: 2000, description: "Kue lapis tepung beras manis legit kenyal", image_url: "https://drive.google.com/file/d/1b_te6j31_J7LG6wOJEsUalWBQOM4rJ0H/view?usp=drive_link" },
-      { id: "snack_012", name: "Bolu Pandan", category: "Kue Basah", price: 3000, description: "Bolu pandan lembut wangi pandan alami", image_url: "https://drive.google.com/file/d/19-qd_hWjhJzzuDuPRmTmkzECu4ozrU2I/view?usp=drive_link" },
-      { id: "snack_013", name: "Bugis Daun", category: "Kue Basah", price: 2000, description: "Kue bugis kenyal isi unti kelapa gula merah", image_url: "" },
-      { id: "snack_014", name: "Pepe Pelangi", category: "Kue Basah", price: 2000, description: "Kue pepe kenyal warna-warni rasa manis legit", image_url: "https://drive.google.com/file/d/1-BnKfKKgnyWi0LdOvJzBYG9Hv-OJipkF/view?usp=drive_link" },
-      { id: "snack_015", name: "Bika Ambon", category: "Kue Basah", price: 2500, description: "Bika ambon berserat lembut aroma daun jeruk & serai", image_url: "https://drive.google.com/file/d/1IpJ1HbXdjp8O_UpQ6CtCqcnIid_XbyWX/view?usp=drive_link" },
-      { id: "snack_016", name: "Sus", category: "Kue Basah", price: 2000, description: "Kue sus kulit lembut dengan vla vanila manis lumer", image_url: "https://drive.google.com/file/d/1HLy9CCxbdi5-ksF-P_4rm_WrRC9Oo4EW/view?usp=drive_link" },
-      { id: "snack_017", name: "Centik Manis", category: "Kue Basah", price: 2000, description: "Kue centik manis mutiara cantik dan lembut", image_url: "https://drive.google.com/file/d/1dWfZVqa_Bu0c4TGKlDIAPe62yeygSsiV/view?usp=drivesdk" },
-      { id: "snack_018", name: "Putri Ayu", category: "Kue Basah", price: 2000, description: "Bolu kukus pandan kelapa parut gurih", image_url: "" },
-      { id: "snack_019", name: "Bolu Kukus", category: "Kue Basah", price: 2500, description: "Bolu kukus mekar lembut dan manis", image_url: "https://drive.google.com/file/d/1n-_3V2Av-K35BwYcjKOsHkVfu9ecG2VR/view?usp=drive_link" },
-      { id: "snack_020", name: "Talam Padang", category: "Kue Basah", price: 2000, description: "Kue talam manis legit gurih santan", image_url: "" },
-      { id: "snack_021", name: "Talam Ubi", category: "Kue Basah", price: 2000, description: "Kue talam ubi manis alami dengan lapisan santan gurih", image_url: "" },
-      { id: "snack_022", name: "Nagasari", category: "Kue Basah", price: 2000, description: "Kue nagasari pisang manis bungkus daun pisang", image_url: "" },
-      { id: "snack_023", name: "Lumpur", category: "Kue Basah", price: 2000, description: "Kue lumpur kentang lembut kismis", image_url: "https://drive.google.com/file/d/1R8Hb6TNJri6d_Td7CDNGTv1jKr9YPR2x/view?usp=drive_link" },
-      { id: "snack_024", name: "Pie Buah", category: "Kue Basah", price: 2000, description: "Kulit pie renyah isi vla dan potongan buah segar", image_url: "https://drive.google.com/file/d/1Y32zF9EAp8HBDylAhhNHLtkwhBWe-kuH/view?usp=drive_link" }
-    ];
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    let db;
     let allProducts = [];
-    let activeCategory = "All";
-    let cart = {};
+    let currentFilter = "All";
+    let searchQuery = "";
+    let cart = {}; // Format: { productId: { ...product, qty: Number } }
+    let selectedModalProduct = null;
 
-    function initFirebase() {
-      try {
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-
-        // 1. Real-time Snapshot Logo Toko dari Admin
-        onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            if (data.logo_url) {
-              // Update Header Logo
-              document.getElementById("header-logo-img").src = data.logo_url;
-              document.getElementById("header-logo-img").classList.remove("hidden");
-              document.getElementById("header-logo-emoji").classList.add("hidden");
-
-              // Update Footer Logo
-              document.getElementById("footer-logo-img").src = data.logo_url;
-              document.getElementById("footer-logo-img").classList.remove("hidden");
-              document.getElementById("footer-logo-emoji").classList.add("hidden");
-            }
-          }
-        });
-
-        // 2. Real-time Snapshot Produk dari Admin
-        onSnapshot(collection(db, "products"), (snapshot) => {
-          allProducts = [];
-          snapshot.forEach((docSnap) => {
-            allProducts.push({ id: docSnap.id, ...docSnap.data() });
-          });
-
-          if (allProducts.length === 0) {
-            allProducts = fallbackProducts;
-          }
-
-          document.getElementById("loading-state").classList.add("hidden");
-          document.getElementById("product-grid").classList.remove("hidden");
-          renderGrid();
-        }, (err) => {
-          console.warn("Gagal listen Firestore, menggunakan fallback:", err);
-          allProducts = fallbackProducts;
-          document.getElementById("loading-state").classList.add("hidden");
-          document.getElementById("product-grid").classList.remove("hidden");
-          renderGrid();
-        });
-
-      } catch (err) {
-        console.error("Gagal inisialisasi Firebase:", err);
-        allProducts = fallbackProducts;
-        document.getElementById("loading-state").classList.add("hidden");
-        document.getElementById("product-grid").classList.remove("hidden");
-        renderGrid();
+    // 1. Sinkronisasi Logo Toko Real-time dari Firestore
+    onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.logo_url) {
+          const logoImg = document.getElementById("store-logo-img");
+          const fallback = document.getElementById("store-logo-fallback");
+          logoImg.src = data.logo_url;
+          logoImg.classList.remove("hidden");
+          fallback.classList.add("hidden");
+        }
       }
-    }
+    }, (err) => console.log("Gagal sync logo:", err));
 
-    // Render Kartu Produk
-    window.renderGrid = function() {
-      const grid = document.getElementById("product-grid");
-      const searchKey = document.getElementById("search-input").value.toLowerCase();
-      grid.innerHTML = "";
-
-      const filtered = allProducts.filter(p => {
-        const matchCategory = (activeCategory === "All") || (p.category === activeCategory);
-        const matchSearch = (p.name && p.name.toLowerCase().includes(searchKey)) || 
-                            (p.description && p.description.toLowerCase().includes(searchKey));
-        return matchCategory && matchSearch;
+    // 2. Sinkronisasi Real-time Produk dari Firestore
+    onSnapshot(collection(db, "products"), (snapshot) => {
+      allProducts = [];
+      snapshot.forEach(docSnap => {
+        allProducts.push({ id: docSnap.id, ...docSnap.data() });
       });
 
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("product-grid").classList.remove("hidden");
+      renderFilteredProducts();
+    }, (err) => {
+      console.warn("Firestore offline/fallback mode aktif:", err);
+      loadFallbackProducts();
+    });
+
+    // Data cadangan jika database offline
+    function loadFallbackProducts() {
+      allProducts = [
+        { id: "1", name: "Risol Mayo Keju", category: "Snack", price: 3500, description: "Isian telur, smoked beef, keju lumer & saus mayo.", image_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=60" },
+        { id: "2", name: "Pastel Sayur Spesial", category: "Snack", price: 3000, description: "Kulit renyah dengan isian wortel, kentang & telur.", image_url: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&q=60" },
+        { id: "3", name: "Lemper Ayam Bakar", category: "Kue Basah", price: 4000, description: "Ketan pulen wangi daun pisang isi ayam suwir gurih.", image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60" },
+        { id: "4", name: "Kue Lapis Legit Mini", category: "Kue Basah", price: 4500, description: "Lapis legit manis legit beraroma rempah pilihan.", image_url: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=60" }
+      ];
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("product-grid").classList.remove("hidden");
+      renderFilteredProducts();
+    }
+
+    // 3. Render Produk ke Grid
+    function renderFilteredProducts() {
+      let filtered = [...allProducts];
+
+      if (currentFilter !== "All") {
+        filtered = filtered.filter(p => p.category === currentFilter);
+      }
+
+      if (searchQuery.trim() !== "") {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(query) || 
+          (p.description && p.description.toLowerCase().includes(query))
+        );
+      }
+
+      document.getElementById("product-count-badge").innerText = `${filtered.length} Menu`;
+      const grid = document.getElementById("product-grid");
+      grid.innerHTML = "";
+
       if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-gray-400">Tidak ada produk kue yang sesuai.</div>`;
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-gray-100">
+            <i class="fa-solid fa-cookie-bite text-3xl text-gray-300 mb-2"></i>
+            <p class="text-xs text-gray-400 font-medium">Menu yang Anda cari tidak ditemukan.</p>
+          </div>
+        `;
         return;
       }
 
       filtered.forEach(p => {
         const qty = cart[p.id]?.qty || 0;
-        const defaultImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
+        const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
         
         const card = document.createElement("div");
-        card.className = "bg-white rounded-2xl p-3 border border-gray-100 shadow-xs hover:shadow-md transition flex flex-col justify-between";
+        card.className = "bg-white rounded-2xl p-2.5 sm:p-3 border border-gray-100 shadow-xs hover:shadow-md transition flex flex-col justify-between group";
+        
         card.innerHTML = `
-          <div>
-            <div class="relative w-full h-28 sm:h-32 rounded-xl bg-amber-50 overflow-hidden mb-2">
-              <img src="${p.image_url || defaultImg}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.src='${defaultImg}'">
-              <span class="absolute top-1.5 left-1.5 bg-white/90 backdrop-blur-sm text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded-md shadow-xs">
+          <!-- Klik Gambar / Judul untuk Buka Pop-up Detail -->
+          <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
+            <div class="relative w-full h-32 sm:h-36 rounded-xl bg-amber-50 overflow-hidden mb-2">
+              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
+              <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-gray-700 text-[10px] font-semibold px-2 py-0.5 rounded-md shadow-xs">
                 ${p.category || 'Kue'}
               </span>
             </div>
-            <h3 class="font-bold text-gray-900 text-xs sm:text-sm line-clamp-1">${p.name}</h3>
-            <p class="text-gray-400 text-[10px] sm:text-[11px] line-clamp-1 mt-0.5">${p.description || ''}</p>
+            <h3 class="font-bold text-gray-900 text-xs sm:text-sm line-clamp-1 group-hover:text-amber-600 transition">${p.name}</h3>
+            <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
           </div>
 
+          <!-- Bottom Price & Interactive Quantity Button -->
           <div class="mt-3 pt-2 border-t border-gray-50 flex items-center justify-between">
-            <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price || 0).toLocaleString('id-ID')}</span>
+            <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
             
-            <div id="btn-box-${p.id}">
+            <div id="btn-container-${p.id}">
               ${qty > 0 ? `
-                <div class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-lg p-0.5">
-                  <button onclick="updateQty('${p.id}', -1)" class="w-5.5 h-5.5 rounded bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs">-</button>
-                  <span class="text-xs font-bold text-amber-900 px-1">${qty}</span>
-                  <button onclick="updateQty('${p.id}', 1)" class="w-5.5 h-5.5 rounded bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">+</button>
+                <div class="flex items-center bg-amber-50 border border-amber-200 rounded-lg p-0.5">
+                  <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded bg-white text-amber-700 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                  <input type="number" min="0" value="${qty}" onchange="setQtyManual('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-amber-900 bg-transparent outline-none">
+                  <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
                 </div>
               ` : `
-                <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition active:scale-95">
-                  <i class="fa-solid fa-plus text-[9px]"></i> Tambah
+                <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition active:scale-95">
+                  <i class="fa-solid fa-plus text-[10px]"></i> Pesan
                 </button>
               `}
             </div>
@@ -429,109 +457,194 @@
         `;
         grid.appendChild(card);
       });
-    };
-
-    window.updateQty = function(id, change) {
-      const prod = allProducts.find(p => p.id === id);
-      if (!prod) return;
-
-      if (!cart[id]) {
-        cart[id] = { ...prod, qty: 0 };
-      }
-
-      cart[id].qty += change;
-
-      if (cart[id].qty <= 0) {
-        delete cart[id];
-      }
-
-      refreshCartUI();
-      renderGrid();
-    };
-
-    function refreshCartUI() {
-      const cartArray = Object.values(cart);
-      const totalTypes = cartArray.length; 
-      const totalItems = cartArray.reduce((sum, item) => sum + item.qty, 0);
-      const totalPrice = cartArray.reduce((sum, item) => sum + (item.qty * item.price), 0);
-
-      const headerBadge = document.getElementById("cart-badge-header");
-      const stickyBar = document.getElementById("sticky-cart-bar");
-
-      if (totalTypes > 0) {
-        headerBadge.innerText = totalTypes;
-        headerBadge.classList.remove("hidden");
-        stickyBar.classList.remove("hidden");
-
-        document.getElementById("sticky-cart-qty").innerText = `${totalTypes} Jenis (${totalItems} Pcs)`;
-        document.getElementById("sticky-cart-price").innerText = "Rp" + totalPrice.toLocaleString("id-ID");
-        document.getElementById("modal-subtotal").innerText = "Rp" + totalPrice.toLocaleString("id-ID");
-        document.getElementById("modal-item-count").innerText = `${totalTypes} Jenis (${totalItems} Pcs)`;
-      } else {
-        headerBadge.classList.add("hidden");
-        stickyBar.classList.add("hidden");
-        closeCartModal();
-      }
-
-      renderCartItemsInModal();
     }
 
-    function renderCartItemsInModal() {
-      const container = document.getElementById("modal-cart-items");
+    // 4. Buka / Tutup Pop-Up Detail Produk
+    window.openProductDetailModal = function(productId) {
+      const prod = allProducts.find(p => p.id === productId);
+      if (!prod) return;
+
+      selectedModalProduct = prod;
+      const currentQty = cart[productId]?.qty || 1;
+
+      document.getElementById("detail-img").src = prod.image_url || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+      document.getElementById("detail-category").innerText = prod.category || "Menu AZRI SNACK";
+      document.getElementById("detail-title").innerText = prod.name;
+      document.getElementById("detail-price").innerText = "Rp" + Number(prod.price).toLocaleString("id-ID") + " / pcs";
+      document.getElementById("detail-desc").innerText = prod.description || "Dibuat dengan bahan baku segar pilihan dan resep tradisional istimewa dari AZRI SNACK.";
+      
+      const qtyInput = document.getElementById("detail-qty-input");
+      qtyInput.value = currentQty;
+
+      document.getElementById("product-detail-modal").classList.remove("hidden");
+    };
+
+    window.closeProductDetailModal = function() {
+      document.getElementById("product-detail-modal").classList.add("hidden");
+      selectedModalProduct = null;
+    };
+
+    window.changeModalQty = function(delta) {
+      const input = document.getElementById("detail-qty-input");
+      let val = parseInt(input.value) || 1;
+      val += delta;
+      if (val < 1) val = 1;
+      input.value = val;
+    };
+
+    window.validateInputNumber = function(input) {
+      if (input.value < 1 && input.value !== "") input.value = 1;
+    };
+
+    window.confirmAddToCartFromModal = function() {
+      if (!selectedModalProduct) return;
+      const input = document.getElementById("detail-qty-input");
+      const qty = parseInt(input.value) || 1;
+      
+      setQtyManual(selectedModalProduct.id, qty);
+      closeProductDetailModal();
+    };
+
+    // 5. Fungsi Logika Keranjang (Tambah, Kurang, Manual & Hapus)
+    window.updateQty = function(productId, delta) {
+      const prod = allProducts.find(p => p.id === productId);
+      if (!prod) return;
+
+      if (!cart[productId]) {
+        cart[productId] = { ...prod, qty: 0 };
+      }
+
+      cart[productId].qty += delta;
+
+      if (cart[productId].qty <= 0) {
+        delete cart[productId];
+      }
+
+      updateCartUI();
+      renderFilteredProducts();
+    };
+
+    window.setQtyManual = function(productId, rawValue) {
+      const prod = allProducts.find(p => p.id === productId);
+      if (!prod) return;
+
+      const qty = parseInt(rawValue) || 0;
+
+      if (qty <= 0) {
+        delete cart[productId];
+      } else {
+        cart[productId] = { ...prod, qty: qty };
+      }
+
+      updateCartUI();
+      renderFilteredProducts();
+    };
+
+    window.removeItemFromCart = function(productId) {
+      if (cart[productId]) {
+        delete cart[productId];
+        updateCartUI();
+        renderFilteredProducts();
+      }
+    };
+
+    // 6. Update Seluruh Tampilan UI Keranjang
+    function updateCartUI() {
+      const itemKeys = Object.keys(cart);
+      const totalJenisKue = itemKeys.length; // Jumlah variasi kue
+      const totalPcs = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+      const grandTotal = Object.values(cart).reduce((sum, item) => sum + (item.qty * item.price), 0);
+
+      const badge = document.getElementById("cart-badge");
+      const stickyBar = document.getElementById("sticky-cart");
+
+      if (totalJenisKue > 0) {
+        badge.innerText = totalJenisKue;
+        badge.classList.remove("hidden");
+        stickyBar.classList.remove("hidden");
+        
+        document.getElementById("cart-item-count").innerText = `${totalJenisKue} Jenis Kue`;
+        document.getElementById("cart-qty-total").innerText = totalPcs;
+        document.getElementById("cart-price-total").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
+        document.getElementById("modal-subtotal").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
+      } else {
+        badge.classList.add("hidden");
+        stickyBar.classList.add("hidden");
+        toggleCartModal(false);
+      }
+
+      renderCartModalList();
+    }
+
+    function renderCartModalList() {
+      const container = document.getElementById("cart-items-container");
       container.innerHTML = "";
 
-      Object.values(cart).forEach(item => {
+      const items = Object.values(cart);
+      if (items.length === 0) {
+        container.innerHTML = `<div class="text-center py-6 text-xs text-gray-400">Keranjang masih kosong.</div>`;
+        return;
+      }
+
+      items.forEach(item => {
         const row = document.createElement("div");
-        row.className = "flex items-center justify-between bg-gray-50 p-2.5 rounded-xl text-xs";
+        row.className = "flex items-center justify-between bg-gray-50 p-2.5 rounded-xl text-xs border border-gray-100";
         row.innerHTML = `
-          <div>
-            <p class="font-bold text-gray-800">${item.name}</p>
-            <p class="text-gray-400 text-[10px]">Rp${item.price.toLocaleString('id-ID')} x ${item.qty} pcs</p>
+          <div class="flex-1 pr-2">
+            <p class="font-bold text-gray-800 line-clamp-1">${item.name}</p>
+            <p class="text-gray-400 text-[11px]">Rp${item.price.toLocaleString('id-ID')} / pcs</p>
           </div>
+
           <div class="flex items-center gap-2">
-            <span class="font-bold text-amber-600">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
-            <div class="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-0.5">
-              <button onclick="updateQty('${item.id}', -1)" class="w-5 h-5 rounded bg-gray-100 font-bold text-gray-600 flex items-center justify-center">-</button>
-              <span class="text-xs font-bold px-1">${item.qty}</span>
-              <button onclick="updateQty('${item.id}', 1)" class="w-5 h-5 rounded bg-amber-500 text-white font-bold flex items-center justify-center">+</button>
+            <!-- Counter & Manual Input -->
+            <div class="flex items-center bg-white border border-gray-200 rounded-lg p-0.5">
+              <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center">-</button>
+              <input type="number" min="1" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-11 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
+              <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center">+</button>
             </div>
+
+            <!-- Subtotal -->
+            <span class="font-bold text-gray-700 min-w-[70px] text-right">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
+
+            <!-- Tombol Hapus Kue -->
+            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini" class="w-7 h-7 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 flex items-center justify-center transition ml-1">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
           </div>
         `;
         container.appendChild(row);
       });
     }
 
-    // Modal Control & Categories
-    window.selectCategory = function(cat) {
-      activeCategory = cat;
-      document.querySelectorAll(".cat-tab").forEach(tab => {
-        tab.classList.remove("bg-amber-500", "text-white", "shadow-md");
-        tab.classList.add("bg-white", "text-gray-600");
+    // 7. Filter & Search Event Handlers
+    window.filterCategory = function(cat) {
+      currentFilter = cat;
+      document.querySelectorAll(".cat-btn").forEach(btn => {
+        btn.classList.remove("bg-amber-500", "text-white", "shadow-sm");
+        btn.classList.add("bg-gray-100", "text-gray-600");
       });
-      event.target.classList.remove("bg-white", "text-gray-600");
-      event.target.classList.add("bg-amber-500", "text-white", "shadow-md");
-      renderGrid();
+      event.target.classList.remove("bg-gray-100", "text-gray-600");
+      event.target.classList.add("bg-amber-500", "text-white", "shadow-sm");
+      renderFilteredProducts();
     };
 
-    window.filterProducts = function() {
-      renderGrid();
+    window.handleSearch = function() {
+      searchQuery = document.getElementById("search-input").value;
+      renderFilteredProducts();
     };
 
-    window.openCartModal = function() {
-      if (Object.keys(cart).length === 0) return;
-      document.getElementById("cart-modal").classList.remove("hidden");
+    // 8. Toggles Form & Modal
+    window.toggleCartModal = function(show) {
+      const modal = document.getElementById("cart-modal");
+      if (show) modal.classList.remove("hidden");
+      else modal.classList.add("hidden");
     };
 
-    window.closeCartModal = function() {
-      document.getElementById("cart-modal").classList.add("hidden");
-    };
-
-    window.onDeliveryTypeChange = function() {
-      const val = document.getElementById("delivery-type").value;
-      const addrBox = document.getElementById("address-container");
+    window.toggleAddressField = function() {
+      const type = document.getElementById("delivery-type").value;
+      const addrBox = document.getElementById("address-box");
       const addrInput = document.getElementById("cust-address");
-
-      if (val === "Diantar / Delivery") {
+      if (type === "Diantar / Delivery") {
         addrBox.classList.remove("hidden");
         addrInput.setAttribute("required", "true");
       } else {
@@ -540,94 +653,104 @@
       }
     };
 
-    window.handleFormSubmit = async function(e) {
-      e.preventDefault();
-
+    // 9. Submit Order (Simpan Firestore & Buka WhatsApp Otomatis)
+    window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
       const date = document.getElementById("order-date").value;
       const time = document.getElementById("order-time").value;
-      const delivery = document.getElementById("delivery-type").value;
+      const deliveryType = document.getElementById("delivery-type").value;
       const address = document.getElementById("cust-address") ? document.getElementById("cust-address").value.trim() : "";
       const notes = document.getElementById("order-notes").value.trim();
 
-      const items = Object.values(cart).map(i => ({
-        product_id: i.id,
-        name: i.name,
-        price: i.price,
-        qty: i.qty,
-        subtotal: i.price * i.qty
+      const items = Object.values(cart).map(c => ({
+        product_id: c.id,
+        name: c.name,
+        price: c.price,
+        qty: c.qty,
+        subtotal: c.price * c.qty
       }));
 
+      if (items.length === 0) {
+        alert("Keranjang Anda masih kosong. Silakan pilih kue terlebih dahulu!");
+        return;
+      }
+
       const grandTotal = items.reduce((sum, i) => sum + i.subtotal, 0);
-      const totalTypes = items.length;
-      const totalPcs = items.reduce((sum, i) => sum + i.qty, 0);
       const invoiceNo = "AZRI-" + Math.floor(100000 + Math.random() * 900000);
 
-      const btn = document.getElementById("btn-submit");
-      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Memproses Pesanan...`;
+      const btn = document.getElementById("btn-submit-order");
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan Pesanan...`;
       btn.disabled = true;
 
       try {
-        if (db) {
-          // Menyimpan pesanan baru ke Firestore agar muncul di Dashboard Admin
-          await addDoc(collection(db, "orders"), {
-            invoice_no: invoiceNo,
-            customer_name: name,
-            customer_phone: phone,
-            event_date: date,
-            event_time: time,
-            delivery_type: delivery,
-            delivery_address: address || "-",
-            notes: notes || "-",
-            items: items,
-            total_price: grandTotal,
-            status: "PENDING",
-            created_at: serverTimestamp()
-          });
+        // Simpan ke database Firestore
+        await addDoc(collection(db, "orders"), {
+          invoice_no: invoiceNo,
+          customer_name: name,
+          customer_phone: phone,
+          event_date: date,
+          event_time: time,
+          delivery_type: deliveryType,
+          delivery_address: address || "-",
+          notes: notes || "-",
+          items: items,
+          total_price: grandTotal,
+          status: "PENDING",
+          created_at: serverTimestamp()
+        });
+
+        // Susun Pesan WhatsApp
+        let itemText = "";
+        items.forEach(i => {
+          itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+        });
+
+        let waMessage = `🍰 *PESANAN BARU - AZRI SNACK*\n`;
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*No. Invoice:* #${invoiceNo}\n`;
+        waMessage += `*Nama:* ${name}\n`;
+        waMessage += `*No. HP:* ${phone}\n`;
+        waMessage += `*Tgl Acara:* ${date} (Pukul ${time})\n`;
+        waMessage += `*Pengambilan:* ${deliveryType}\n`;
+        if (deliveryType === "Diantar / Delivery") {
+          waMessage += `*Alamat:* ${address}\n`;
         }
+        if (notes) {
+          waMessage += `*Catatan:* ${notes}\n`;
+        }
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*Rincian Menu:*\n${itemText}`;
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*TOTAL SEMENTARA:* Rp${grandTotal.toLocaleString('id-ID')}\n\n`;
+        waMessage += `_Halo Admin AZRI SNACK, mohon konfirmasi ketersediaan pesanan saya. Terima kasih!_`;
+
+        // Buka Tautan WhatsApp
+        const waUrl = `https://wa.me/${WA_STORE_PHONE}?text=${encodeURIComponent(waMessage)}`;
+        window.open(waUrl, "_blank");
+
+        // Bersihkan Keranjang & Reset Modal
+        cart = {};
+        updateCartUI();
+        document.getElementById("order-form").reset();
+        alert(`Pesanan #${invoiceNo} berhasil dicatat! Menghubungkan ke WhatsApp...`);
+        btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
+        btn.disabled = false;
+
       } catch (err) {
-        console.error("Gagal simpan ke Firestore:", err);
+        console.error("Gagal simpan pesanan:", err);
+        // Fallback tetap buka WA jika firestore offline
+        let itemText = "";
+        items.forEach(i => {
+          itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+        });
+        let waMessage = `🍰 *PESANAN BARU - AZRI SNACK*\n*Nama:* ${name}\n*No. HP:* ${phone}\n*Tgl Acara:* ${date} (${time})\n*Menu:*\n${itemText}*Total:* Rp${grandTotal.toLocaleString('id-ID')}`;
+        window.open(`https://wa.me/${WA_STORE_PHONE}?text=${encodeURIComponent(waMessage)}`, "_blank");
+        
+        btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
+        btn.disabled = false;
       }
-
-      // Susun Teks Pesanan WhatsApp
-      let itemLines = "";
-      items.forEach(i => {
-        itemLines += `• *${i.name}* (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
-      });
-
-      let waText = `🍰 *PESANAN BARU - AZRI SNACK*\n`;
-      waText += `━━━━━━━━━━━━━━━━━━━━\n`;
-      waText += `*Invoice:* #${invoiceNo}\n`;
-      waText += `*Nama:* ${name}\n`;
-      waText += `*No. HP:* ${phone}\n`;
-      waText += `*Tgl & Jam Acara:* ${date} (Pukul ${time})\n`;
-      waText += `*Pengambilan:* ${delivery}\n`;
-      if (delivery === "Diantar / Delivery") {
-        waText += `*Alamat:* ${address}\n`;
-      }
-      if (notes) {
-        waText += `*Catatan:* ${notes}\n`;
-      }
-      waText += `━━━━━━━━━━━━━━━━━━━━\n`;
-      waText += `*Rincian Menu (${totalTypes} Jenis / ${totalPcs} Pcs):*\n${itemLines}`;
-      waText += `━━━━━━━━━━━━━━━━━━━━\n`;
-      waText += `*TOTAL HARGA:* Rp${grandTotal.toLocaleString('id-ID')}\n\n`;
-      waText += `_Halo Admin AZRI SNACK, mohon konfirmasi ketersediaan pesanan di atas dan infokan rekening/QRIS pembayaran. Terima kasih!_`;
-
-      const targetUrl = `https://wa.me/${WA_STORE_PHONE}?text=${encodeURIComponent(waText)}`;
-      window.open(targetUrl, "_blank");
-
-      // Reset
-      cart = {};
-      refreshCartUI();
-      document.getElementById("checkout-form").reset();
-      btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
-      btn.disabled = false;
     };
-
-    // Initialize Page Firebase Listener
-    initFirebase();
   </script>
 </body>
 </html>
