@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AZRI SNACK - Aneka Kue Basah & Snack Box Premium</title>
 
+  <!-- Konfigurasi PWA & Web App Meta -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AZRI SNACK">
+  <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=192&auto=format&fit=crop&q=80">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -23,15 +32,6 @@
           fontFamily: {
             sans: ['Poppins', 'sans-serif'],
             serif: ['Playfair Display', 'serif'],
-          },
-          colors: {
-            brand: {
-              50: '#fffbeb',
-              100: '#fef3c7',
-              500: '#f59e0b',
-              600: '#d97706',
-              700: '#b45309',
-            }
           }
         }
       }
@@ -57,6 +57,24 @@
   </style>
 </head>
 <body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
+
+  <!-- Banner PWA Install (Muncul Otomatis Jika Didukung Browser) -->
+  <div id="pwa-install-banner" class="hidden bg-gray-900 text-white px-4 py-2.5 shadow-md sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📱</span>
+        <span>Pasang aplikasi <strong>AZRI SNACK</strong> di layar utama HP Anda!</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="triggerPWAInstall()" class="bg-amber-500 hover:bg-amber-600 font-bold px-3 py-1.5 rounded-xl shadow-xs transition active:scale-95">
+          Pasang App
+        </button>
+        <button onclick="dismissPWABanner()" class="text-gray-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Header / Navbar -->
   <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
@@ -800,6 +818,44 @@
         btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
         btn.disabled = false;
       }
+    };
+  </script>
+
+  <!-- PWA Service Worker & Install Prompt Logic -->
+  <script>
+    let deferredPrompt;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker aktif:', reg.scope))
+          .catch(err => console.log('Gagal pasang Service Worker:', err));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.remove('hidden');
+    });
+
+    window.triggerPWAInstall = function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Pelanggan memasang aplikasi');
+          }
+          deferredPrompt = null;
+          dismissPWABanner();
+        });
+      }
+    };
+
+    window.dismissPWABanner = function() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.add('hidden');
     };
   </script>
 </body>
