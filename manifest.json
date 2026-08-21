@@ -1,8 +1,8 @@
 {
   "name": "AZRI SNACK",
   "short_name": "AZRI SNACK",
-  "description": "Katalog Kue Basah & Snack Box AZRI SNACK",
-  "start_url": "./",
+  "description": "Katalog Aneka Kue Basah & Snack Box AZRI SNACK",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -10,14 +10,14 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/992/992714.png",
+      "src": "./logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/992/992714.png",
-      "sizes": "512x512",
+      "src": "./logo.png",
+      "sizes": "612x612",
       "type": "image/png",
       "purpose": "any maskable"
     }
