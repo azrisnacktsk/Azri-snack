@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AZRI SNACK - Aneka Kue Basah & Snack Box Premium</title>
 
-  <!-- Konfigurasi PWA & Web App Meta dengan Logo Lokal -->
+  <!-- Konfigurasi PWA & Web App Meta -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#f59e0b">
   <meta name="mobile-web-app-capable" content="yes">
@@ -79,14 +79,14 @@
 
   <!-- Header / Navbar -->
   <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
-    <div class="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       
-      <!-- Logo Toko & Brand -->
-      <div class="flex items-center gap-3">
-        <div id="store-logo-container" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md shadow-amber-500/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
-          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden">
-            <span id="store-logo-fallback" class="text-xl">🍰</span>
-            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-cover hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
+      <!-- Logo Toko & Brand (Wadah Diperbesar & Logo Utuh Tanpa Terpotong) -->
+      <div class="flex items-center gap-3.5">
+        <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md shadow-amber-500/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
+          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
+            <span id="store-logo-fallback" class="text-2xl">🍰</span>
+            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
         <div>
