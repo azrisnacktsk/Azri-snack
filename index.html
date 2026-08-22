@@ -24,7 +24,7 @@
   <!-- Google Font Poppins & Playfair Display -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -56,32 +56,19 @@
     }
     input[type=number] { -moz-appearance: textfield; }
     html { scroll-behavior: smooth; }
-
-    /* Kartu Premium Card Styling */
-    .premium-card {
-      background: #ffffff;
-      border: 1px solid rgba(245, 158, 11, 0.12);
-      box-shadow: 0 4px 20px -4px rgba(217, 119, 6, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-    .premium-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px -8px rgba(217, 119, 6, 0.14), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
-      border-color: rgba(245, 158, 11, 0.35);
-    }
   </style>
 </head>
-<body class="bg-[#faf7f2] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
+<body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
 
   <!-- Banner PWA Install -->
-  <div id="pwa-install-banner" class="hidden bg-gray-950 text-white px-4 py-2.5 shadow-lg sticky top-0 z-40 border-b border-amber-500/20">
+  <div id="pwa-install-banner" class="hidden bg-gray-900 text-white px-4 py-2.5 shadow-md sticky top-0 z-40">
     <div class="max-w-5xl mx-auto flex items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
         <span class="text-base">📱</span>
         <span>Pasang aplikasi <strong>AZRI SNACK</strong> di layar utama HP Anda!</span>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="triggerPWAInstall()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 font-bold px-3 py-1.5 rounded-xl shadow-xs transition active:scale-95">
+        <button onclick="triggerPWAInstall()" class="bg-amber-500 hover:bg-amber-600 font-bold px-3 py-1.5 rounded-xl shadow-xs transition active:scale-95">
           Pasang App
         </button>
         <button onclick="dismissPWABanner()" class="text-gray-400 hover:text-white p-1">
@@ -92,12 +79,12 @@
   </div>
 
   <!-- Header / Navbar -->
-  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/70 shadow-xs">
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       
       <!-- Logo Toko & Brand -->
       <div class="flex items-center gap-3.5">
-        <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-orange-500 p-0.5 shadow-md shadow-amber-500/15 flex-shrink-0 flex items-center justify-center overflow-hidden">
+        <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md shadow-amber-500/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
           <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
             <span id="store-logo-fallback" class="text-2xl">🍰</span>
             <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
@@ -105,7 +92,7 @@
         </div>
         <div>
           <h1 class="font-serif font-bold text-lg sm:text-xl text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
-          <p class="text-[11px] text-amber-800 font-medium tracking-wide mt-1">Kue Tradisional & Snack Box Premium</p>
+          <p class="text-[11px] text-amber-700/80 font-medium tracking-wide mt-1">Kue Tradisional & Snack Box</p>
         </div>
       </div>
 
@@ -116,7 +103,7 @@
           <span>0858-9202-2079</span>
         </button>
         
-        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-500/10 rounded-2xl text-amber-800 hover:bg-amber-500/20 transition border border-amber-200/60 shadow-2xs active:scale-95 focus:outline-none">
+        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none">
           <i class="fa-solid fa-basket-shopping text-lg"></i>
           <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
         </button>
@@ -128,7 +115,7 @@
       <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
         
-        <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-9 py-2.5 text-xs rounded-2xl focus:bg-white focus:ring-2 focus:ring-amber-500/30 outline-none transition border border-amber-100 focus:border-amber-400 shadow-2xs">
+        <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-9 py-2.5 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/40 outline-none transition border border-gray-200/80 focus:border-amber-400">
         
         <button type="button" id="btn-clear-search" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1">
           <i class="fa-solid fa-circle-xmark text-sm"></i>
@@ -136,29 +123,29 @@
       </form>
 
       <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
-        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gray-900 text-white shadow-xs transition">Semua Menu</button>
-        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-amber-100/80 hover:bg-amber-50/60 transition shadow-2xs">Snack & Gorengan</button>
-        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-amber-100/80 hover:bg-amber-50/60 transition shadow-2xs">Kue Basah</button>
+        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-900 text-white shadow-xs transition">Semua Menu</button>
+        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Snack & Gorengan</button>
+        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Kue Basah</button>
       </div>
     </div>
   </header>
 
   <!-- Hero Banner -->
   <section class="max-w-5xl mx-auto px-4 mt-4">
-    <div class="relative overflow-hidden bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-[28px] p-5 sm:p-7 text-white shadow-xl shadow-amber-500/15 border border-amber-400/30">
+    <div class="relative overflow-hidden bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-lg shadow-amber-500/10">
       <div class="absolute -right-6 -bottom-10 opacity-15 text-9xl pointer-events-none select-none">🍰</div>
 
       <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div class="space-y-1.5 max-w-lg">
-          <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase border border-white/20">
+          <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">
             <span class="text-amber-200">★</span> Pesanan Acara & Hajatan
           </div>
-          <h2 class="font-serif text-lg sm:text-2xl font-bold leading-snug tracking-tight">Snack Box Gurih & Kue Basah Tradisional</h2>
-          <p class="text-xs text-amber-50/90 leading-relaxed">Dibuat *fresh daily* dari bahan pilihan berkualitas untuk menyempurnakan setiap momen istimewa Anda.</p>
+          <h2 class="font-serif text-lg sm:text-2xl font-bold leading-snug">Snack Box Gurih & Kue Basah Premium</h2>
+          <p class="text-xs text-amber-50/90 leading-relaxed">Dibuat dari bahan segar berkualitas. Pesan H-1 atau H-2 untuk sajian terbaik acara Anda.</p>
         </div>
         
         <div class="flex flex-col sm:items-end gap-2 text-xs">
-          <div class="inline-flex items-center gap-2 bg-black/20 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/15">
+          <div class="inline-flex items-center gap-2 bg-black/20 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10">
             <i class="fa-solid fa-clock text-amber-200 text-xs"></i>
             <span>Buka Setiap Hari: 06.00 - 18.00</span>
           </div>
@@ -172,7 +159,7 @@
 
   <!-- PEMBERITAHUAN STOK HARI INI & PRE-ORDER BESOK -->
   <section class="max-w-5xl mx-auto px-4 mt-3">
-    <div class="bg-gradient-to-r from-amber-50/90 via-orange-50/60 to-amber-50/90 border border-amber-200/70 rounded-2xl p-3.5 sm:p-4 shadow-2xs backdrop-blur-xs">
+    <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -180,15 +167,15 @@
           </div>
           <div class="text-xs text-gray-700 leading-relaxed">
             <p class="font-bold text-gray-900 flex items-center gap-1.5">
-              <span>Stok Siap Saji Hari Ini & Opsi Pre-Order</span>
-              <span class="bg-amber-200/70 text-amber-900 text-[10px] font-semibold px-2 py-0.2 rounded-md">Fresh Daily</span>
+              <span>Stok Hari Ini & Pemesanan Hari Besok</span>
+              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
             </p>
             <p class="text-gray-600 mt-0.5">
-              Menu yang <strong>habis hari ini</strong> otomatis berada di urutan bawah, namun <strong>tetap dapat Anda pesan sekarang untuk jadwal acara besok atau lusa</strong>.
+              Menu yang <strong>habis hari ini</strong> otomatis berada di urutan bawah, namun <strong>tetap bisa Anda pesan untuk hari besok atau lusa</strong>. Pilih tanggal acara pada saat rincian belanja.
             </p>
           </div>
         </div>
-        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-900 text-xs font-semibold px-3.5 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap self-start sm:self-center active:scale-95">
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3.5 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap self-start sm:self-center">
           <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
           <span>Konsultasi Acara via WA</span>
         </button>
@@ -199,35 +186,34 @@
   <!-- Loading State -->
   <div id="loading" class="max-w-5xl mx-auto px-4 py-20 text-center">
     <div class="w-10 h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-    <p class="mt-3 text-xs sm:text-sm text-gray-400 font-medium">Menyiapkan aneka menu istimewa...</p>
+    <p class="mt-3 text-xs sm:text-sm text-gray-400 font-medium">Menyiapkan aneka menu lezat...</p>
   </div>
 
   <!-- Product Catalog Grid -->
   <main id="catalog-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
-        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Koleksi Pilihan Menu</h3>
-        <span id="product-count-badge" class="bg-amber-100 text-amber-900 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0 Menu</span>
+        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu</h3>
+        <span id="product-count-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
       </div>
-      <span class="text-[11px] text-gray-400">Ketuk kartu untuk detail porsi</span>
+      <span class="text-[11px] text-gray-400">Klik kartu kue untuk detail porsi</span>
     </div>
 
-    <!-- Grid Kartu Premium -->
-    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 sm:gap-5 hidden">
+    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5 hidden">
       <!-- Diisi otomatis oleh JavaScript -->
     </div>
   </main>
 
   <!-- Sticky Bottom Cart Bar -->
   <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
-    <div class="bg-gray-950/95 text-white rounded-[24px] p-3.5 px-4.5 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-amber-500/20 ring-1 ring-black/10">
+    <div class="bg-gray-950/95 text-white rounded-3xl p-3.5 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
       <div>
         <p class="text-[11px] text-gray-300 font-medium">
           <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Pcs Kue
         </p>
-        <p id="cart-price-total" class="text-base font-bold text-amber-400 font-serif">Rp0</p>
+        <p id="cart-price-total" class="text-base font-bold text-amber-400">Rp0</p>
       </div>
-      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-amber-500/25">
+      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-amber-500/20">
         <span>Rincian Pesanan</span>
         <i class="fa-solid fa-arrow-right text-[11px]"></i>
       </button>
@@ -235,40 +221,41 @@
   </div>
 
   <!-- Floating Direct WhatsApp Button -->
-  <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya-tanya menu.')" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-xl shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95 border-2 border-white/40">
+  <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya-tanya menu.')" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95">
     <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
   </button>
 
-  <!-- ================= MODAL DETAIL PRODUK ================= -->
+  <!-- MODAL DETAIL PRODUK -->
   <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-    <div class="bg-white w-full sm:max-w-md rounded-t-[32px] sm:rounded-[32px] max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
-      <div class="relative w-full h-64 sm:h-72 bg-amber-50 overflow-hidden flex-shrink-0">
+      <div class="relative w-full h-60 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
+        <!-- Foto di Pop-up Detail Tetap Berwarna Penuh -->
         <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
         <button onclick="closeProductDetailModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
-        <span id="detail-category" class="absolute bottom-3 left-3 bg-gray-950/80 backdrop-blur-md text-white text-[11px] font-semibold px-3.5 py-1 rounded-full shadow-md border border-white/15">Kategori</span>
-        <span id="detail-stock-badge" class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3.5 py-1 rounded-full shadow-md border border-gray-100">Sisa Stok: 50 pcs</span>
+        <span id="detail-category" class="absolute bottom-3 left-3 bg-gray-900/80 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1 rounded-full shadow-md">Kategori</span>
+        <span id="detail-stock-badge" class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-gray-100">Sisa Stok: 50 pcs</span>
       </div>
 
-      <div class="p-5.5 overflow-y-auto space-y-4">
+      <div class="p-5 overflow-y-auto space-y-4">
         <div>
           <h3 id="detail-title" class="font-serif font-bold text-xl text-gray-900">Nama Produk</h3>
           <p id="detail-price" class="text-base font-bold text-amber-600 mt-0.5">Rp0</p>
         </div>
 
         <!-- Banner Khusus Jika Menu Habis Hari Ini -->
-        <div id="detail-preorder-notice" class="hidden bg-blue-50 border border-blue-200/80 rounded-2xl p-3.5 text-xs text-blue-900 flex items-start gap-2.5">
+        <div id="detail-preorder-notice" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-3 text-xs text-blue-800 flex items-start gap-2.5">
           <i class="fa-solid fa-calendar-day text-blue-600 mt-0.5"></i>
           <div>
             <p class="font-bold">Stok Siap Saji Hari Ini Habis</p>
-            <p class="text-[11px] text-blue-700 mt-0.5 leading-relaxed">Menu ini tetap dapat Anda pesan sekarang untuk jadwal acara <strong>besok, lusa, atau hari berikutnya</strong>.</p>
+            <p class="text-[11px] text-blue-600 mt-0.5">Menu ini tetap bisa Anda pesan sekarang untuk jadwal acara <strong>besok, lusa, atau hari berikutnya</strong>.</p>
           </div>
         </div>
 
         <div>
-          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi Rasa & Bahan</h4>
+          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi Menu</h4>
           <p id="detail-desc" class="text-xs text-gray-600 leading-relaxed bg-amber-50/40 p-3.5 rounded-2xl border border-amber-100/50">Deskripsi lengkap...</p>
         </div>
 
@@ -278,7 +265,7 @@
             <span id="detail-order-hint" class="text-[10px] text-gray-400">Atur porsi yang diinginkan</span>
           </div>
           
-          <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1 shadow-2xs">
+          <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
             <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-xl bg-white text-amber-800 font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-100 active:scale-90 transition">-</button>
             <input type="number" id="detail-qty-input" min="1" value="1" enterkeyhint="done" oninput="handleModalManualInput(this)" class="w-14 text-center text-sm font-bold text-amber-950 bg-transparent outline-none">
             <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-xl bg-amber-500 text-white font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-600 active:scale-90 transition">+</button>
@@ -286,7 +273,7 @@
         </div>
       </div>
 
-      <div class="p-4 bg-gray-50/80 border-t border-gray-100">
+      <div class="p-4 bg-gray-50 border-t border-gray-100">
         <button id="btn-add-modal-cart" onclick="confirmAddToCartFromModal()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98">
           <i class="fa-solid fa-basket-shopping"></i>
           <span id="btn-add-modal-text">Tambahkan ke Keranjang</span>
@@ -296,16 +283,16 @@
     </div>
   </div>
 
-  <!-- ================= MODAL CHECKOUT & RINCIAN KERANJANG ================= -->
+  <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
   <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-    <div class="bg-white w-full sm:max-w-lg rounded-t-[32px] sm:rounded-[32px] max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
+          <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
             <i class="fa-solid fa-bag-shopping"></i>
           </div>
-          <h3 class="font-bold text-gray-900 text-sm sm:text-base font-serif">Rincian Belanja & Checkout</h3>
+          <h3 class="font-bold text-gray-900 text-sm sm:text-base">Rincian Belanja & Checkout</h3>
         </div>
         <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
@@ -323,7 +310,7 @@
 
           <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
             <span>Total Pembayaran Sementara</span>
-            <span id="modal-subtotal" class="text-amber-600 text-base font-serif">Rp0</span>
+            <span id="modal-subtotal" class="text-amber-600 text-base">Rp0</span>
           </div>
         </div>
 
@@ -370,7 +357,7 @@
           </div>
 
           <div class="pt-2">
-            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-semibold py-3.5 px-4 rounded-2xl text-xs sm:text-sm shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 transition">
+            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
               <i class="fa-brands fa-whatsapp text-lg"></i>
               <span>Kirim Pesanan ke WhatsApp Toko</span>
             </button>
@@ -383,7 +370,7 @@
 
   <!-- Footer -->
   <footer class="max-w-5xl mx-auto px-4 mt-16 text-center text-xs text-gray-500">
-    <div class="bg-white p-6 sm:p-8 rounded-[32px] border border-amber-100 shadow-xs space-y-4 text-left sm:text-center">
+    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/70 shadow-xs space-y-4 text-left sm:text-center">
       <div class="flex items-center justify-center gap-2 font-serif font-bold text-gray-900 text-lg">
         <span class="text-xl">🍰</span> AZRI SNACK
       </div>
@@ -444,6 +431,7 @@
     let cart = {};
     let selectedModalProduct = null;
 
+    // Helper Tanggal Hari Ini & Besok (WIB)
     function getTodayDateWIB() {
       const now = new Date();
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -477,6 +465,7 @@
       }
     };
 
+    // Tombol X Hapus Pencarian & Langsung Kembalikan Semua Menu
     window.clearSearchInput = function() {
       const input = document.getElementById("search-input");
       input.value = "";
@@ -484,6 +473,7 @@
       input.focus();
     };
 
+    // Handler Keyboard Dismiss Otomatis di Input Lain
     document.addEventListener("keydown", function(e) {
       if (e.key === "Enter" && e.target && e.target.tagName === "INPUT") {
         if (e.target.id !== "search-input") {
@@ -543,7 +533,7 @@
       console.warn("Firestore fallback aktif:", err);
     });
 
-    // 3. Render Katalog (KARTU BERGAYA PREMIUM DENGAN GAMBAR PENUH WARNA)
+    // 3. Render Katalog (Gambar Tetap Berwarna, Urutan Habis di Bawah)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -560,7 +550,7 @@
         );
       }
 
-      // SORTING: Ready di Atas, Habis di Paling Bawah
+      // LOGIKA URUTAN: Produk Ready di atas, Produk Habis otomatis turun ke paling bawah
       filtered.sort((a, b) => {
         const stockA = a.stock !== undefined ? Number(a.stock) : 0;
         const stockB = b.stock !== undefined ? Number(b.stock) : 0;
@@ -578,10 +568,10 @@
 
       if (filtered.length === 0) {
         grid.innerHTML = `
-          <div class="col-span-full text-center py-16 bg-white rounded-3xl border border-amber-100 shadow-xs">
-            <i class="fa-solid fa-cookie-bite text-4xl text-amber-300 mb-2"></i>
+          <div class="col-span-full text-center py-14 bg-white rounded-3xl border border-gray-100">
+            <i class="fa-solid fa-cookie-bite text-3xl text-amber-200 mb-2"></i>
             <p class="text-xs text-gray-400 font-medium">Menu yang Anda cari tidak ditemukan.</p>
-            <button onclick="clearSearchInput()" class="mt-3 text-xs bg-amber-100 text-amber-900 font-semibold px-4 py-2 rounded-xl hover:bg-amber-200 transition">
+            <button onclick="clearSearchInput()" class="mt-3 text-xs bg-amber-100 text-amber-800 font-semibold px-3 py-1.5 rounded-xl hover:bg-amber-200 transition">
               Tampilkan Semua Menu
             </button>
           </div>
@@ -596,72 +586,65 @@
         const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
         
         const card = document.createElement("div");
-        card.className = "premium-card rounded-[26px] p-3 sm:p-3.5 flex flex-col justify-between group cursor-pointer";
+        card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/80 bg-white' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
         
         card.innerHTML = `
-          <div onclick="openProductDetailModal('${p.id}')">
-            
-            <!-- Image Container with Rounded Squircle & Micro Badges -->
-            <div class="relative w-full h-36 sm:h-44 rounded-2xl bg-amber-50/60 overflow-hidden mb-3">
-              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out" onerror="this.src='${fallbackImg}'">
+          <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
+            <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
+              <!-- GAMBAR TETAP BERWARNA PENUH (TANPA GRAYSCALE) -->
+              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
               
-              <!-- Badge Kategori Glassmorphism (Kiri Atas) -->
-              <span class="absolute top-2.5 left-2.5 bg-gray-950/70 backdrop-blur-md text-white text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-xs border border-white/20">
+              <!-- Badge Kategori (Kiri Atas) -->
+              <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
                 ${p.category || 'Kue'}
               </span>
 
-              <!-- BADGE STOK / HABIS (Kanan Atas / Bawah) -->
+              <!-- BADGE HABIS HARI INI DI POJOK KANAN ATAS -->
               ${isSoldOut ? `
-                <span class="absolute top-2.5 right-2.5 bg-red-600/95 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-white/30 backdrop-blur-xs">
+                <span class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                   Habis Hari Ini
                 </span>
               ` : `
-                <span class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md text-gray-800 text-[9px] font-semibold px-2.5 py-0.5 rounded-md shadow-xs border border-gray-100 flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                  Sisa: ${liveStock} pcs
+                <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
+                  Sisa Hari Ini: ${liveStock} pcs
                 </span>
               `}
             </div>
 
-            <!-- Title & Short Description -->
-            <h3 class="font-serif font-bold text-sm sm:text-base line-clamp-1 text-gray-900 group-hover:text-amber-600 transition-colors duration-200">${p.name}</h3>
+            <h3 class="font-bold text-xs sm:text-sm line-clamp-1 text-gray-900 group-hover:text-amber-600 transition">${p.name}</h3>
             
             ${isSoldOut ? `
-              <p class="text-blue-600 font-semibold text-[10px] line-clamp-1 mt-0.5 flex items-center gap-1">
-                <i class="fa-solid fa-calendar-plus text-[9px]"></i> Pesan untuk besok/lusa
+              <p class="text-blue-600 font-medium text-[10px] line-clamp-1 mt-0.5">
+                <i class="fa-solid fa-calendar-plus text-[9px]"></i> Bisa dipesan untuk besok/lusa
               </p>
             ` : `
-              <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5 font-normal leading-tight">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
+              <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
             `}
           </div>
 
-          <!-- Bottom Action Bar (Price & Button) -->
-          <div class="mt-3.5 pt-2.5 border-t border-amber-100/60 flex items-center justify-between gap-2">
-            <div>
-              <span class="text-[10px] text-gray-400 block -mb-0.5 leading-none">Harga</span>
-              <span class="font-bold text-xs sm:text-sm text-amber-700 font-serif">Rp${Number(p.price).toLocaleString('id-ID')}</span>
-            </div>
+          <div class="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
+            <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
             
-            <div id="btn-container-${p.id}" onclick="event.stopPropagation()">
+            <div id="btn-container-${p.id}">
               ${isSoldOut ? (inCartQty > 0 ? `
-                <div class="flex items-center bg-blue-50 border border-blue-200 rounded-xl p-0.5 shadow-2xs">
+                <div class="flex items-center bg-blue-50 border border-blue-200 rounded-xl p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-blue-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-8 text-center text-xs font-bold text-blue-950 bg-transparent outline-none">
+                  <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-blue-950 bg-transparent outline-none">
                   <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
                 </div>
               ` : `
-                <button onclick="updateQty('${p.id}', 1)" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
-                  <i class="fa-solid fa-calendar-plus text-[9px]"></i> Besok
+                <button onclick="updateQty('${p.id}', 1)" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition shadow-2xs">
+                  <i class="fa-solid fa-calendar-plus"></i> Pesan Besok
                 </button>
               `) : (inCartQty > 0 ? `
-                <div class="flex items-center bg-amber-50 border border-amber-200 rounded-xl p-0.5 shadow-2xs">
+                <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-8 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+                  <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
                   <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
                 </div>
               ` : `
-                <button onclick="updateQty('${p.id}', 1)" class="bg-gradient-to-r from-amber-500 via-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs shadow-amber-500/20">
+                <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
                   <i class="fa-solid fa-plus text-[10px]"></i> Pesan
                 </button>
               `)}
@@ -801,6 +784,7 @@
       const badge = document.getElementById("cart-badge");
       const stickyBar = document.getElementById("sticky-cart");
 
+      // Cek apakah ada kue yang habis hari ini di dalam keranjang
       let hasSoldOutTodayItem = false;
       Object.values(cart).forEach(item => {
         const liveProd = allProducts.find(p => p.id === item.id);
@@ -871,7 +855,7 @@
               <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center">+</button>
             </div>
 
-            <span class="font-bold text-gray-700 min-w-[70px] text-right font-serif">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
+            <span class="font-bold text-gray-700 min-w-[70px] text-right">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
 
             <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini" class="w-7 h-7 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition ml-1">
               <i class="fa-solid fa-trash-can text-xs"></i>
@@ -967,10 +951,10 @@
           items: items,
           total_price: grandTotal,
           status: "PENDING",
-          payment_status: "UNPAID",
           created_at: serverTimestamp()
         });
 
+        // Potong stok HANYA jika tanggal acara adalah HARI INI
         const isOrderForToday = (date === getTodayDateWIB());
 
         if (isOrderForToday) {
