@@ -55,6 +55,7 @@
       margin: 0; 
     }
     input[type=number] { -moz-appearance: textfield; }
+    html { scroll-behavior: smooth; }
   </style>
 </head>
 <body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
@@ -109,12 +110,12 @@
       </div>
     </div>
 
-    <!-- Search Box & Filter Tabs -->
+    <!-- Search Box & Filter Tabs (Mendukung Enter + Auto Scroll) -->
     <div class="max-w-5xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
-      <div class="relative">
+      <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-4 py-2.5 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/40 outline-none transition border border-gray-200/80 focus:border-amber-400">
-      </div>
+        <input type="search" id="search-input" enterkeyhint="search" onkeyup="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-4 py-2.5 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/40 outline-none transition border border-gray-200/80 focus:border-amber-400">
+      </form>
 
       <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
         <button onclick="filterCategory('All')" class="cat-btn active px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-900 text-white shadow-xs transition">Semua Menu</button>
@@ -184,7 +185,7 @@
   </div>
 
   <!-- Product Catalog Grid -->
-  <main class="max-w-5xl mx-auto px-4 mt-6">
+  <main id="catalog-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
         <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu</h3>
@@ -251,7 +252,7 @@
           
           <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
             <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-xl bg-white text-amber-800 font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-100 active:scale-90 transition">-</button>
-            <input type="number" id="detail-qty-input" min="1" value="1" oninput="handleModalManualInput(this)" class="w-14 text-center text-sm font-bold text-amber-950 bg-transparent outline-none">
+            <input type="number" id="detail-qty-input" min="1" value="1" enterkeyhint="done" oninput="handleModalManualInput(this)" class="w-14 text-center text-sm font-bold text-amber-950 bg-transparent outline-none">
             <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-xl bg-amber-500 text-white font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-600 active:scale-90 transition">+</button>
           </div>
         </div>
@@ -303,12 +304,12 @@
 
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan *</label>
-            <input type="text" id="cust-name" required placeholder="Contoh: Ibu Rina" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <input type="text" id="cust-name" required enterkeyhint="next" placeholder="Contoh: Ibu Rina" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
           </div>
 
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Nomor WhatsApp Aktif *</label>
-            <input type="tel" id="cust-phone" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <input type="tel" id="cust-phone" required enterkeyhint="next" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -332,12 +333,12 @@
 
           <div id="address-box" class="hidden">
             <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
-            <textarea id="cust-address" rows="2" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
+            <textarea id="cust-address" rows="2" enterkeyhint="done" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Khusus (Opsional)</label>
-            <input type="text" id="order-notes" placeholder="Misal: Pisahkan 5 box pedas, bungkus rapi" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <input type="text" id="order-notes" enterkeyhint="done" placeholder="Misal: Pisahkan 5 box pedas, bungkus rapi" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
           </div>
 
           <div class="pt-2">
@@ -415,6 +416,31 @@
     let cart = {};
     let selectedModalProduct = null;
 
+    // Handler Tombol Enter Pencarian (Tutup Keyboard & Scroll Otomatis)
+    window.submitSearchOnEnter = function(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById("search-input");
+      if (input) {
+        input.blur(); // Tutup keyboard HP
+      }
+      handleSearch();
+
+      // Scroll ke bagian katalog
+      const catalog = document.getElementById("catalog-section");
+      if (catalog) {
+        catalog.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    // Handler Keyboard Dismiss Otomatis di Semua Input Saat Tekan Enter
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && e.target && e.target.tagName === "INPUT") {
+        if (e.target.id !== "search-input") {
+          e.target.blur(); // Melepaskan fokus dan menutup keyboard
+        }
+      }
+    });
+
     // Helper Universal WhatsApp Opener
     window.openUniversalWhatsApp = function(phone, message) {
       const encodedMsg = encodeURIComponent(message);
@@ -452,7 +478,7 @@
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
-    // 2. Sync Realtime Produk Tanpa Menimpa Data
+    // 2. Sync Realtime Produk
     onSnapshot(collection(db, "products"), (snapshot) => {
       allProducts = [];
       snapshot.forEach(docSnap => {
@@ -541,7 +567,7 @@
               ` : (inCartQty > 0 ? `
                 <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" max="${liveStock}" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+                  <input type="number" min="0" max="${liveStock}" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
                   <button onclick="updateQty('${p.id}', 1)" ${inCartQty >= liveStock ? 'disabled class="w-6 h-6 rounded-lg bg-gray-200 text-gray-400 font-bold text-xs flex items-center justify-center cursor-not-allowed"' : 'class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90"'} >+</button>
                 </div>
               ` : `
@@ -736,7 +762,7 @@
           <div class="flex items-center gap-2">
             <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5">
               <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center">-</button>
-              <input type="number" min="1" max="${liveStock}" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
+              <input type="number" min="1" max="${liveStock}" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
               <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center">+</button>
             </div>
 
@@ -818,7 +844,6 @@
       btn.disabled = true;
 
       try {
-        // 1. Simpan Invoice Pesanan
         await addDoc(collection(db, "orders"), {
           invoice_no: invoiceNo,
           customer_name: name,
@@ -834,7 +859,6 @@
           created_at: serverTimestamp()
         });
 
-        // 2. Potong Stok Nyata di Firestore
         for (const item of items) {
           const productRef = doc(db, "products", item.product_id);
           const pDoc = await getDoc(productRef);
