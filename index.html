@@ -110,14 +110,13 @@
       </div>
     </div>
 
-    <!-- Search Box & Filter Tabs (Dengan Tombol X Reset & Auto-Show All) -->
+    <!-- Search Box & Filter Tabs -->
     <div class="max-w-5xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
       <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
         
         <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-9 py-2.5 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/40 outline-none transition border border-gray-200/80 focus:border-amber-400">
         
-        <!-- Tombol X Hapus Pencarian -->
         <button type="button" id="btn-clear-search" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1">
           <i class="fa-solid fa-circle-xmark text-sm"></i>
         </button>
@@ -158,21 +157,21 @@
     </div>
   </section>
 
-  <!-- PEMBERITAHUAN STOK HARI INI -->
+  <!-- PEMBERITAHUAN STOK HARI INI & PRE-ORDER -->
   <section class="max-w-5xl mx-auto px-4 mt-3">
     <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <i class="fa-solid fa-rotate text-base"></i>
+            <i class="fa-solid fa-calendar-check text-base"></i>
           </div>
           <div class="text-xs text-gray-700 leading-relaxed">
             <p class="font-bold text-gray-900 flex items-center gap-1.5">
-              <span>Stok Segar Harian (Otomatis Reset Pkl 05:00 WIB)</span>
-              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Fresh Daily</span>
+              <span>Info Stok Siap Saji Hari Ini vs Pre-Order</span>
+              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
             </p>
             <p class="text-gray-600 mt-0.5">
-              Jumlah stok di bawah berkurang otomatis setiap ada pesanan masuk hari ini. Ingin pesan dalam <strong>jumlah banyak untuk acara besok/lusa</strong>? Silakan pesan langsung via formulir atau konsultasi lewat WhatsApp.
+              Sisa stok di bawah adalah <strong>stok siap saji untuk hari ini</strong>. Jika memesan untuk <strong>hari besok, lusa, atau acara mendatang</strong>, Anda bebas memesan dalam jumlah berapa pun tanpa mengurangi stok siap saji hari ini.
             </p>
           </div>
         </div>
@@ -253,7 +252,7 @@
         <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
           <div>
             <span class="text-xs font-semibold text-gray-700 block">Jumlah Pesanan:</span>
-            <span class="text-[10px] text-gray-400">Siap saji hari ini</span>
+            <span class="text-[10px] text-gray-400">Atur sesuai kebutuhan</span>
           </div>
           
           <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
@@ -422,6 +421,18 @@
     let cart = {};
     let selectedModalProduct = null;
 
+    // Helper Tanggal Hari Ini (WIB)
+    function getTodayDateWIB() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      return wibDate.toISOString().split("T")[0];
+    }
+
+    // Set Default Tanggal Acara di Form ke Hari Ini
+    const todayWIBString = getTodayDateWIB();
+    document.getElementById("order-date").value = todayWIBString;
+
     // Handler Tombol Enter Pencarian (Tutup Keyboard & Scroll)
     window.submitSearchOnEnter = function(e) {
       if (e) e.preventDefault();
@@ -559,7 +570,7 @@
 
               ${!isSoldOut ? `
                 <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
-                  Sisa: ${liveStock} pcs
+                  Sisa Hari Ini: ${liveStock} pcs
                 </span>
               ` : ''}
 
@@ -584,8 +595,8 @@
               ` : (inCartQty > 0 ? `
                 <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" max="${liveStock}" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
-                  <button onclick="updateQty('${p.id}', 1)" ${inCartQty >= liveStock ? 'disabled class="w-6 h-6 rounded-lg bg-gray-200 text-gray-400 font-bold text-xs flex items-center justify-center cursor-not-allowed"' : 'class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90"'} >+</button>
+                  <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+                  <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
                 </div>
               ` : `
                 <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
@@ -618,7 +629,7 @@
       document.getElementById("detail-desc").innerText = prod.description || "Dibuat dengan bahan baku segar pilihan dan resep tradisional istimewa dari AZRI SNACK.";
       
       const qtyInput = document.getElementById("detail-qty-input");
-      qtyInput.value = Math.min(currentQty, liveStock);
+      qtyInput.value = currentQty;
 
       document.getElementById("product-detail-modal").classList.remove("hidden");
     };
@@ -630,31 +641,20 @@
 
     window.changeModalQty = function(delta) {
       if (!selectedModalProduct) return;
-      const liveStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 0;
       const input = document.getElementById("detail-qty-input");
-      
       let currentVal = parseInt(input.value);
       if (isNaN(currentVal) || currentVal < 1) currentVal = 1;
 
       let nextVal = currentVal + delta;
       if (nextVal < 1) nextVal = 1;
-      if (nextVal > liveStock) {
-        alert(`Maksimal porsi yang tersedia hari ini hanya ${liveStock} pcs.`);
-        nextVal = liveStock;
-      }
 
       input.value = nextVal;
     };
 
     window.handleModalManualInput = function(input) {
       if (!selectedModalProduct) return;
-      const liveStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 0;
       let val = parseInt(input.value);
-      
-      if (val > liveStock) {
-        alert(`Maksimal porsi yang tersedia hari ini adalah ${liveStock} pcs.`);
-        input.value = liveStock;
-      } else if (isNaN(val) || val < 1) {
+      if (isNaN(val) || val < 1) {
         if (input.value !== "") input.value = 1;
       }
     };
@@ -674,18 +674,11 @@
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
-
       if (!cart[productId]) {
         cart[productId] = { ...prod, qty: 0 };
       }
 
       const nextQty = cart[productId].qty + delta;
-
-      if (nextQty > liveStock) {
-        alert(`Maaf, sisa stok ${prod.name} hari ini hanya ${liveStock} pcs.`);
-        return;
-      }
 
       if (nextQty <= 0) {
         delete cart[productId];
@@ -701,14 +694,7 @@
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
       let qty = parseInt(rawValue);
-
-      if (qty > liveStock) {
-        alert(`Maaf, jumlah stok ${prod.name} yang siap hari ini hanya ${liveStock} pcs.`);
-        qty = liveStock;
-      }
-
       if (isNaN(qty) || qty <= 0) {
         delete cart[productId];
       } else {
@@ -765,9 +751,6 @@
       }
 
       items.forEach(item => {
-        const prod = allProducts.find(p => p.id === item.id);
-        const liveStock = prod && prod.stock !== undefined ? Number(prod.stock) : 9999;
-
         const row = document.createElement("div");
         row.className = "flex items-center justify-between bg-gray-50/80 p-2.5 rounded-2xl text-xs border border-gray-100";
         row.innerHTML = `
@@ -779,7 +762,7 @@
           <div class="flex items-center gap-2">
             <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5">
               <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center">-</button>
-              <input type="number" min="1" max="${liveStock}" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
+              <input type="number" min="1" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
               <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center">+</button>
             </div>
 
@@ -836,7 +819,7 @@
       }
     };
 
-    // 7. Submit Order
+    // 7. Submit Order (HANYA POTONG STOK JIKA PESANAN UNTUK HARI INI)
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
@@ -867,6 +850,7 @@
       btn.disabled = true;
 
       try {
+        // 1. Catat Data Pesanan ke Firestore
         await addDoc(collection(db, "orders"), {
           invoice_no: invoiceNo,
           customer_name: name,
@@ -882,19 +866,25 @@
           created_at: serverTimestamp()
         });
 
-        for (const item of items) {
-          const productRef = doc(db, "products", item.product_id);
-          const pDoc = await getDoc(productRef);
-          if (pDoc.exists()) {
-            const currentStock = Number(pDoc.data().stock || 0);
-            const updatedStock = Math.max(0, currentStock - item.qty);
-            await updateDoc(productRef, {
-              stock: updatedStock,
-              status: updatedStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE"
-            });
+        // 2. CEK TANGGAL: Potong stok HANYA jika tanggal acara adalah HARI INI
+        const isOrderForToday = (date === getTodayDateWIB());
+
+        if (isOrderForToday) {
+          for (const item of items) {
+            const productRef = doc(db, "products", item.product_id);
+            const pDoc = await getDoc(productRef);
+            if (pDoc.exists()) {
+              const currentStock = Number(pDoc.data().stock || 0);
+              const updatedStock = Math.max(0, currentStock - item.qty);
+              await updateDoc(productRef, {
+                stock: updatedStock,
+                status: updatedStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE"
+              });
+            }
           }
         }
 
+        // 3. Susun Teks WhatsApp
         let itemText = "";
         items.forEach(i => {
           itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
@@ -906,6 +896,7 @@
         waMessage += `*Nama:* ${name}\n`;
         waMessage += `*No. HP:* ${phone}\n`;
         waMessage += `*Tgl Acara:* ${date} (Pukul ${time})\n`;
+        waMessage += `*Tipe Pesanan:* ${isOrderForToday ? 'Siap Saji Hari Ini' : 'Pre-Order / Acara Mendatang'}\n`;
         waMessage += `*Pengambilan:* ${deliveryType}\n`;
         if (deliveryType === "Diantar / Delivery") {
           waMessage += `*Alamat:* ${address}\n`;
@@ -925,6 +916,7 @@
         updateCartUI();
         renderFilteredProducts();
         document.getElementById("order-form").reset();
+        document.getElementById("order-date").value = getTodayDateWIB();
         btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
         btn.disabled = false;
 
