@@ -82,7 +82,7 @@
         </button>
         <button onclick="switchTab('products')" id="tab-btn-products" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2 transition">
           <i class="fa-solid fa-cake-candles"></i>
-          <span>Manajemen Produk & Stok</span>
+          <span>Katalog & Kuota Stok Harian</span>
         </button>
         <button onclick="switchTab('finance')" id="tab-btn-finance" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2 transition">
           <i class="fa-solid fa-wallet"></i>
@@ -106,7 +106,6 @@
             <p class="text-xs text-gray-400">Pantau pesanan berdasarkan status dan filter tanggal kalender</p>
           </div>
           
-          <!-- Filter Tanggal & Status Pesanan -->
           <div class="flex flex-wrap items-center gap-2">
             <div class="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5">
               <i class="fa-solid fa-calendar-days text-amber-500 text-xs"></i>
@@ -132,17 +131,23 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: MANAJEMEN PRODUK & STOK ================= -->
+      <!-- ================= TAB 2: MANAJEMEN PRODUK & KUOTA STOK HARIAN ================= -->
       <section id="view-products" class="tab-view hidden space-y-4">
-        <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
-            <h2 class="font-bold text-gray-900 text-base">Katalog Menu & Jumlah Stok</h2>
-            <p class="text-xs text-gray-400">Kelola harga, foto, dan ketik langsung sisa stok kue</p>
+            <h2 class="font-bold text-gray-900 text-base">Katalog Menu & Kuota Harian (Pukul 05.00 WIB)</h2>
+            <p class="text-xs text-gray-400">Atur batas produksi harian. Sisa stok berkurang otomatis setiap ada pesanan & kembali penuh setiap subuh.</p>
           </div>
-          <button onclick="openProductModal()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm transition active:scale-95">
-            <i class="fa-solid fa-plus"></i>
-            <span>Tambah Kue Baru</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button onclick="resetAllDailyStockNow()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition border border-blue-200">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Refill Semua Stok Sekarang</span>
+            </button>
+            <button onclick="openProductModal()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm transition active:scale-95">
+              <i class="fa-solid fa-plus"></i>
+              <span>Tambah Kue Baru</span>
+            </button>
+          </div>
         </div>
 
         <!-- Product Table -->
@@ -153,8 +158,9 @@
                 <tr>
                   <th class="p-3.5">Foto & Nama Kue</th>
                   <th class="p-3.5">Kategori</th>
-                  <th class="p-3.5">Harga</th>
-                  <th class="p-3.5 text-center">Jumlah Stok (Pcs)</th>
+                  <th class="p-3.5">Harga Satuan</th>
+                  <th class="p-3.5 text-center">Kuota Harian (Pcs)</th>
+                  <th class="p-3.5 text-center">Sisa Siap Saji Hari Ini</th>
                   <th class="p-3.5 text-center">Status</th>
                   <th class="p-3.5 text-center">Aksi</th>
                 </tr>
@@ -169,8 +175,6 @@
 
       <!-- ================= TAB 3: CATATAN KEUANGAN ================= -->
       <section id="view-finance" class="tab-view hidden space-y-5">
-        
-        <!-- Filter Kalender Keuangan -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Laporan & Rekapitulasi Keuangan</h2>
@@ -189,7 +193,6 @@
           </div>
         </div>
 
-        <!-- Summary Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-xs">
             <p class="text-xs text-gray-400 font-medium">Pemasukan (Omset Selesai)</p>
@@ -208,7 +211,6 @@
           </div>
         </div>
 
-        <!-- Expense Form & Log -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-xs md:col-span-1">
             <h3 class="font-bold text-gray-900 text-sm mb-3">Catat Biaya Pengeluaran</h3>
@@ -242,7 +244,6 @@
 
       <!-- ================= TAB 4: PENGATURAN TOKO & SANDI ================= -->
       <section id="view-settings" class="tab-view hidden space-y-5 max-w-xl mx-auto">
-        <!-- Pengaturan Logo -->
         <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Ganti Logo Toko AZRI SNACK</h3>
@@ -265,7 +266,6 @@
           </div>
         </div>
 
-        <!-- Pengaturan PIN Admin -->
         <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Ganti Sandi / PIN Admin</h3>
@@ -304,7 +304,6 @@
       <form onsubmit="event.preventDefault(); saveProduct();" class="p-5 space-y-3.5">
         <input type="hidden" id="prod-edit-id">
 
-        <!-- Upload Gambar -->
         <div>
           <label class="block text-[11px] font-medium text-gray-700 mb-1">Foto Kue (Dari Komputer) *</label>
           <div class="flex items-center gap-3">
@@ -314,7 +313,7 @@
             </div>
             <label class="flex-1 flex items-center justify-center gap-2 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold py-3 px-4 rounded-xl cursor-pointer border border-amber-200 transition">
               <i class="fa-solid fa-plus text-sm"></i>
-              <span>Pilih Gambar dari Komputer</span>
+              <span>Pilih Gambar</span>
               <input type="file" id="prod-file-input" accept="image/*" onchange="handleProductImageUpload(event)" class="hidden">
             </label>
           </div>
@@ -342,15 +341,13 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Jumlah Stok (Pcs) *</label>
-            <input type="number" id="prod-stock" min="0" required placeholder="Contoh: 50" class="w-full text-xs p-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500">
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Kuota Harian (Pcs) *</label>
+            <input type="number" id="prod-daily-quota" min="0" required placeholder="Contoh: 50" class="w-full text-xs p-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500">
+            <span class="text-[10px] text-gray-400">Reset ke angka ini tiap jam 5 pagi</span>
           </div>
           <div>
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Status Ketersediaan</label>
-            <select id="prod-status" class="w-full text-xs p-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white">
-              <option value="AVAILABLE">Tersedia (Ready)</option>
-              <option value="OUT_OF_STOCK">Stok Habis (Sold Out)</option>
-            </select>
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Sisa Stok Sekarang</label>
+            <input type="number" id="prod-current-stock" min="0" required placeholder="50" class="w-full text-xs p-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500">
           </div>
         </div>
 
@@ -361,7 +358,7 @@
 
         <div class="pt-2">
           <button type="submit" id="btn-save-prod" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-md">
-            Simpan Produk & Stok
+            Simpan Menu & Kuota Stok
           </button>
         </div>
       </form>
@@ -375,7 +372,6 @@
       getFirestore, collection, onSnapshot, doc, setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Konfigurasi Firebase Project AZRI SNACK
     const firebaseConfig = {
       apiKey: "AIzaSyAzriSnackPlaceholderKey",
       authDomain: "azri-snack-db.firebaseapp.com",
@@ -393,18 +389,27 @@
     let productsList = [];
     let expenseList = [];
 
-    // Set Default Input Tanggal Pengeluaran ke Hari Ini (YYYY-MM-DD)
-    const todayStr = new Date().toISOString().split("T")[0];
-    document.getElementById("exp-date").value = todayStr;
+    // Helper Date Key Jam 5 Pagi WIB
+    function getBusinessDateKey() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      if (wibDate.getHours() < 5) {
+        wibDate.setDate(wibDate.getDate() - 1);
+      }
+      return wibDate.toISOString().split("T")[0];
+    }
 
-    // 1. Inisialisasi Auth PIN dari Firestore
+    const currentBusinessDate = getBusinessDateKey();
+    document.getElementById("exp-date").value = new Date().toISOString().split("T")[0];
+
+    // 1. Inisialisasi Auth PIN
     onSnapshot(doc(db, "settings", "admin_auth"), (docSnap) => {
       if (docSnap.exists()) {
         currentAdminPin = docSnap.data().pin || "123456";
       }
     });
 
-    // 2. Login & Logout Handler
     window.handleLogin = function() {
       const pin = document.getElementById("pin-input").value;
       if (pin === currentAdminPin) {
@@ -423,7 +428,6 @@
       document.getElementById("pin-input").value = "";
     };
 
-    // 3. Tab Switching
     window.switchTab = function(tabName) {
       document.querySelectorAll(".tab-view").forEach(el => el.classList.add("hidden"));
       document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -437,7 +441,6 @@
       activeBtn.classList.add("bg-amber-500", "text-white", "shadow-sm");
     };
 
-    // 4. Realtime Firestore Listeners
     function initDashboardListeners() {
       onSnapshot(collection(db, "orders"), (snapshot) => {
         ordersList = [];
@@ -476,7 +479,7 @@
       });
     }
 
-    // 5. Render Data Pesanan dengan Filter Kalender
+    // 2. Render Orders
     window.renderOrders = function() {
       const filterStatus = document.getElementById("filter-order-status").value;
       const filterDate = document.getElementById("filter-order-date").value;
@@ -484,16 +487,8 @@
       container.innerHTML = "";
 
       let filtered = [...ordersList];
-
-      // Filter Berdasarkan Tanggal Kalender
-      if (filterDate) {
-        filtered = filtered.filter(o => o.event_date === filterDate);
-      }
-
-      // Filter Berdasarkan Status
-      if (filterStatus !== "ALL") {
-        filtered = filtered.filter(o => o.status === filterStatus);
-      }
+      if (filterDate) filtered = filtered.filter(o => o.event_date === filterDate);
+      if (filterStatus !== "ALL") filtered = filtered.filter(o => o.status === filterStatus);
 
       const pendingCount = ordersList.filter(o => o.status === "PENDING").length;
       const badge = document.getElementById("badge-pending-orders");
@@ -508,7 +503,7 @@
         container.innerHTML = `
           <div class="bg-white p-8 rounded-2xl text-center text-xs text-gray-400 border border-gray-200">
             <i class="fa-solid fa-calendar-xmark text-2xl text-gray-300 mb-2"></i>
-            <p>Tidak ada pesanan ditemukan ${filterDate ? `pada tanggal ${filterDate}` : ''}.</p>
+            <p>Tidak ada data pesanan.</p>
           </div>
         `;
         return;
@@ -590,19 +585,20 @@
       }
     };
 
-    // 6. Manajemen Produk & Stok
+    // 3. Render Produk & Pengaturan Kuota Harian
     window.renderProductsTable = function() {
       const tbody = document.getElementById("products-table-body");
       tbody.innerHTML = "";
 
       if (productsList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400">Belum ada produk di database.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">Belum ada produk di database.</td></tr>`;
         return;
       }
 
       productsList.forEach(p => {
-        const stock = p.stock !== undefined ? p.stock : 50;
-        const isOutOfStock = p.status === "OUT_OF_STOCK" || stock <= 0;
+        const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
+        const liveStock = p.stock !== undefined ? Number(p.stock) : quota;
+        const isOutOfStock = p.status === "OUT_OF_STOCK" || liveStock <= 0;
         const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
         
         const tr = document.createElement("tr");
@@ -618,23 +614,34 @@
           <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-medium text-[10px]">${p.category || 'Kue'}</span></td>
           <td class="p-3.5 font-bold text-amber-600">Rp${Number(p.price || 0).toLocaleString('id-ID')}</td>
           
+          <!-- Kuota Harian -->
+          <td class="p-3.5 text-center">
+            <span class="bg-amber-50 text-amber-800 font-bold px-2.5 py-1 rounded-lg border border-amber-200">${quota} pcs/hari</span>
+          </td>
+
+          <!-- Sisa Stok Realtime Hari Ini -->
           <td class="p-3.5 text-center">
             <div class="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
               <button onclick="quickChangeStock('${p.id}', -5)" class="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs text-gray-600 shadow-2xs">-5</button>
-              <input type="number" min="0" value="${stock}" onchange="updateProductStockNumber('${p.id}', this.value)" class="w-12 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
+              <input type="number" min="0" value="${liveStock}" onchange="updateProductCurrentStock('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
               <button onclick="quickChangeStock('${p.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-2xs">+5</button>
             </div>
           </td>
 
+          <!-- Status -->
           <td class="p-3.5 text-center">
             <button onclick="toggleProductStock('${p.id}', '${p.status || 'AVAILABLE'}')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition ${isOutOfStock ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'}">
-              ${isOutOfStock ? '<i class="fa-solid fa-ban mr-1"></i> Habis' : '<i class="fa-solid fa-check mr-1"></i> Tersedia'}
+              ${isOutOfStock ? '<i class="fa-solid fa-ban mr-1"></i> Habis' : '<i class="fa-solid fa-check mr-1"></i> Ready'}
             </button>
           </td>
 
+          <!-- Aksi Edit, Reset & Hapus -->
           <td class="p-3.5 text-center">
             <div class="flex items-center justify-center gap-1.5">
-              <button onclick="editProduct('${p.id}')" class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center" title="Edit Kue">
+              <button onclick="refillSingleProductStock('${p.id}')" class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center" title="Refill ke Kuota Harian Penuh">
+                <i class="fa-solid fa-arrows-rotate text-xs"></i>
+              </button>
+              <button onclick="editProduct('${p.id}')" class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center" title="Edit Menu & Kuota">
                 <i class="fa-solid fa-pen text-xs"></i>
               </button>
               <button onclick="deleteProduct('${p.id}', '${p.name}')" class="w-7 h-7 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center" title="Hapus Kue">
@@ -647,16 +654,17 @@
       });
     };
 
-    window.updateProductStockNumber = async function(prodId, newStockVal) {
-      const stockNum = parseInt(newStockVal) || 0;
+    window.updateProductCurrentStock = async function(prodId, newStockVal) {
+      const stockNum = Math.max(0, parseInt(newStockVal) || 0);
       const newStatus = stockNum <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
       try {
         await updateDoc(doc(db, "products", prodId), { 
           stock: stockNum,
-          status: newStatus
+          status: newStatus,
+          last_stock_date: currentBusinessDate
         });
       } catch (err) {
-        alert("Gagal mengubah jumlah stok: " + err.message);
+        alert("Gagal mengubah sisa stok: " + err.message);
       }
     };
 
@@ -664,37 +672,74 @@
       const prod = productsList.find(p => p.id === prodId);
       if (!prod) return;
 
-      let currentStock = prod.stock !== undefined ? prod.stock : 50;
-      let nextStock = currentStock + delta;
-      if (nextStock < 0) nextStock = 0;
+      let currentStock = prod.stock !== undefined ? Number(prod.stock) : 50;
+      let nextStock = Math.max(0, currentStock + delta);
+      updateProductCurrentStock(prodId, nextStock);
+    };
 
-      updateProductStockNumber(prodId, nextStock);
+    window.refillSingleProductStock = async function(prodId) {
+      const prod = productsList.find(p => p.id === prodId);
+      if (!prod) return;
+
+      const quota = prod.daily_quota !== undefined ? Number(prod.daily_quota) : 50;
+      try {
+        await updateDoc(doc(db, "products", prodId), { 
+          stock: quota,
+          status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK",
+          last_stock_date: currentBusinessDate
+        });
+        alert(`Stok ${prod.name} berhasil di-refill ke kuota awal (${quota} pcs)!`);
+      } catch (err) {
+        alert("Gagal refill stok: " + err.message);
+      }
+    };
+
+    window.resetAllDailyStockNow = async function() {
+      if (confirm("Reset SEMUA kue ke Kuota Stok Penuh sekarang?")) {
+        try {
+          const promises = productsList.map(p => {
+            const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
+            return updateDoc(doc(db, "products", p.id), {
+              stock: quota,
+              daily_quota: quota,
+              status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK",
+              last_stock_date: currentBusinessDate
+            });
+          });
+          await Promise.all(promises);
+          alert("Semua stok menu kue telah kembali ke kuota harian penuh!");
+        } catch (err) {
+          alert("Gagal reset semua stok: " + err.message);
+        }
+      }
     };
 
     window.toggleProductStock = async function(prodId, currentStatus) {
       const prod = productsList.find(p => p.id === prodId);
       const isOut = currentStatus === "OUT_OF_STOCK" || (prod && prod.stock <= 0);
       const newStatus = isOut ? "AVAILABLE" : "OUT_OF_STOCK";
-      const newStock = isOut ? ((prod && prod.stock > 0) ? prod.stock : 20) : 0;
+      const quota = prod && prod.daily_quota !== undefined ? prod.daily_quota : 50;
+      const newStock = isOut ? ((prod && prod.stock > 0) ? prod.stock : quota) : 0;
 
       try {
         await updateDoc(doc(db, "products", prodId), { 
           status: newStatus,
-          stock: newStock
+          stock: newStock,
+          last_stock_date: currentBusinessDate
         });
       } catch (err) {
         alert("Gagal mengubah status stok: " + err.message);
       }
     };
 
-    // Modal Form Produk
+    // 4. Modal Tambah / Edit Produk
     window.openProductModal = function() {
       document.getElementById("prod-edit-id").value = "";
       document.getElementById("prod-name").value = "";
       document.getElementById("prod-price").value = "";
-      document.getElementById("prod-stock").value = "50";
+      document.getElementById("prod-daily-quota").value = "50";
+      document.getElementById("prod-current-stock").value = "50";
       document.getElementById("prod-desc").value = "";
-      document.getElementById("prod-status").value = "AVAILABLE";
       document.getElementById("prod-image-base64").value = "";
       document.getElementById("prod-img-tag").classList.add("hidden");
       document.getElementById("prod-img-icon").classList.remove("hidden");
@@ -740,13 +785,12 @@
       const name = document.getElementById("prod-name").value.trim();
       const category = document.getElementById("prod-category").value;
       const price = Number(document.getElementById("prod-price").value);
-      const stock = Number(document.getElementById("prod-stock").value) || 0;
-      let status = document.getElementById("prod-status").value;
+      const dailyQuota = Number(document.getElementById("prod-daily-quota").value) || 50;
+      const currentStock = Number(document.getElementById("prod-current-stock").value) || 0;
       const desc = document.getElementById("prod-desc").value.trim();
       const imgBase64 = document.getElementById("prod-image-base64").value;
 
-      if (stock <= 0) status = "OUT_OF_STOCK";
-
+      const status = currentStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
       const btn = document.getElementById("btn-save-prod");
       btn.innerText = "Menyimpan...";
       btn.disabled = true;
@@ -756,9 +800,11 @@
           name: name,
           category: category,
           price: price,
-          stock: stock,
+          daily_quota: dailyQuota,
+          stock: currentStock,
           status: status,
           description: desc,
+          last_stock_date: currentBusinessDate,
           updated_at: serverTimestamp()
         };
 
@@ -778,7 +824,7 @@
       } catch (err) {
         alert("Gagal menyimpan produk: " + err.message);
       } finally {
-        btn.innerText = "Simpan Produk & Stok";
+        btn.innerText = "Simpan Menu & Kuota Stok";
         btn.disabled = false;
       }
     };
@@ -791,8 +837,8 @@
       document.getElementById("prod-name").value = prod.name;
       document.getElementById("prod-category").value = prod.category || "Snack";
       document.getElementById("prod-price").value = prod.price;
-      document.getElementById("prod-stock").value = prod.stock !== undefined ? prod.stock : 50;
-      document.getElementById("prod-status").value = prod.status || "AVAILABLE";
+      document.getElementById("prod-daily-quota").value = prod.daily_quota !== undefined ? prod.daily_quota : (prod.stock || 50);
+      document.getElementById("prod-current-stock").value = prod.stock !== undefined ? prod.stock : 50;
       document.getElementById("prod-desc").value = prod.description || "";
       document.getElementById("prod-image-base64").value = prod.image_url || "";
 
@@ -803,7 +849,7 @@
         document.getElementById("prod-img-icon").classList.add("hidden");
       }
 
-      document.getElementById("product-modal-title").innerText = "Edit Kue & Stok";
+      document.getElementById("product-modal-title").innerText = "Edit Menu & Kuota Harian";
       document.getElementById("product-modal").classList.remove("hidden");
     };
 
@@ -817,7 +863,7 @@
       }
     };
 
-    // 7. Catatan Keuangan dengan Filter Kalender
+    // 5. Laporan Keuangan
     window.calculateFinance = function() {
       const filterDate = document.getElementById("filter-finance-date").value;
       const filterInfo = document.getElementById("finance-filter-info");
@@ -875,7 +921,7 @@
       list.innerHTML = "";
 
       if (listData.length === 0) {
-        list.innerHTML = `<p class="text-xs text-gray-400 py-4 text-center">Belum ada catatan pengeluaran pada tanggal ini.</p>`;
+        list.innerHTML = `<p class="text-xs text-gray-400 py-4 text-center">Belum ada catatan pengeluaran.</p>`;
         return;
       }
 
@@ -904,7 +950,7 @@
       }
     };
 
-    // 8. Logo & Ganti PIN
+    // 6. Pengaturan Logo & Ganti Sandi PIN
     window.handleLogoUpload = function(event) {
       const file = event.target.files[0];
       if (!file) return;
