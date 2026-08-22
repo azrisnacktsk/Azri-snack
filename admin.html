@@ -35,7 +35,7 @@
         top: 0;
         width: 100%;
         margin: 0;
-        padding: 10px;
+        padding: 15px;
         background: white !important;
       }
       .no-print {
@@ -125,7 +125,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 no-print">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Daftar Pesanan Masuk</h2>
-            <p class="text-xs text-gray-400">Pantau pesanan, cetak nota struk resmi, atau rekap belanja harian</p>
+            <p class="text-xs text-gray-400">Kelola status pesanan, pembayaran DP/Lunas, cetak nota struk, atau rekap harian</p>
           </div>
           
           <div class="flex flex-wrap items-center gap-2">
@@ -321,38 +321,56 @@
     </main>
   </div>
 
-  <!-- ================= MODAL 1: CETAK STRUK / NOTA PESANAN DENGAN WATERMARK ================= -->
+  <!-- ================= MODAL 1: CETAK STRUK / NOTA PESANAN (WATERMARK JELAS & DP/LUNAS) ================= -->
   <div id="receipt-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
       
-      <!-- Modal Header Action -->
-      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50 no-print">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm">
-            <i class="fa-solid fa-receipt"></i>
+      <!-- Modal Header Action & Pengaturan Pembayaran -->
+      <div class="px-5 py-3.5 border-b border-gray-100 flex flex-col gap-2.5 bg-gray-50 no-print">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm">Nota / Struk Pesanan Resmi</h3>
+              <p class="text-[11px] text-gray-400">Pilih status pembayaran sebelum cetak</p>
+            </div>
           </div>
-          <div>
-            <h3 class="font-bold text-gray-900 text-sm">Nota / Struk Pesanan Resmi</h3>
-            <p class="text-[11px] text-gray-400">Dilengkapi watermark logo resmi toko</p>
+          <div class="flex items-center gap-2">
+            <button onclick="printReceiptNow()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+              <i class="fa-solid fa-print"></i>
+              <span>Cetak / PDF</span>
+            </button>
+            <button onclick="closeReceiptModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 flex items-center justify-center">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="printReceiptNow()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
-            <i class="fa-solid fa-print"></i>
-            <span>Cetak / Simpan PDF</span>
-          </button>
-          <button onclick="closeReceiptModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 flex items-center justify-center">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
+
+        <!-- Panel Opsi Pembayaran Cepat -->
+        <div class="bg-white p-2.5 rounded-xl border border-gray-200 flex flex-wrap items-center gap-2.5 text-xs">
+          <span class="font-bold text-gray-700">Status Bayar:</span>
+          <select id="modal-payment-status" onchange="onModalPaymentStatusChange()" class="bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-1 text-xs font-semibold outline-none">
+            <option value="UNPAID">Belum Lunas</option>
+            <option value="DP">DP (Uang Muka)</option>
+            <option value="PAID">Lunas</option>
+          </select>
+
+          <!-- Input Nominal DP -->
+          <div id="modal-dp-box" class="hidden flex items-center gap-1.5">
+            <span class="text-gray-500">Nominal DP (Rp):</span>
+            <input type="number" id="modal-dp-amount" oninput="onModalDpAmountInput()" placeholder="Contoh: 50000" class="w-28 bg-gray-50 border border-amber-300 rounded-lg px-2 py-1 text-xs font-bold outline-none text-amber-900 focus:ring-1 focus:ring-amber-500">
+          </div>
         </div>
       </div>
 
-      <!-- Area Lembar Nota (Watermark Transparan) -->
+      <!-- Area Lembar Nota (Watermark Transparan Opacity 0.18 Jelas) -->
       <div id="receipt-print-area" class="p-6 overflow-y-auto relative bg-white text-gray-800 text-xs">
         
-        <!-- WATERMARK LOGO RESMI TRANSPARAN DI TENGAH -->
+        <!-- WATERMARK LOGO RESMI TRANSPARAN DI TENGAH (LEBIH JELAS) -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
-          <img id="receipt-watermark-img" src="./logo.png" alt="Watermark" class="w-64 h-64 object-contain opacity-[0.08]" onerror="this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60'">
+          <img id="receipt-watermark-img" src="./logo.png" alt="Watermark" class="w-72 h-72 object-contain opacity-[0.18]" onerror="this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60'">
         </div>
 
         <!-- Konten Nota di Atas Watermark -->
@@ -402,14 +420,28 @@
             </table>
           </div>
 
-          <!-- Ringkasan Total Tagihan -->
-          <div class="border-t-2 border-gray-800 pt-2 flex justify-between items-center text-sm font-bold">
-            <span class="uppercase">TOTAL TAGIHAN:</span>
-            <span id="receipt-total-amount" class="text-base text-gray-900">Rp0</span>
+          <!-- RINCIAN PEMBAYARAN (TOTAL, DP, & SISA PELUNASAN) -->
+          <div class="border-t-2 border-gray-800 pt-2.5 space-y-1 text-xs">
+            <div class="flex justify-between items-center text-gray-700 font-semibold">
+              <span>Total Keseluruhan:</span>
+              <span id="receipt-gross-total">Rp0</span>
+            </div>
+
+            <!-- Baris DP (Tampil jika memilih DP) -->
+            <div id="receipt-dp-row" class="hidden flex justify-between items-center text-emerald-700 font-semibold">
+              <span>Uang Muka (DP Terbayar):</span>
+              <span id="receipt-dp-paid">-Rp0</span>
+            </div>
+
+            <!-- Total Akhir / Sisa Yang Harus Dibayar -->
+            <div class="flex justify-between items-center text-sm font-bold text-gray-900 border-t border-gray-200 pt-1.5">
+              <span id="receipt-balance-label" class="uppercase">SISA YANG HARUS DIBAYAR:</span>
+              <span id="receipt-balance-amount" class="text-base text-amber-700">Rp0</span>
+            </div>
           </div>
 
-          <!-- Tanda Tangan / Stempel -->
-          <div class="pt-6 grid grid-cols-2 gap-4 text-center text-[11px] text-gray-600">
+          <!-- Tanda Tangan / Stempel Status Pembayaran -->
+          <div class="pt-5 grid grid-cols-2 gap-4 text-center text-[11px] text-gray-600">
             <div>
               <p>Tanda Terima Pelanggan,</p>
               <div class="h-12"></div>
@@ -418,16 +450,17 @@
             <div>
               <p>Hormat Kami (Toko),</p>
               <div class="h-12 flex items-center justify-center">
-                <span class="text-[10px] text-amber-600 font-bold tracking-widest border border-amber-300 rounded px-2 py-0.5 uppercase">LUNAS / VALID</span>
+                <!-- Stempel Dinamis Sesuai Status Pembayaran -->
+                <span id="receipt-stamp" class="text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase">LUNAS / VALID</span>
               </div>
               <p class="font-bold border-t border-gray-300 pt-1">AZRI SNACK</p>
             </div>
           </div>
 
           <!-- Catatan Kaki Nota -->
-          <div class="pt-3 text-center text-[9px] text-gray-400 italic">
+          <div class="pt-2 text-center text-[9px] text-gray-400 italic">
             <p>Terima kasih atas kepercayaan Anda memesan di AZRI SNACK.</p>
-            <p>Kue dibuat fresh dengan bahan berkualitas & halal.</p>
+            <p>Kue dibuat fresh dengan bahan pilihan berkualitas & halal.</p>
           </div>
 
         </div>
@@ -451,7 +484,7 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="printSummaryNow()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+          <button onclick="printSummaryNow()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
             <i class="fa-solid fa-print"></i>
             <span>Cetak / Simpan PDF</span>
           </button>
@@ -615,6 +648,7 @@
     let productsList = [];
     let expenseList = [];
     let currentStoreLogoUrl = "./logo.png";
+    let activeReceiptOrder = null;
 
     function getBusinessDateKey() {
       const now = new Date();
@@ -705,7 +739,6 @@
           img.classList.remove("hidden");
           icon.classList.add("hidden");
 
-          // Update watermark nota
           const watermarkImg = document.getElementById("receipt-watermark-img");
           if (watermarkImg) watermarkImg.src = currentStoreLogoUrl;
         }
@@ -749,6 +782,9 @@
           itemsHtml = o.items.map(i => `<span class="inline-block bg-gray-100 text-gray-700 text-[11px] px-2 py-0.5 rounded-md mr-1 mb-1 font-medium">${i.name} x${i.qty}</span>`).join("");
         }
 
+        const payStatus = o.payment_status || "UNPAID";
+        const dpAmount = Number(o.dp_amount || 0);
+
         const card = document.createElement("div");
         card.className = "bg-white p-4 rounded-2xl border border-gray-200 shadow-xs space-y-3";
         card.innerHTML = `
@@ -765,6 +801,7 @@
                 <span>Cetak Nota</span>
               </button>
 
+              <!-- Status Pesanan -->
               <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-gray-200 outline-none ${getStatusColorClass(o.status)}">
                 <option value="PENDING" ${o.status === 'PENDING' ? 'selected' : ''}>Menunggu (Pending)</option>
                 <option value="PROCESSING" ${o.status === 'PROCESSING' ? 'selected' : ''}>Diproses</option>
@@ -785,7 +822,7 @@
               <p><span class="text-gray-400">Pengambilan:</span> ${o.delivery_type || 'Ambil Sendiri'} ${o.delivery_address && o.delivery_address !== '-' ? `<span class="block text-[11px] text-gray-500 italic mt-0.5">Alamat: ${o.delivery_address}</span>` : ''}</p>
             </div>
             <div>
-              <p><span class="text-gray-400">Catatan:</span> ${o.notes || '-'}</p>
+              <p><span class="text-gray-400">Status Bayar:</span> <strong class="${getPaymentColorClass(payStatus)}">${getPaymentLabel(payStatus, dpAmount)}</strong></p>
               <p><span class="text-gray-400">Total Tagihan:</span> <strong class="text-amber-600 font-bold text-sm">Rp${Number(o.total_price || 0).toLocaleString('id-ID')}</strong></p>
             </div>
           </div>
@@ -811,6 +848,18 @@
       return 'bg-amber-50 text-amber-700 border-amber-200';
     }
 
+    function getPaymentColorClass(payStatus) {
+      if (payStatus === 'PAID') return 'text-green-600';
+      if (payStatus === 'DP') return 'text-amber-600';
+      return 'text-red-500';
+    }
+
+    function getPaymentLabel(payStatus, dp) {
+      if (payStatus === 'PAID') return 'Lunas';
+      if (payStatus === 'DP') return `DP Rp${dp.toLocaleString('id-ID')}`;
+      return 'Belum Lunas';
+    }
+
     function formatWaNumber(phone) {
       if (!phone) return "";
       let clean = phone.replace(/\D/g, "");
@@ -826,10 +875,12 @@
       }
     };
 
-    // 3. FITUR NOTA STRUK PEMBELIAN DENGAN WATERMARK
+    // 3. FITUR NOTA STRUK PEMBELIAN DENGAN WATERMARK & PERHITUNGAN DP/LUNAS
     window.openReceiptModal = function(orderId) {
       const order = ordersList.find(o => o.id === orderId);
       if (!order) return;
+
+      activeReceiptOrder = order;
 
       document.getElementById("receipt-inv").innerText = "#" + (order.invoice_no || order.id);
       document.getElementById("receipt-customer").innerText = order.customer_name || "Pelanggan";
@@ -845,6 +896,7 @@
       document.getElementById("receipt-notes").innerText = noteFull;
       document.getElementById("receipt-sign-customer").innerText = `( ${order.customer_name || 'Pelanggan'} )`;
 
+      // Render Item Table
       const tbody = document.getElementById("receipt-items-body");
       tbody.innerHTML = "";
 
@@ -864,13 +916,114 @@
         });
       }
 
-      document.getElementById("receipt-total-amount").innerText = "Rp" + (order.total_price ? Number(order.total_price).toLocaleString('id-ID') : grandTotal.toLocaleString('id-ID'));
+      const totalVal = order.total_price ? Number(order.total_price) : grandTotal;
+      document.getElementById("receipt-gross-total").innerText = "Rp" + totalVal.toLocaleString('id-ID');
+
+      // Set Input Controls di Modal
+      const paymentStatus = order.payment_status || "UNPAID";
+      const dpAmount = Number(order.dp_amount || 0);
+
+      document.getElementById("modal-payment-status").value = paymentStatus;
+      document.getElementById("modal-dp-amount").value = dpAmount > 0 ? dpAmount : "";
+
+      updateReceiptPaymentDisplay(totalVal, paymentStatus, dpAmount);
+
       document.getElementById("receipt-modal").classList.remove("hidden");
     };
 
     window.closeReceiptModal = function() {
       document.getElementById("receipt-modal").classList.add("hidden");
+      activeReceiptOrder = null;
     };
+
+    window.onModalPaymentStatusChange = async function() {
+      if (!activeReceiptOrder) return;
+      const status = document.getElementById("modal-payment-status").value;
+      const dpBox = document.getElementById("modal-dp-box");
+      const dpInput = document.getElementById("modal-dp-amount");
+
+      if (status === "DP") {
+        dpBox.classList.remove("hidden");
+      } else {
+        dpBox.classList.add("hidden");
+        if (status === "PAID" || status === "UNPAID") {
+          dpInput.value = "";
+        }
+      }
+
+      const totalVal = Number(activeReceiptOrder.total_price || 0);
+      const dpAmount = status === "DP" ? Number(dpInput.value || 0) : 0;
+
+      updateReceiptPaymentDisplay(totalVal, status, dpAmount);
+
+      // Simpan perubahan ke Firestore secara otomatis
+      try {
+        await updateDoc(doc(db, "orders", activeReceiptOrder.id), {
+          payment_status: status,
+          dp_amount: dpAmount
+        });
+        activeReceiptOrder.payment_status = status;
+        activeReceiptOrder.dp_amount = dpAmount;
+      } catch (e) {
+        console.warn("Gagal auto-update status pembayaran:", e);
+      }
+    };
+
+    window.onModalDpAmountInput = async function() {
+      if (!activeReceiptOrder) return;
+      const status = document.getElementById("modal-payment-status").value;
+      const dpInput = document.getElementById("modal-dp-amount");
+      const dpAmount = Number(dpInput.value || 0);
+      const totalVal = Number(activeReceiptOrder.total_price || 0);
+
+      updateReceiptPaymentDisplay(totalVal, status, dpAmount);
+
+      try {
+        await updateDoc(doc(db, "orders", activeReceiptOrder.id), {
+          payment_status: "DP",
+          dp_amount: dpAmount
+        });
+        activeReceiptOrder.payment_status = "DP";
+        activeReceiptOrder.dp_amount = dpAmount;
+      } catch (e) {
+        console.warn("Gagal simpan nominal DP:", e);
+      }
+    };
+
+    function updateReceiptPaymentDisplay(total, status, dp) {
+      const dpRow = document.getElementById("receipt-dp-row");
+      const dpPaidEl = document.getElementById("receipt-dp-paid");
+      const balanceLabel = document.getElementById("receipt-balance-label");
+      const balanceAmount = document.getElementById("receipt-balance-amount");
+      const stamp = document.getElementById("receipt-stamp");
+
+      if (status === "DP") {
+        dpRow.classList.remove("hidden");
+        dpPaidEl.innerText = "-Rp" + dp.toLocaleString('id-ID');
+        
+        const remaining = Math.max(0, total - dp);
+        balanceLabel.innerText = "SISA YANG HARUS DIBAYAR:";
+        balanceAmount.innerText = "Rp" + remaining.toLocaleString('id-ID');
+
+        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-amber-600 border-amber-500 bg-amber-50";
+        stamp.innerText = "DP TERBAYAR (BELUM LUNAS)";
+      } else if (status === "PAID") {
+        dpRow.classList.add("hidden");
+        balanceLabel.innerText = "TOTAL TELAH DIBAYAR:";
+        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
+
+        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-emerald-700 border-emerald-600 bg-emerald-50";
+        stamp.innerText = "LUNAS / VALID";
+      } else {
+        // UNPAID (Belum Lunas)
+        dpRow.classList.add("hidden");
+        balanceLabel.innerText = "TOTAL YANG HARUS DIBAYAR:";
+        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
+
+        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-red-600 border-red-500 bg-red-50";
+        stamp.innerText = "BELUM LUNAS / TAGIHAN";
+      }
+    }
 
     window.printReceiptNow = function() {
       const receiptArea = document.getElementById("receipt-print-area");
@@ -955,6 +1108,9 @@
             itemDetails = o.items.map(i => `<li class="font-medium text-gray-800">• <strong>${i.name}</strong> : ${i.qty} pcs (Rp${(i.subtotal || 0).toLocaleString('id-ID')})</li>`).join("");
           }
 
+          const paySt = o.payment_status || "UNPAID";
+          const dpVal = Number(o.dp_amount || 0);
+
           const box = document.createElement("div");
           box.className = "border border-gray-200 rounded-xl p-3 bg-gray-50/60 space-y-2 text-xs";
           box.innerHTML = `
@@ -966,6 +1122,7 @@
               <div class="text-right">
                 <span class="bg-white border border-gray-300 text-gray-700 px-2 py-0.5 rounded font-bold text-[10px]">${o.status}</span>
                 <p class="font-bold text-emerald-700 text-xs mt-1">Rp${Number(o.total_price || 0).toLocaleString('id-ID')}</p>
+                <p class="text-[10px] font-semibold ${getPaymentColorClass(paySt)}">(${getPaymentLabel(paySt, dpVal)})</p>
               </div>
             </div>
 
