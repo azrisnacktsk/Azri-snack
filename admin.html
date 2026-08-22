@@ -21,8 +21,18 @@
     }
     input[type=number] { -moz-appearance: textfield; }
 
-    /* Pengaturan Cetak / Print PDF */
+    /* Pengaturan Cetak: Hilangkan Header/Footer/URL Bawaan Browser */
+    @page {
+      size: auto;
+      margin: 0mm; /* Menghilangkan URL dan header/footer bawaan browser */
+    }
+
     @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
       body * {
         visibility: hidden;
       }
@@ -35,8 +45,10 @@
         top: 0;
         width: 100%;
         margin: 0;
-        padding: 15px;
+        padding: 20px 25px !important;
         background: white !important;
+        box-shadow: none !important;
+        border: none !important;
       }
       .no-print {
         display: none !important;
@@ -355,7 +367,7 @@
         </div>
       </div>
 
-      <!-- Area Lembar Nota (Watermark Transparan Opacity 0.18 Jelas) -->
+      <!-- Area Lembar Nota -->
       <div id="receipt-print-area" class="p-6 overflow-y-auto relative bg-white text-gray-800 text-xs">
         
         <!-- WATERMARK LOGO RESMI TRANSPARAN DI TENGAH -->
@@ -408,7 +420,7 @@
             </table>
           </div>
 
-          <!-- RINCIAN PEMBAYARAN (TOTAL, DP, & SISA PELUNASAN) -->
+          <!-- RINCIAN PEMBAYARAN -->
           <div class="border-t-2 border-gray-800 pt-2.5 space-y-1 text-xs">
             <div class="flex justify-between items-center text-gray-700 font-semibold">
               <span>Total Keseluruhan:</span>
@@ -448,15 +460,14 @@
             <div>
               <p>Hormat Kami (Toko),</p>
               <div class="h-12 flex items-center justify-center">
-                <!-- Stempel Dinamis (Hanya Muncul Jika LUNAS) -->
                 <span id="receipt-stamp" class="hidden text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-emerald-700 border-emerald-600 bg-emerald-50">LUNAS / VALID</span>
               </div>
               <p class="font-bold border-t border-gray-300 pt-1">AZRI SNACK</p>
             </div>
           </div>
 
-          <!-- Catatan Kaki Nota -->
-          <div class="pt-2 text-center text-[9px] text-gray-400 italic">
+          <!-- Catatan Kaki Nota (Bersih Tanpa URL Website) -->
+          <div class="pt-3 text-center text-[9px] text-gray-400 italic border-t border-gray-100">
             <p>Terima kasih atas kepercayaan Anda memesan di AZRI SNACK.</p>
             <p>Kue dibuat fresh dengan bahan pilihan berkualitas & halal.</p>
           </div>
@@ -867,7 +878,7 @@
       }
     };
 
-    // 3. FITUR NOTA STRUK PEMBELIAN (HANYA CAP LUNAS & PETUNJUK BAYAR BCA/QRIS)
+    // 3. FITUR NOTA STRUK PEMBELIAN
     window.openReceiptModal = function(orderId) {
       const order = ordersList.find(o => o.id === orderId);
       if (!order) return;
@@ -988,7 +999,6 @@
       const payGuide = document.getElementById("receipt-payment-guide");
 
       if (status === "PAID") {
-        // LUNAS: Beri CAP LUNAS, Sembunyikan Info QRIS/BCA
         dpRow.classList.add("hidden");
         balanceLabel.innerText = "TOTAL TELAH DIBAYAR:";
         balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
@@ -1000,7 +1010,6 @@
         payGuide.classList.add("hidden");
 
       } else if (status === "DP") {
-        // DP: Tampilkan sisa, TANPA CAP, Tampilkan Info QRIS/BCA
         dpRow.classList.remove("hidden");
         dpPaidEl.innerText = "-Rp" + dp.toLocaleString('id-ID');
         
@@ -1008,17 +1017,16 @@
         balanceLabel.innerText = "SISA YANG HARUS DIBAYAR:";
         balanceAmount.innerText = "Rp" + remaining.toLocaleString('id-ID');
 
-        stamp.classList.add("hidden"); // Tidak ada cap
-        payGuide.classList.remove("hidden"); // Arahkan transfer BCA/QRIS
+        stamp.classList.add("hidden");
+        payGuide.classList.remove("hidden");
 
       } else {
-        // BELUM LUNAS: Total penuh, TANPA CAP, Tampilkan Info QRIS/BCA
         dpRow.classList.add("hidden");
         balanceLabel.innerText = "TOTAL YANG HARUS DIBAYAR:";
         balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
 
-        stamp.classList.add("hidden"); // Tidak ada cap
-        payGuide.classList.remove("hidden"); // Arahkan transfer BCA/QRIS
+        stamp.classList.add("hidden");
+        payGuide.classList.remove("hidden");
       }
     }
 
