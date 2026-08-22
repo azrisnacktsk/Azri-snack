@@ -151,7 +151,7 @@
     </div>
   </section>
 
-  <!-- PEMBERITAHUAN STOK HARI INI & PESANAN PARTAI BANYAK -->
+  <!-- PEMBERITAHUAN STOK HARI INI -->
   <section class="max-w-5xl mx-auto px-4 mt-3">
     <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -214,18 +214,15 @@
     </div>
   </div>
 
-  <!-- Floating Direct WhatsApp Button (Kompatibel WA Biasa & WA Business) -->
+  <!-- Floating Direct WhatsApp Button -->
   <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya-tanya menu.')" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95">
     <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
   </button>
 
-  <!-- ============================================== -->
-  <!-- MODAL 1: DETAIL PRODUK (TOP-UP MODAL)          -->
-  <!-- ============================================== -->
+  <!-- MODAL DETAIL PRODUK -->
   <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
-      <!-- Detail Image Header -->
       <div class="relative w-full h-60 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
         <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
         <button onclick="closeProductDetailModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition">
@@ -235,7 +232,6 @@
         <span id="detail-stock-badge" class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-gray-100">Sisa Stok: 50 pcs</span>
       </div>
 
-      <!-- Detail Body -->
       <div class="p-5 overflow-y-auto space-y-4">
         <div>
           <h3 id="detail-title" class="font-serif font-bold text-xl text-gray-900">Nama Produk</h3>
@@ -261,7 +257,6 @@
         </div>
       </div>
 
-      <!-- Footer Button -->
       <div class="p-4 bg-gray-50 border-t border-gray-100">
         <button id="btn-add-modal-cart" onclick="confirmAddToCartFromModal()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98">
           <i class="fa-solid fa-basket-shopping"></i>
@@ -272,13 +267,10 @@
     </div>
   </div>
 
-  <!-- ============================================== -->
-  <!-- MODAL 2: CHECKOUT & RINCIAN KERANJANG          -->
-  <!-- ============================================== -->
+  <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
   <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
-      <!-- Modal Header -->
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
@@ -291,19 +283,14 @@
         </button>
       </div>
 
-      <!-- Modal Body -->
       <div class="p-5 overflow-y-auto space-y-5">
-        
-        <!-- Cart Items List -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Item Terpilih</h4>
             <span class="text-[10px] text-gray-400">Ketik angka untuk atur porsi</span>
           </div>
 
-          <div id="cart-items-container" class="space-y-2 max-h-52 overflow-y-auto pr-1">
-            <!-- Diisi JavaScript -->
-          </div>
+          <div id="cart-items-container" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
 
           <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
             <span>Total Pembayaran Sementara</span>
@@ -311,7 +298,6 @@
           </div>
         </div>
 
-        <!-- Order Form Customer -->
         <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 pt-2 border-t border-gray-100">
           <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Data Pemesan</h4>
 
@@ -346,7 +332,7 @@
 
           <div id="address-box" class="hidden">
             <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
-            <textarea id="cust-address" rows="2" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
+            <textarea id="cust-address" rows="2" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
           </div>
 
           <div>
@@ -366,11 +352,9 @@
     </div>
   </div>
 
-  <!-- Footer dengan Link Google Maps Resmi -->
+  <!-- Footer -->
   <footer class="max-w-5xl mx-auto px-4 mt-16 text-center text-xs text-gray-500">
     <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/70 shadow-xs space-y-4 text-left sm:text-center">
-      
-      <!-- Brand Title -->
       <div class="flex items-center justify-center gap-2 font-serif font-bold text-gray-900 text-lg">
         <span class="text-xl">🍰</span> AZRI SNACK
       </div>
@@ -379,7 +363,6 @@
         Menyajikan aneka kue basah tradisional dan paket snack box berkualitas untuk memeriahkan setiap acara dan momen istimewa Anda.
       </p>
 
-      <!-- Alamat Toko Lengkap + Tautan Langsung Google Maps -->
       <div class="bg-amber-50/60 border border-amber-100/80 rounded-2xl p-4 max-w-lg mx-auto text-left">
         <div class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
@@ -395,7 +378,6 @@
         </div>
       </div>
 
-      <!-- Jam Operasional & WhatsApp -->
       <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-medium text-gray-600 pt-2 border-t border-gray-100">
         <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-500"></i> Buka: 06.00 - 18.00 WIB</span>
         <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="flex items-center gap-1.5 text-emerald-600 font-semibold hover:underline">
@@ -406,11 +388,11 @@
     <p class="mt-5 text-[11px] text-gray-400">© 2026 AZRI SNACK. All Rights Reserved.</p>
   </footer>
 
-  <!-- Firebase & App Script Module -->
+  <!-- Firebase Module Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
-      getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, increment, serverTimestamp 
+      getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, getDoc, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -433,27 +415,24 @@
     let cart = {};
     let selectedModalProduct = null;
 
-    // Helper Universal WhatsApp Opener (Mendukung WA Standar & WA Business di Android/iOS)
+    // Helper Universal WhatsApp Opener
     window.openUniversalWhatsApp = function(phone, message) {
       const encodedMsg = encodeURIComponent(message);
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       if (isMobile) {
-        // Coba buka skema app langsung
         const appUrl = `whatsapp://send?phone=${phone}&text=${encodedMsg}`;
         const webUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
 
         const startTime = Date.now();
         window.location.href = appUrl;
 
-        // Fallback jika skema native tidak terpancing dalam 1 detik
         setTimeout(() => {
           if (Date.now() - startTime < 1500) {
             window.location.href = webUrl;
           }
         }, 800);
       } else {
-        // Desktop Browser
         window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`, "_blank");
       }
     };
@@ -462,86 +441,32 @@
       openUniversalWhatsApp(WA_STORE_PHONE, msg);
     };
 
-    // Helper Date Key Jam 5 Pagi WIB
-    function getBusinessDateKey() {
-      const now = new Date();
-      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-      const wibDate = new Date(utc + (3600000 * 7));
-      if (wibDate.getHours() < 5) {
-        wibDate.setDate(wibDate.getDate() - 1);
-      }
-      return wibDate.toISOString().split("T")[0];
-    }
-
-    const currentBusinessDate = getBusinessDateKey();
-
-    // 1. Sinkronisasi Logo Real-time
+    // 1. Sync Logo Toko
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.logo_url) {
-          const logoImg = document.getElementById("store-logo-img");
-          const fallback = document.getElementById("store-logo-fallback");
-          logoImg.src = data.logo_url;
-          logoImg.classList.remove("hidden");
-          fallback.classList.add("hidden");
-        }
+      if (docSnap.exists() && docSnap.data().logo_url) {
+        const logoImg = document.getElementById("store-logo-img");
+        const fallback = document.getElementById("store-logo-fallback");
+        logoImg.src = docSnap.data().logo_url;
+        logoImg.classList.remove("hidden");
+        fallback.classList.add("hidden");
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
-    // 2. Sinkronisasi Produk Real-time & Auto Reset Jam 5 Pagi
-    onSnapshot(collection(db, "products"), async (snapshot) => {
+    // 2. Sync Realtime Produk Tanpa Menimpa Data
+    onSnapshot(collection(db, "products"), (snapshot) => {
       allProducts = [];
-      const updatePromises = [];
-
       snapshot.forEach(docSnap => {
-        const p = { id: docSnap.id, ...docSnap.data() };
-        const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
-        
-        if (p.last_stock_date !== currentBusinessDate) {
-          p.stock = quota;
-          p.last_stock_date = currentBusinessDate;
-          p.status = quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK";
-
-          updatePromises.push(updateDoc(doc(db, "products", p.id), {
-            stock: quota,
-            daily_quota: quota,
-            last_stock_date: currentBusinessDate,
-            status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK"
-          }));
-        }
-
-        allProducts.push(p);
+        allProducts.push({ id: docSnap.id, ...docSnap.data() });
       });
-
-      if (updatePromises.length > 0) {
-        try {
-          await Promise.all(updatePromises);
-        } catch (e) {
-          console.warn("Gagal auto reset stok:", e);
-        }
-      }
 
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
     }, (err) => {
       console.warn("Firestore fallback aktif:", err);
-      loadFallbackProducts();
     });
 
-    function loadFallbackProducts() {
-      allProducts = [
-        { id: "1", name: "Pastel", category: "Snack", price: 2500, stock: 50, daily_quota: 50, status: "AVAILABLE", description: "Pastel gurih renyah dengan isian lezat", image_url: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&q=60" },
-        { id: "2", name: "Risol Mayo Keju", category: "Snack", price: 3500, stock: 40, daily_quota: 40, status: "AVAILABLE", description: "Isian telur, smoked beef, keju lumer & saus mayo.", image_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=60" },
-        { id: "3", name: "Lemper Ayam Bakar", category: "Kue Basah", price: 4000, stock: 30, daily_quota: 30, status: "AVAILABLE", description: "Ketan pulen wangi daun pisang isi ayam suwir gurih.", image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60" }
-      ];
-      document.getElementById("loading").classList.add("hidden");
-      document.getElementById("product-grid").classList.remove("hidden");
-      renderFilteredProducts();
-    }
-
-    // 3. Render Produk Grid Card
+    // 3. Render Katalog
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -631,7 +556,7 @@
       });
     }
 
-    // 4. Pop-Up Detail Produk
+    // 4. Modal Detail
     window.openProductDetailModal = function(productId) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
@@ -671,7 +596,7 @@
       let nextVal = currentVal + delta;
       if (nextVal < 1) nextVal = 1;
       if (nextVal > liveStock) {
-        alert(`Maksimal porsi yang tersedia hari ini hanya ${liveStock} pcs. Untuk pesan lebih banyak silakan chat WhatsApp kami.`);
+        alert(`Maksimal porsi yang tersedia hari ini hanya ${liveStock} pcs.`);
         nextVal = liveStock;
       }
 
@@ -701,7 +626,7 @@
       closeProductDetailModal();
     };
 
-    // 5. Logika Keranjang
+    // 5. Keranjang
     window.updateQty = function(productId, delta) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
@@ -759,7 +684,6 @@
       }
     };
 
-    // 6. Update UI Keranjang
     function updateCartUI() {
       const itemKeys = Object.keys(cart);
       const totalJenisKue = itemKeys.length;
@@ -827,7 +751,7 @@
       });
     }
 
-    // 7. Filter & Search Handlers
+    // 6. Filter & Search
     window.filterCategory = function(cat) {
       currentFilter = cat;
       document.querySelectorAll(".cat-btn").forEach(btn => {
@@ -844,7 +768,6 @@
       renderFilteredProducts();
     };
 
-    // 8. Toggles
     window.toggleCartModal = function(show) {
       const modal = document.getElementById("cart-modal");
       if (show) modal.classList.remove("hidden");
@@ -864,7 +787,7 @@
       }
     };
 
-    // 9. Submit Order & Pengalihan Universal ke WhatsApp (Biasa & Business)
+    // 7. Submit Order & Pengurangan Stok Paten Realtime
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
@@ -895,6 +818,7 @@
       btn.disabled = true;
 
       try {
+        // 1. Simpan Invoice Pesanan
         await addDoc(collection(db, "orders"), {
           invoice_no: invoiceNo,
           customer_name: name,
@@ -910,12 +834,19 @@
           created_at: serverTimestamp()
         });
 
-        const stockDeductionPromises = items.map(item => {
-          return updateDoc(doc(db, "products", item.product_id), {
-            stock: increment(-item.qty)
-          });
-        });
-        await Promise.all(stockDeductionPromises);
+        // 2. Potong Stok Nyata di Firestore
+        for (const item of items) {
+          const productRef = doc(db, "products", item.product_id);
+          const pDoc = await getDoc(productRef);
+          if (pDoc.exists()) {
+            const currentStock = Number(pDoc.data().stock || 0);
+            const updatedStock = Math.max(0, currentStock - item.qty);
+            await updateDoc(productRef, {
+              stock: updatedStock,
+              status: updatedStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE"
+            });
+          }
+        }
 
         let itemText = "";
         items.forEach(i => {
@@ -941,7 +872,6 @@
         waMessage += `*TOTAL SEMENTARA:* Rp${grandTotal.toLocaleString('id-ID')}\n\n`;
         waMessage += `_Halo Admin AZRI SNACK, mohon konfirmasi ketersediaan pesanan saya. Terima kasih!_`;
 
-        // Panggil Universal WhatsApp Opener
         openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
 
         cart = {};
@@ -967,7 +897,7 @@
     };
   </script>
 
-  <!-- PWA Service Worker & Install Prompt Logic -->
+  <!-- PWA Service Worker -->
   <script>
     let deferredPrompt;
 
