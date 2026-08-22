@@ -157,7 +157,7 @@
     </div>
   </section>
 
-  <!-- PEMBERITAHUAN STOK HARI INI & PRE-ORDER -->
+  <!-- PEMBERITAHUAN STOK HARI INI & PRE-ORDER BESOK -->
   <section class="max-w-5xl mx-auto px-4 mt-3">
     <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -167,11 +167,11 @@
           </div>
           <div class="text-xs text-gray-700 leading-relaxed">
             <p class="font-bold text-gray-900 flex items-center gap-1.5">
-              <span>Info Stok Siap Saji Hari Ini vs Pre-Order</span>
+              <span>Stok Hari Ini & Pemesanan Hari Besok</span>
               <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
             </p>
             <p class="text-gray-600 mt-0.5">
-              Sisa stok di bawah adalah <strong>stok siap saji untuk hari ini</strong>. Jika memesan untuk <strong>hari besok, lusa, atau acara mendatang</strong>, Anda bebas memesan dalam jumlah berapa pun tanpa mengurangi stok siap saji hari ini.
+              Menu yang <strong>habis hari ini</strong> otomatis berada di urutan bawah, namun <strong>tetap bisa Anda pesan untuk hari besok atau lusa</strong>. Pilih tanggal acara pada saat rincian belanja.
             </p>
           </div>
         </div>
@@ -244,6 +244,15 @@
           <p id="detail-price" class="text-base font-bold text-amber-600 mt-0.5">Rp0</p>
         </div>
 
+        <!-- Banner Khusus Jika Menu Habis Hari Ini -->
+        <div id="detail-preorder-notice" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-3 text-xs text-blue-800 flex items-start gap-2.5">
+          <i class="fa-solid fa-calendar-day text-blue-600 mt-0.5"></i>
+          <div>
+            <p class="font-bold">Stok Siap Saji Hari Ini Habis</p>
+            <p class="text-[11px] text-blue-600 mt-0.5">Menu ini tetap bisa Anda pesan sekarang untuk jadwal acara <strong>besok, lusa, atau hari berikutnya</strong>.</p>
+          </div>
+        </div>
+
         <div>
           <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi Menu</h4>
           <p id="detail-desc" class="text-xs text-gray-600 leading-relaxed bg-amber-50/40 p-3.5 rounded-2xl border border-amber-100/50">Deskripsi lengkap...</p>
@@ -252,7 +261,7 @@
         <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
           <div>
             <span class="text-xs font-semibold text-gray-700 block">Jumlah Pesanan:</span>
-            <span class="text-[10px] text-gray-400">Atur sesuai kebutuhan</span>
+            <span id="detail-order-hint" class="text-[10px] text-gray-400">Atur porsi yang diinginkan</span>
           </div>
           
           <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
@@ -266,7 +275,7 @@
       <div class="p-4 bg-gray-50 border-t border-gray-100">
         <button id="btn-add-modal-cart" onclick="confirmAddToCartFromModal()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98">
           <i class="fa-solid fa-basket-shopping"></i>
-          <span>Tambahkan ke Keranjang</span>
+          <span id="btn-add-modal-text">Tambahkan ke Keranjang</span>
         </button>
       </div>
 
@@ -421,7 +430,7 @@
     let cart = {};
     let selectedModalProduct = null;
 
-    // Helper Tanggal Hari Ini (WIB)
+    // Helper Tanggal Hari Ini & Besok (WIB)
     function getTodayDateWIB() {
       const now = new Date();
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -429,7 +438,14 @@
       return wibDate.toISOString().split("T")[0];
     }
 
-    // Set Default Tanggal Acara di Form ke Hari Ini
+    function getTomorrowDateWIB() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      wibDate.setDate(wibDate.getDate() + 1);
+      return wibDate.toISOString().split("T")[0];
+    }
+
     const todayWIBString = getTodayDateWIB();
     document.getElementById("order-date").value = todayWIBString;
 
@@ -516,7 +532,7 @@
       console.warn("Firestore fallback aktif:", err);
     });
 
-    // 3. Render Katalog
+    // 3. Render Katalog (DENGAN SORTING: Ready di Atas, Habis di Paling Bawah)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -532,6 +548,18 @@
           (p.category && p.category.toLowerCase().includes(query))
         );
       }
+
+      // LOGIKA URUTAN: Produk Ready di atas, Produk Habis otomatis turun ke paling bawah
+      filtered.sort((a, b) => {
+        const stockA = a.stock !== undefined ? Number(a.stock) : 0;
+        const stockB = b.stock !== undefined ? Number(b.stock) : 0;
+        const isSoldOutA = a.status === "OUT_OF_STOCK" || stockA <= 0;
+        const isSoldOutB = b.status === "OUT_OF_STOCK" || stockB <= 0;
+
+        if (isSoldOutA && !isSoldOutB) return 1;  // A habis -> pindah ke bawah
+        if (!isSoldOutA && isSoldOutB) return -1; // B habis -> A tetap di atas
+        return 0;
+      });
 
       document.getElementById("product-count-badge").innerText = `${filtered.length} Menu`;
       const grid = document.getElementById("product-grid");
@@ -557,42 +585,57 @@
         const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
         
         const card = document.createElement("div");
-        card.className = "bg-white rounded-3xl p-3 border border-gray-100/90 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group";
+        card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/60 bg-gray-50/50' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
         
         card.innerHTML = `
-          <div onclick="${isSoldOut ? '' : `openProductDetailModal('${p.id}')`}" class="${isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}">
+          <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
             <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
-              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover ${isSoldOut ? 'grayscale opacity-50' : 'group-hover:scale-105'} transition duration-300" onerror="this.src='${fallbackImg}'">
+              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover ${isSoldOut ? 'grayscale opacity-75' : 'group-hover:scale-105'} transition duration-300" onerror="this.src='${fallbackImg}'">
               
+              <!-- Badge Kategori (Kiri Atas) -->
               <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
                 ${p.category || 'Kue'}
               </span>
 
-              ${!isSoldOut ? `
+              <!-- BADGE HABIS HARI INI DI POJOK KANAN ATAS -->
+              ${isSoldOut ? `
+                <span class="absolute top-2 right-2 bg-red-600/95 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                  Habis Hari Ini
+                </span>
+              ` : `
                 <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
                   Sisa Hari Ini: ${liveStock} pcs
                 </span>
-              ` : ''}
-
-              ${isSoldOut ? `
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <span class="bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md tracking-wider">HABIS HARI INI</span>
-                </div>
-              ` : ''}
+              `}
             </div>
-            <h3 class="font-bold text-xs sm:text-sm line-clamp-1 ${isSoldOut ? 'text-gray-400 line-through' : 'text-gray-900 group-hover:text-amber-600'} transition">${p.name}</h3>
-            <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
+
+            <h3 class="font-bold text-xs sm:text-sm line-clamp-1 text-gray-900 group-hover:text-amber-600 transition">${p.name}</h3>
+            
+            ${isSoldOut ? `
+              <p class="text-blue-600 font-medium text-[10px] line-clamp-1 mt-0.5">
+                <i class="fa-solid fa-calendar-plus text-[9px]"></i> Bisa dipesan untuk besok/lusa
+              </p>
+            ` : `
+              <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
+            `}
           </div>
 
-          <div class="mt-3 pt-2.5 border-t border-gray-50 flex items-center justify-between">
-            <span class="font-bold text-xs sm:text-sm ${isSoldOut ? 'text-gray-400' : 'text-amber-600'}">Rp${Number(p.price).toLocaleString('id-ID')}</span>
+          <div class="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
+            <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
             
             <div id="btn-container-${p.id}">
-              ${isSoldOut ? `
-                <button disabled class="bg-gray-100 text-gray-400 text-[11px] font-semibold px-3 py-1.5 rounded-xl cursor-not-allowed border border-gray-200">
-                  Habis
+              ${isSoldOut ? (inCartQty > 0 ? `
+                <div class="flex items-center bg-blue-50 border border-blue-200 rounded-xl p-0.5">
+                  <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-blue-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                  <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-blue-950 bg-transparent outline-none">
+                  <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+                </div>
+              ` : `
+                <button onclick="updateQty('${p.id}', 1)" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition shadow-2xs">
+                  <i class="fa-solid fa-calendar-plus"></i> Pesan Besok
                 </button>
-              ` : (inCartQty > 0 ? `
+              `) : (inCartQty > 0 ? `
                 <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
                   <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
@@ -610,24 +653,41 @@
       });
     }
 
-    // 4. Modal Detail
+    // 4. Modal Detail Produk
     window.openProductDetailModal = function(productId) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
-      if (prod.status === "OUT_OF_STOCK" || liveStock <= 0) return;
-
       selectedModalProduct = prod;
+      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
+      const isSoldOut = prod.status === "OUT_OF_STOCK" || liveStock <= 0;
       const currentQty = cart[productId]?.qty || 1;
 
       document.getElementById("detail-img").src = prod.image_url || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
       document.getElementById("detail-category").innerText = prod.category || "Menu AZRI SNACK";
-      document.getElementById("detail-stock-badge").innerText = `Sisa Stok Hari Ini: ${liveStock} pcs`;
       document.getElementById("detail-title").innerText = prod.name;
       document.getElementById("detail-price").innerText = "Rp" + Number(prod.price).toLocaleString("id-ID") + " / pcs";
       document.getElementById("detail-desc").innerText = prod.description || "Dibuat dengan bahan baku segar pilihan dan resep tradisional istimewa dari AZRI SNACK.";
       
+      const preorderNotice = document.getElementById("detail-preorder-notice");
+      const stockBadge = document.getElementById("detail-stock-badge");
+      const btnAddText = document.getElementById("btn-add-modal-text");
+      const btnAddModal = document.getElementById("btn-add-modal-cart");
+
+      if (isSoldOut) {
+        preorderNotice.classList.remove("hidden");
+        stockBadge.className = "absolute bottom-3 right-3 bg-red-600 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md";
+        stockBadge.innerText = "Habis Hari Ini";
+        btnAddText.innerText = "Pesan untuk Jadwal Besok / Lusa";
+        btnAddModal.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition active:scale-98";
+      } else {
+        preorderNotice.classList.add("hidden");
+        stockBadge.className = "absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-gray-100";
+        stockBadge.innerText = `Sisa Stok Hari Ini: ${liveStock} pcs`;
+        btnAddText.innerText = "Tambahkan ke Keranjang";
+        btnAddModal.className = "w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98";
+      }
+
       const qtyInput = document.getElementById("detail-qty-input");
       qtyInput.value = currentQty;
 
@@ -722,6 +782,27 @@
       const badge = document.getElementById("cart-badge");
       const stickyBar = document.getElementById("sticky-cart");
 
+      // Cek apakah ada menu yang habis hari ini di dalam keranjang
+      let hasSoldOutTodayItem = false;
+      Object.values(cart).forEach(item => {
+        const liveProd = allProducts.find(p => p.id === item.id);
+        const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
+        if (liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0)) {
+          hasSoldOutTodayItem = true;
+        }
+      });
+
+      // Jika ada kue yang habis hari ini, otomatis sarankan tanggal acara minimal adalah BESOK
+      const dateInput = document.getElementById("order-date");
+      if (hasSoldOutTodayItem) {
+        if (dateInput.value === getTodayDateWIB()) {
+          dateInput.value = getTomorrowDateWIB();
+        }
+        dateInput.min = getTomorrowDateWIB();
+      } else {
+        dateInput.min = getTodayDateWIB();
+      }
+
       if (totalJenisKue > 0) {
         badge.innerText = totalJenisKue;
         badge.classList.remove("hidden");
@@ -751,11 +832,18 @@
       }
 
       items.forEach(item => {
+        const liveProd = allProducts.find(p => p.id === item.id);
+        const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
+        const isSoldOutToday = liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0);
+
         const row = document.createElement("div");
         row.className = "flex items-center justify-between bg-gray-50/80 p-2.5 rounded-2xl text-xs border border-gray-100";
         row.innerHTML = `
           <div class="flex-1 pr-2">
-            <p class="font-bold text-gray-800 line-clamp-1">${item.name}</p>
+            <div class="flex items-center gap-1.5">
+              <p class="font-bold text-gray-800 line-clamp-1">${item.name}</p>
+              ${isSoldOutToday ? '<span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded font-semibold">Pre-Order Besok</span>' : ''}
+            </div>
             <p class="text-gray-400 text-[11px]">Rp${item.price.toLocaleString('id-ID')} / pcs</p>
           </div>
 
@@ -819,7 +907,7 @@
       }
     };
 
-    // 7. Submit Order (HANYA POTONG STOK JIKA PESANAN UNTUK HARI INI)
+    // 7. Submit Order
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
@@ -850,7 +938,6 @@
       btn.disabled = true;
 
       try {
-        // 1. Catat Data Pesanan ke Firestore
         await addDoc(collection(db, "orders"), {
           invoice_no: invoiceNo,
           customer_name: name,
@@ -866,7 +953,7 @@
           created_at: serverTimestamp()
         });
 
-        // 2. CEK TANGGAL: Potong stok HANYA jika tanggal acara adalah HARI INI
+        // Potong stok HANYA jika tanggal acara adalah HARI INI
         const isOrderForToday = (date === getTodayDateWIB());
 
         if (isOrderForToday) {
@@ -884,7 +971,6 @@
           }
         }
 
-        // 3. Susun Teks WhatsApp
         let itemText = "";
         items.forEach(i => {
           itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
@@ -896,7 +982,7 @@
         waMessage += `*Nama:* ${name}\n`;
         waMessage += `*No. HP:* ${phone}\n`;
         waMessage += `*Tgl Acara:* ${date} (Pukul ${time})\n`;
-        waMessage += `*Tipe Pesanan:* ${isOrderForToday ? 'Siap Saji Hari Ini' : 'Pre-Order / Acara Mendatang'}\n`;
+        waMessage += `*Tipe Pesanan:* ${isOrderForToday ? 'Siap Saji Hari Ini' : 'Pre-Order / Jadwal Mendatang'}\n`;
         waMessage += `*Pengambilan:* ${deliveryType}\n`;
         if (deliveryType === "Diantar / Delivery") {
           waMessage += `*Alamat:* ${address}\n`;
