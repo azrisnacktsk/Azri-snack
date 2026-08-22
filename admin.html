@@ -20,6 +20,27 @@
       margin: 0; 
     }
     input[type=number] { -moz-appearance: textfield; }
+
+    /* Pengaturan Cetak / Print PDF */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800 min-h-screen">
@@ -49,7 +70,7 @@
   <div id="dashboard-screen" class="hidden flex flex-col min-h-screen">
     
     <!-- Top Navbar -->
-    <header class="bg-white shadow-xs sticky top-0 z-30 border-b border-gray-200">
+    <header class="bg-white shadow-xs sticky top-0 z-30 border-b border-gray-200 no-print">
       <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
@@ -100,13 +121,14 @@
 
       <!-- ================= TAB 1: DATA PESANAN ================= -->
       <section id="view-orders" class="tab-view space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 no-print">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Daftar Pesanan Masuk</h2>
-            <p class="text-xs text-gray-400">Pantau pesanan berdasarkan status dan filter tanggal kalender</p>
+            <p class="text-xs text-gray-400">Pantau pesanan atau cetak lembar belanja harian</p>
           </div>
           
           <div class="flex flex-wrap items-center gap-2">
+            <!-- Filter Tanggal -->
             <div class="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5">
               <i class="fa-solid fa-calendar-days text-amber-500 text-xs"></i>
               <input type="date" id="filter-order-date" onchange="renderOrders()" class="text-xs bg-transparent outline-none font-medium text-gray-700">
@@ -115,24 +137,31 @@
               </button>
             </div>
 
+            <!-- Filter Status -->
             <select id="filter-order-status" onchange="renderOrders()" class="text-xs bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 outline-none font-medium text-gray-700">
               <option value="ALL">Semua Status</option>
-              <option value="PENDING">Menunggu Konfirmasi (Pending)</option>
-              <option value="PROCESSING">Sedang Diproses</option>
+              <option value="PENDING">Menunggu (Pending)</option>
+              <option value="PROCESSING">Diproses</option>
               <option value="READY">Siap Diambil/Kirim</option>
               <option value="COMPLETED">Selesai</option>
               <option value="CANCELLED">Dibatalkan</option>
             </select>
+
+            <!-- Tombol Download / Cetak Rekap Harian -->
+            <button onclick="openDailySummaryModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition active:scale-95">
+              <i class="fa-solid fa-file-pdf"></i>
+              <span>Download / Cetak Rekap Harian</span>
+            </button>
           </div>
         </div>
 
-        <div id="orders-container" class="space-y-3">
+        <div id="orders-container" class="space-y-3 no-print">
           <!-- Diisi realtime via JavaScript -->
         </div>
       </section>
 
       <!-- ================= TAB 2: MANAJEMEN PRODUK & KUOTA STOK HARIAN ================= -->
-      <section id="view-products" class="tab-view hidden space-y-4">
+      <section id="view-products" class="tab-view hidden space-y-4 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Katalog Menu & Kuota Harian (Pukul 05.00 WIB)</h2>
@@ -174,7 +203,7 @@
       </section>
 
       <!-- ================= TAB 3: CATATAN KEUANGAN ================= -->
-      <section id="view-finance" class="tab-view hidden space-y-5">
+      <section id="view-finance" class="tab-view hidden space-y-5 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Laporan & Rekapitulasi Keuangan</h2>
@@ -243,7 +272,7 @@
       </section>
 
       <!-- ================= TAB 4: PENGATURAN TOKO & SANDI ================= -->
-      <section id="view-settings" class="tab-view hidden space-y-5 max-w-xl mx-auto">
+      <section id="view-settings" class="tab-view hidden space-y-5 max-w-xl mx-auto no-print">
         <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Ganti Logo Toko AZRI SNACK</h3>
@@ -291,8 +320,95 @@
     </main>
   </div>
 
+  <!-- ================= MODAL RANGKUMAN PESANAN & BELANJA HARIAN ================= -->
+  <div id="summary-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50 no-print">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-clipboard-list"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900 text-sm">Rangkuman Pesanan & Belanja Harian</h3>
+            <p class="text-[11px] text-gray-400">Gunakan untuk daftar belanja bahan & produksi dapur</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+            <i class="fa-solid fa-print"></i>
+            <span>Cetak / Simpan PDF</span>
+          </button>
+          <button onclick="closeDailySummaryModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Area yang Dicetak / Diekspor -->
+      <div id="print-area" class="p-6 overflow-y-auto space-y-6 text-gray-800 text-xs">
+        
+        <!-- Header Cetak -->
+        <div class="border-b-2 border-amber-500 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div>
+            <h1 class="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+              <span>🍰 AZRI SNACK</span>
+            </h1>
+            <p class="text-gray-500 text-xs mt-0.5">Lembar Rekap Produksi Dapur & Pesanan Pelanggan</p>
+          </div>
+          <div class="text-left sm:text-right bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+            <p class="font-bold text-amber-900 text-sm" id="summary-date-title">Hari, Tanggal Bulan Tahun</p>
+            <p class="text-[10px] text-gray-500 mt-0.5" id="summary-generated-time">Dibuat: -</p>
+          </div>
+        </div>
+
+        <!-- 1. TABEL TOTAL KUE YANG HARUS DIBUAT/DIBELANJAKAN -->
+        <div class="space-y-2">
+          <h2 class="font-bold text-gray-900 text-sm flex items-center gap-1.5 text-amber-800">
+            <i class="fa-solid fa-cart-shopping text-xs"></i>
+            <span>1. TOTAL KUE YANG HARUS DISIAPKAN / DIBELANJAKAN:</span>
+          </h2>
+          <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xs">
+            <table class="w-full text-left">
+              <thead class="bg-amber-100/60 text-amber-950 font-bold border-b border-gray-200">
+                <tr>
+                  <th class="p-2.5">No</th>
+                  <th class="p-2.5">Nama Menu Kue</th>
+                  <th class="p-2.5 text-center">Total Kuantitas (Pcs)</th>
+                  <th class="p-2.5 text-right">Status Kesiapan Dapur</th>
+                </tr>
+              </thead>
+              <tbody id="summary-items-table" class="divide-y divide-gray-100">
+                <!-- Diisi via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2. DAFTAR RINCIAN PESANAN ATAS NAMA PELANGGAN -->
+        <div class="space-y-3 pt-2">
+          <h2 class="font-bold text-gray-900 text-sm flex items-center gap-1.5 text-amber-800">
+            <i class="fa-solid fa-users text-xs"></i>
+            <span>2. RINCIAN PESANAN PELANGGAN:</span>
+          </h2>
+          <div id="summary-orders-list" class="space-y-3">
+            <!-- Diisi via JS -->
+          </div>
+        </div>
+
+        <!-- Catatan Kaki Cetak -->
+        <div class="pt-4 border-t border-gray-200 flex justify-between items-center text-[10px] text-gray-400 italic">
+          <p>AZRI SNACK - Tebet, Jakarta Selatan (WhatsApp: 0858-9202-2079)</p>
+          <p>Halaman Rekapitulasi Internal Toko</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL TAMBAH / EDIT PRODUK ================= -->
-  <div id="product-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div id="product-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <h3 id="product-modal-title" class="font-bold text-gray-900 text-sm">Tambah Produk Baru</h3>
@@ -401,7 +517,11 @@
     }
 
     const currentBusinessDate = getBusinessDateKey();
-    document.getElementById("exp-date").value = new Date().toISOString().split("T")[0];
+    
+    // Set default filter tanggal ke hari ini
+    const todayDefault = new Date().toISOString().split("T")[0];
+    document.getElementById("filter-order-date").value = todayDefault;
+    document.getElementById("exp-date").value = todayDefault;
 
     // 1. Inisialisasi Auth PIN
     onSnapshot(doc(db, "settings", "admin_auth"), (docSnap) => {
@@ -503,7 +623,7 @@
         container.innerHTML = `
           <div class="bg-white p-8 rounded-2xl text-center text-xs text-gray-400 border border-gray-200">
             <i class="fa-solid fa-calendar-xmark text-2xl text-gray-300 mb-2"></i>
-            <p>Tidak ada data pesanan.</p>
+            <p>Tidak ada data pesanan ${filterDate ? `pada tanggal ${filterDate}` : ''}.</p>
           </div>
         `;
         return;
@@ -585,7 +705,126 @@
       }
     };
 
-    // 3. Render Produk & Pengaturan Kuota Harian
+    // 3. FITUR MODAL RANGKUMAN BELANJA & PESANAN HARIAN
+    window.openDailySummaryModal = function() {
+      let targetDate = document.getElementById("filter-order-date").value;
+      if (!targetDate) {
+        targetDate = new Date().toISOString().split("T")[0];
+      }
+
+      // Format Tanggal Bahasa Indonesia Lengkap
+      const dateObj = new Date(targetDate);
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDateString = dateObj.toLocaleDateString('id-ID', options);
+
+      document.getElementById("summary-date-title").innerText = formattedDateString;
+      document.getElementById("summary-generated-time").innerText = "Dicetak pada: " + new Date().toLocaleString('id-ID');
+
+      // Filter pesanan yang tidak dibatalkan pada tanggal ini
+      const dailyOrders = ordersList.filter(o => o.event_date === targetDate && o.status !== 'CANCELLED');
+
+      // 1. Akumulasi Total Item / Belanjaan
+      const aggregatedItems = {};
+      dailyOrders.forEach(order => {
+        if (order.items && Array.isArray(order.items)) {
+          order.items.forEach(item => {
+            if (!aggregatedItems[item.name]) {
+              aggregatedItems[item.name] = 0;
+            }
+            aggregatedItems[item.name] += Number(item.qty || 0);
+          });
+        }
+      });
+
+      const itemsTableBody = document.getElementById("summary-items-table");
+      itemsTableBody.innerHTML = "";
+
+      const itemNames = Object.keys(aggregatedItems);
+      if (itemNames.length === 0) {
+        itemsTableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Tidak ada pesanan aktif pada tanggal ini.</td></tr>`;
+      } else {
+        let no = 1;
+        let totalPcsSemua = 0;
+        itemNames.forEach(name => {
+          const qty = aggregatedItems[name];
+          totalPcsSemua += qty;
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-gray-50/50";
+          tr.innerHTML = `
+            <td class="p-2.5 font-bold text-gray-500">${no++}</td>
+            <td class="p-2.5 font-bold text-gray-900 text-sm">${name}</td>
+            <td class="p-2.5 text-center font-bold text-base text-amber-700 bg-amber-50/40">${qty} pcs</td>
+            <td class="p-2.5 text-right"><span class="border border-gray-300 px-3 py-1 rounded-md text-[10px] text-gray-400 font-mono">[  ] Siap</span></td>
+          `;
+          itemsTableBody.appendChild(tr);
+        });
+
+        // Baris Total Semua Kue
+        const trTotal = document.createElement("tr");
+        trTotal.className = "bg-gray-50 font-bold border-t-2 border-gray-300";
+        trTotal.innerHTML = `
+          <td colspan="2" class="p-2.5 text-right uppercase">TOTAL KESELURUHAN KUE:</td>
+          <td class="p-2.5 text-center text-base text-emerald-700">${totalPcsSemua} pcs</td>
+          <td></td>
+        `;
+        itemsTableBody.appendChild(trTotal);
+      }
+
+      // 2. Daftar Pesanan Pelanggan Lengkap
+      const ordersListContainer = document.getElementById("summary-orders-list");
+      ordersListContainer.innerHTML = "";
+
+      if (dailyOrders.length === 0) {
+        ordersListContainer.innerHTML = `<p class="text-gray-400 text-center py-4">Belum ada data pesanan masuk.</p>`;
+      } else {
+        dailyOrders.forEach((o, index) => {
+          let itemDetails = "";
+          if (o.items && Array.isArray(o.items)) {
+            itemDetails = o.items.map(i => `<li class="font-medium text-gray-800">• <strong>${i.name}</strong> : ${i.qty} pcs (Rp${(i.subtotal || 0).toLocaleString('id-ID')})</li>`).join("");
+          }
+
+          const box = document.createElement("div");
+          box.className = "border border-gray-200 rounded-xl p-3 bg-gray-50/60 space-y-2 text-xs";
+          box.innerHTML = `
+            <div class="flex justify-between items-start border-b border-gray-200 pb-2">
+              <div>
+                <span class="font-bold text-amber-700 text-xs">#${o.invoice_no || o.id}</span>
+                <h3 class="font-bold text-sm text-gray-900">${index + 1}. ${o.customer_name} <span class="font-normal text-gray-500">(${o.customer_phone})</span></h3>
+              </div>
+              <div class="text-right">
+                <span class="bg-white border border-gray-300 text-gray-700 px-2 py-0.5 rounded font-bold text-[10px]">${o.status}</span>
+                <p class="font-bold text-emerald-700 text-xs mt-1">Rp${Number(o.total_price || 0).toLocaleString('id-ID')}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-gray-600 pt-1">
+              <div>
+                <p><strong>Jam Diambil/Kirim:</strong> ${o.event_time || 'Bebas'}</p>
+                <p><strong>Metode:</strong> ${o.delivery_type || 'Ambil Sendiri'}</p>
+                ${o.delivery_address && o.delivery_address !== '-' ? `<p><strong>Alamat:</strong> ${o.delivery_address}</p>` : ''}
+              </div>
+              <div>
+                <p><strong>Catatan Khusus:</strong> ${o.notes && o.notes !== '-' ? o.notes : 'Tidak ada catatan'}</p>
+              </div>
+            </div>
+
+            <div class="bg-white p-2.5 rounded-lg border border-gray-200 mt-2">
+              <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Menu Pesanan:</p>
+              <ul class="space-y-0.5 text-xs">${itemDetails}</ul>
+            </div>
+          `;
+          ordersListContainer.appendChild(box);
+        });
+      }
+
+      document.getElementById("summary-modal").classList.remove("hidden");
+    };
+
+    window.closeDailySummaryModal = function() {
+      document.getElementById("summary-modal").classList.add("hidden");
+    };
+
+    // 4. Render Produk & Kuota Harian
     window.renderProductsTable = function() {
       const tbody = document.getElementById("products-table-body");
       tbody.innerHTML = "";
@@ -614,12 +853,10 @@
           <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-medium text-[10px]">${p.category || 'Kue'}</span></td>
           <td class="p-3.5 font-bold text-amber-600">Rp${Number(p.price || 0).toLocaleString('id-ID')}</td>
           
-          <!-- Kuota Harian -->
           <td class="p-3.5 text-center">
             <span class="bg-amber-50 text-amber-800 font-bold px-2.5 py-1 rounded-lg border border-amber-200">${quota} pcs/hari</span>
           </td>
 
-          <!-- Sisa Stok Realtime Hari Ini -->
           <td class="p-3.5 text-center">
             <div class="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
               <button onclick="quickChangeStock('${p.id}', -5)" class="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs text-gray-600 shadow-2xs">-5</button>
@@ -628,14 +865,12 @@
             </div>
           </td>
 
-          <!-- Status -->
           <td class="p-3.5 text-center">
             <button onclick="toggleProductStock('${p.id}', '${p.status || 'AVAILABLE'}')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition ${isOutOfStock ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'}">
               ${isOutOfStock ? '<i class="fa-solid fa-ban mr-1"></i> Habis' : '<i class="fa-solid fa-check mr-1"></i> Ready'}
             </button>
           </td>
 
-          <!-- Aksi Edit, Reset & Hapus -->
           <td class="p-3.5 text-center">
             <div class="flex items-center justify-center gap-1.5">
               <button onclick="refillSingleProductStock('${p.id}')" class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center" title="Refill ke Kuota Harian Penuh">
@@ -732,7 +967,7 @@
       }
     };
 
-    // 4. Modal Tambah / Edit Produk
+    // 5. Modal Tambah / Edit Produk
     window.openProductModal = function() {
       document.getElementById("prod-edit-id").value = "";
       document.getElementById("prod-name").value = "";
@@ -863,7 +1098,7 @@
       }
     };
 
-    // 5. Laporan Keuangan
+    // 6. Laporan Keuangan
     window.calculateFinance = function() {
       const filterDate = document.getElementById("filter-finance-date").value;
       const filterInfo = document.getElementById("finance-filter-info");
@@ -950,7 +1185,7 @@
       }
     };
 
-    // 6. Pengaturan Logo & Ganti Sandi PIN
+    // 7. Pengaturan Logo & Ganti PIN
     window.handleLogoUpload = function(event) {
       const file = event.target.files[0];
       if (!file) return;
