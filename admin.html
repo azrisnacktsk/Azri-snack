@@ -21,7 +21,7 @@
     }
     input[type=number] { -moz-appearance: textfield; }
 
-    /* Pengaturan Cetak / Print PDF untuk Nota & Rekap */
+    /* Pengaturan Cetak / Print PDF */
     @media print {
       body * {
         visibility: hidden;
@@ -125,11 +125,10 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 no-print">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Daftar Pesanan Masuk</h2>
-            <p class="text-xs text-gray-400">Kelola status pesanan, pembayaran DP/Lunas, cetak nota struk, atau rekap harian</p>
+            <p class="text-xs text-gray-400">Kelola status pesanan, pembayaran DP/Lunas, cetak nota struk resmi, atau rekap harian</p>
           </div>
           
           <div class="flex flex-wrap items-center gap-2">
-            <!-- Filter Tanggal -->
             <div class="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5">
               <i class="fa-solid fa-calendar-days text-amber-500 text-xs"></i>
               <input type="date" id="filter-order-date" onchange="renderOrders()" class="text-xs bg-transparent outline-none font-medium text-gray-700">
@@ -138,7 +137,6 @@
               </button>
             </div>
 
-            <!-- Filter Status -->
             <select id="filter-order-status" onchange="renderOrders()" class="text-xs bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 outline-none font-medium text-gray-700">
               <option value="ALL">Semua Status</option>
               <option value="PENDING">Menunggu (Pending)</option>
@@ -148,7 +146,6 @@
               <option value="CANCELLED">Dibatalkan</option>
             </select>
 
-            <!-- Tombol Download / Cetak Rekap Harian -->
             <button onclick="openDailySummaryModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition active:scale-95">
               <i class="fa-solid fa-clipboard-list"></i>
               <span>Rekap Belanja Harian</span>
@@ -156,9 +153,7 @@
           </div>
         </div>
 
-        <div id="orders-container" class="space-y-3 no-print">
-          <!-- Diisi realtime via JavaScript -->
-        </div>
+        <div id="orders-container" class="space-y-3 no-print"></div>
       </section>
 
       <!-- ================= TAB 2: MANAJEMEN PRODUK & KUOTA STOK HARIAN ================= -->
@@ -180,7 +175,6 @@
           </div>
         </div>
 
-        <!-- Product Table -->
         <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-gray-600">
@@ -195,9 +189,7 @@
                   <th class="p-3.5 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody id="products-table-body" class="divide-y divide-gray-100">
-                <!-- Diisi via JavaScript -->
-              </tbody>
+              <tbody id="products-table-body" class="divide-y divide-gray-100"></tbody>
             </table>
           </div>
         </div>
@@ -265,9 +257,7 @@
 
           <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-xs md:col-span-2">
             <h3 class="font-bold text-gray-900 text-sm mb-3">Riwayat Pengeluaran Operasional</h3>
-            <div id="expense-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-              <!-- Diisi via JS -->
-            </div>
+            <div id="expense-list" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
           </div>
         </div>
       </section>
@@ -321,7 +311,7 @@
     </main>
   </div>
 
-  <!-- ================= MODAL 1: CETAK STRUK / NOTA PESANAN (WATERMARK JELAS & DP/LUNAS) ================= -->
+  <!-- ================= MODAL 1: CETAK STRUK / NOTA PESANAN RESMI ================= -->
   <div id="receipt-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
       
@@ -368,7 +358,7 @@
       <!-- Area Lembar Nota (Watermark Transparan Opacity 0.18 Jelas) -->
       <div id="receipt-print-area" class="p-6 overflow-y-auto relative bg-white text-gray-800 text-xs">
         
-        <!-- WATERMARK LOGO RESMI TRANSPARAN DI TENGAH (LEBIH JELAS) -->
+        <!-- WATERMARK LOGO RESMI TRANSPARAN DI TENGAH -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
           <img id="receipt-watermark-img" src="./logo.png" alt="Watermark" class="w-72 h-72 object-contain opacity-[0.18]" onerror="this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60'">
         </div>
@@ -414,9 +404,7 @@
                   <th class="py-1.5 text-right">Subtotal</th>
                 </tr>
               </thead>
-              <tbody id="receipt-items-body" class="divide-y divide-gray-100">
-                <!-- Diisi via JS -->
-              </tbody>
+              <tbody id="receipt-items-body" class="divide-y divide-gray-100"></tbody>
             </table>
           </div>
 
@@ -427,7 +415,7 @@
               <span id="receipt-gross-total">Rp0</span>
             </div>
 
-            <!-- Baris DP (Tampil jika memilih DP) -->
+            <!-- Baris DP (Hanya tampil jika ada DP) -->
             <div id="receipt-dp-row" class="hidden flex justify-between items-center text-emerald-700 font-semibold">
               <span>Uang Muka (DP Terbayar):</span>
               <span id="receipt-dp-paid">-Rp0</span>
@@ -440,8 +428,18 @@
             </div>
           </div>
 
-          <!-- Tanda Tangan / Stempel Status Pembayaran -->
-          <div class="pt-5 grid grid-cols-2 gap-4 text-center text-[11px] text-gray-600">
+          <!-- KOTAK PETUNJUK PEMBAYARAN QRIS & BCA (Hanya muncul jika Belum Lunas / DP) -->
+          <div id="receipt-payment-guide" class="hidden bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-[10px] text-gray-600 leading-relaxed">
+            <p class="font-bold text-gray-800 flex items-center gap-1 mb-1">
+              <i class="fa-solid fa-credit-card text-amber-600"></i>
+              <span>Petunjuk Pembayaran Resmi AZRI SNACK:</span>
+            </p>
+            <p>• <strong>Transfer Bank BCA / QRIS:</strong> Silakan hubungi WhatsApp Toko untuk konfirmasi nomor rekening atau scan QRIS.</p>
+            <p>• <strong>Konfirmasi Bukti Transfer:</strong> Kirim ke WA <strong>0858-9202-2079</strong></p>
+          </div>
+
+          <!-- Tanda Tangan & Cap (Hanya Muncul Cap Jika LUNAS) -->
+          <div class="pt-4 grid grid-cols-2 gap-4 text-center text-[11px] text-gray-600">
             <div>
               <p>Tanda Terima Pelanggan,</p>
               <div class="h-12"></div>
@@ -450,8 +448,8 @@
             <div>
               <p>Hormat Kami (Toko),</p>
               <div class="h-12 flex items-center justify-center">
-                <!-- Stempel Dinamis Sesuai Status Pembayaran -->
-                <span id="receipt-stamp" class="text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase">LUNAS / VALID</span>
+                <!-- Stempel Dinamis (Hanya Muncul Jika LUNAS) -->
+                <span id="receipt-stamp" class="hidden text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-emerald-700 border-emerald-600 bg-emerald-50">LUNAS / VALID</span>
               </div>
               <p class="font-bold border-t border-gray-300 pt-1">AZRI SNACK</p>
             </div>
@@ -524,9 +522,7 @@
                   <th class="p-2.5 text-right">Status Kesiapan Dapur</th>
                 </tr>
               </thead>
-              <tbody id="summary-items-table" class="divide-y divide-gray-100">
-                <!-- Diisi via JS -->
-              </tbody>
+              <tbody id="summary-items-table" class="divide-y divide-gray-100"></tbody>
             </table>
           </div>
         </div>
@@ -536,9 +532,7 @@
             <i class="fa-solid fa-users text-xs"></i>
             <span>2. RINCIAN PESANAN PELANGGAN:</span>
           </h2>
-          <div id="summary-orders-list" class="space-y-3">
-            <!-- Diisi via JS -->
-          </div>
+          <div id="summary-orders-list" class="space-y-3"></div>
         </div>
 
         <div class="pt-4 border-t border-gray-200 flex justify-between items-center text-[10px] text-gray-400 italic">
@@ -795,13 +789,11 @@
             </div>
             
             <div class="flex items-center gap-1.5 flex-wrap">
-              <!-- Tombol Cetak / Download Struk Nota Satuan -->
               <button onclick="openReceiptModal('${o.id}')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1 transition active:scale-95" title="Cetak Nota / Struk Pembelian">
                 <i class="fa-solid fa-print text-amber-600"></i>
                 <span>Cetak Nota</span>
               </button>
 
-              <!-- Status Pesanan -->
               <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-gray-200 outline-none ${getStatusColorClass(o.status)}">
                 <option value="PENDING" ${o.status === 'PENDING' ? 'selected' : ''}>Menunggu (Pending)</option>
                 <option value="PROCESSING" ${o.status === 'PROCESSING' ? 'selected' : ''}>Diproses</option>
@@ -875,7 +867,7 @@
       }
     };
 
-    // 3. FITUR NOTA STRUK PEMBELIAN DENGAN WATERMARK & PERHITUNGAN DP/LUNAS
+    // 3. FITUR NOTA STRUK PEMBELIAN (HANYA CAP LUNAS & PETUNJUK BAYAR BCA/QRIS)
     window.openReceiptModal = function(orderId) {
       const order = ordersList.find(o => o.id === orderId);
       if (!order) return;
@@ -896,7 +888,6 @@
       document.getElementById("receipt-notes").innerText = noteFull;
       document.getElementById("receipt-sign-customer").innerText = `( ${order.customer_name || 'Pelanggan'} )`;
 
-      // Render Item Table
       const tbody = document.getElementById("receipt-items-body");
       tbody.innerHTML = "";
 
@@ -919,7 +910,6 @@
       const totalVal = order.total_price ? Number(order.total_price) : grandTotal;
       document.getElementById("receipt-gross-total").innerText = "Rp" + totalVal.toLocaleString('id-ID');
 
-      // Set Input Controls di Modal
       const paymentStatus = order.payment_status || "UNPAID";
       const dpAmount = Number(order.dp_amount || 0);
 
@@ -956,7 +946,6 @@
 
       updateReceiptPaymentDisplay(totalVal, status, dpAmount);
 
-      // Simpan perubahan ke Firestore secara otomatis
       try {
         await updateDoc(doc(db, "orders", activeReceiptOrder.id), {
           payment_status: status,
@@ -996,8 +985,22 @@
       const balanceLabel = document.getElementById("receipt-balance-label");
       const balanceAmount = document.getElementById("receipt-balance-amount");
       const stamp = document.getElementById("receipt-stamp");
+      const payGuide = document.getElementById("receipt-payment-guide");
 
-      if (status === "DP") {
+      if (status === "PAID") {
+        // LUNAS: Beri CAP LUNAS, Sembunyikan Info QRIS/BCA
+        dpRow.classList.add("hidden");
+        balanceLabel.innerText = "TOTAL TELAH DIBAYAR:";
+        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
+
+        stamp.classList.remove("hidden");
+        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-emerald-700 border-emerald-600 bg-emerald-50";
+        stamp.innerText = "LUNAS / VALID";
+
+        payGuide.classList.add("hidden");
+
+      } else if (status === "DP") {
+        // DP: Tampilkan sisa, TANPA CAP, Tampilkan Info QRIS/BCA
         dpRow.classList.remove("hidden");
         dpPaidEl.innerText = "-Rp" + dp.toLocaleString('id-ID');
         
@@ -1005,23 +1008,17 @@
         balanceLabel.innerText = "SISA YANG HARUS DIBAYAR:";
         balanceAmount.innerText = "Rp" + remaining.toLocaleString('id-ID');
 
-        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-amber-600 border-amber-500 bg-amber-50";
-        stamp.innerText = "DP TERBAYAR (BELUM LUNAS)";
-      } else if (status === "PAID") {
-        dpRow.classList.add("hidden");
-        balanceLabel.innerText = "TOTAL TELAH DIBAYAR:";
-        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
+        stamp.classList.add("hidden"); // Tidak ada cap
+        payGuide.classList.remove("hidden"); // Arahkan transfer BCA/QRIS
 
-        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-emerald-700 border-emerald-600 bg-emerald-50";
-        stamp.innerText = "LUNAS / VALID";
       } else {
-        // UNPAID (Belum Lunas)
+        // BELUM LUNAS: Total penuh, TANPA CAP, Tampilkan Info QRIS/BCA
         dpRow.classList.add("hidden");
         balanceLabel.innerText = "TOTAL YANG HARUS DIBAYAR:";
         balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
 
-        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-red-600 border-red-500 bg-red-50";
-        stamp.innerText = "BELUM LUNAS / TAGIHAN";
+        stamp.classList.add("hidden"); // Tidak ada cap
+        payGuide.classList.remove("hidden"); // Arahkan transfer BCA/QRIS
       }
     }
 
