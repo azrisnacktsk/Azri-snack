@@ -97,10 +97,10 @@
 
       <!-- Kontak Cepat & Keranjang Belanja -->
       <div class="flex items-center gap-2.5">
-        <a href="https://wa.me/6285892022079" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3.5 py-1.5 rounded-full text-xs font-semibold hover:bg-emerald-100 transition border border-emerald-200/60 shadow-2xs">
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin bertanya tentang menu kue.')" class="hidden sm:inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3.5 py-1.5 rounded-full text-xs font-semibold hover:bg-emerald-100 transition border border-emerald-200/60 shadow-2xs">
           <i class="fa-brands fa-whatsapp text-sm"></i>
           <span>0858-9202-2079</span>
-        </a>
+        </button>
         
         <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none">
           <i class="fa-solid fa-basket-shopping text-lg"></i>
@@ -143,9 +143,9 @@
             <i class="fa-solid fa-clock text-amber-200 text-xs"></i>
             <span>Buka Setiap Hari: 06.00 - 18.00</span>
           </div>
-          <a href="https://wa.me/6285892022079" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-amber-100 hover:text-white font-medium transition underline">
+          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin konsultasi pesanan kue acara.')" class="inline-flex items-center gap-1.5 text-xs text-amber-100 hover:text-white font-medium transition underline">
             <i class="fa-brands fa-whatsapp text-sm"></i> Chat WA Admin Toko
-          </a>
+          </button>
         </div>
       </div>
     </div>
@@ -169,10 +169,10 @@
             </p>
           </div>
         </div>
-        <a href="https://wa.me/6285892022079?text=Halo%20Admin%20AZRI%20SNACK,%20saya%20mau%20tanya%20pesanan%20kue%20dalam%20jumlah%20banyak%20untuk%20acara" target="_blank" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3.5 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap self-start sm:self-center">
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3.5 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap self-start sm:self-center">
           <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
           <span>Konsultasi Acara via WA</span>
-        </a>
+        </button>
       </div>
     </div>
   </section>
@@ -214,10 +214,10 @@
     </div>
   </div>
 
-  <!-- Floating Direct WhatsApp Button -->
-  <a href="https://wa.me/6285892022079" target="_blank" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95">
+  <!-- Floating Direct WhatsApp Button (Kompatibel WA Biasa & WA Business) -->
+  <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya-tanya menu.')" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95">
     <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
-  </a>
+  </button>
 
   <!-- ============================================== -->
   <!-- MODAL 1: DETAIL PRODUK (TOP-UP MODAL)          -->
@@ -346,7 +346,7 @@
 
           <div id="address-box" class="hidden">
             <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
-            <textarea id="cust-address" rows="2" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
+            <textarea id="cust-address" rows="2" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
           </div>
 
           <div>
@@ -398,9 +398,9 @@
       <!-- Jam Operasional & WhatsApp -->
       <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-medium text-gray-600 pt-2 border-t border-gray-100">
         <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-500"></i> Buka: 06.00 - 18.00 WIB</span>
-        <a href="https://wa.me/6285892022079" target="_blank" class="flex items-center gap-1.5 text-emerald-600 font-semibold hover:underline">
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="flex items-center gap-1.5 text-emerald-600 font-semibold hover:underline">
           <i class="fa-brands fa-whatsapp text-base"></i> 0858-9202-2079
-        </a>
+        </button>
       </div>
     </div>
     <p class="mt-5 text-[11px] text-gray-400">© 2026 AZRI SNACK. All Rights Reserved.</p>
@@ -433,14 +433,40 @@
     let cart = {};
     let selectedModalProduct = null;
 
-    // Helper: Ambil Kunci Tanggal Hari Ini (Format YYYY-MM-DD) berdasarkan Waktu Jam 5 Pagi WIB
+    // Helper Universal WhatsApp Opener (Mendukung WA Standar & WA Business di Android/iOS)
+    window.openUniversalWhatsApp = function(phone, message) {
+      const encodedMsg = encodeURIComponent(message);
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // Coba buka skema app langsung
+        const appUrl = `whatsapp://send?phone=${phone}&text=${encodedMsg}`;
+        const webUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
+
+        const startTime = Date.now();
+        window.location.href = appUrl;
+
+        // Fallback jika skema native tidak terpancing dalam 1 detik
+        setTimeout(() => {
+          if (Date.now() - startTime < 1500) {
+            window.location.href = webUrl;
+          }
+        }, 800);
+      } else {
+        // Desktop Browser
+        window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`, "_blank");
+      }
+    };
+
+    window.openDirectWhatsApp = function(msg) {
+      openUniversalWhatsApp(WA_STORE_PHONE, msg);
+    };
+
+    // Helper Date Key Jam 5 Pagi WIB
     function getBusinessDateKey() {
       const now = new Date();
-      // Konversi ke Waktu Indonesia Barat (WIB / UTC+7)
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
       const wibDate = new Date(utc + (3600000 * 7));
-      
-      // Jika jam masih di bawah 05:00 subuh, maka masih terhitung siklus hari kemarin
       if (wibDate.getHours() < 5) {
         wibDate.setDate(wibDate.getDate() - 1);
       }
@@ -470,12 +496,9 @@
 
       snapshot.forEach(docSnap => {
         const p = { id: docSnap.id, ...docSnap.data() };
-        
-        // Cek apakah tanggal siklus stok produk sudah lewat dari hari ini jam 5 pagi
         const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
         
         if (p.last_stock_date !== currentBusinessDate) {
-          // Reset otomatis ke kuota penuh harian
           p.stock = quota;
           p.last_stock_date = currentBusinessDate;
           p.status = quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK";
@@ -841,7 +864,7 @@
       }
     };
 
-    // 9. Submit Order & Pengurangan Stok Paten Real-Time di Firestore
+    // 9. Submit Order & Pengalihan Universal ke WhatsApp (Biasa & Business)
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
@@ -872,7 +895,6 @@
       btn.disabled = true;
 
       try {
-        // 1. Simpan Invoice Pesanan Baru
         await addDoc(collection(db, "orders"), {
           invoice_no: invoiceNo,
           customer_name: name,
@@ -888,7 +910,6 @@
           created_at: serverTimestamp()
         });
 
-        // 2. Potong Stok Paten di Database untuk Hari Ini
         const stockDeductionPromises = items.map(item => {
           return updateDoc(doc(db, "products", item.product_id), {
             stock: increment(-item.qty)
@@ -896,7 +917,6 @@
         });
         await Promise.all(stockDeductionPromises);
 
-        // 3. Format Teks WhatsApp
         let itemText = "";
         items.forEach(i => {
           itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
@@ -921,14 +941,13 @@
         waMessage += `*TOTAL SEMENTARA:* Rp${grandTotal.toLocaleString('id-ID')}\n\n`;
         waMessage += `_Halo Admin AZRI SNACK, mohon konfirmasi ketersediaan pesanan saya. Terima kasih!_`;
 
-        const waUrl = `https://wa.me/${WA_STORE_PHONE}?text=${encodeURIComponent(waMessage)}`;
-        window.open(waUrl, "_blank");
+        // Panggil Universal WhatsApp Opener
+        openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
 
         cart = {};
         updateCartUI();
         renderFilteredProducts();
         document.getElementById("order-form").reset();
-        alert(`Pesanan #${invoiceNo} berhasil dicatat dan stok harian langsung dikurangi! Menghubungkan ke WhatsApp...`);
         btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
         btn.disabled = false;
 
@@ -939,7 +958,8 @@
           itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
         });
         let waMessage = `🍰 *PESANAN BARU - AZRI SNACK*\n*Nama:* ${name}\n*No. HP:* ${phone}\n*Tgl Acara:* ${date} (${time})\n*Menu:*\n${itemText}*Total:* Rp${grandTotal.toLocaleString('id-ID')}`;
-        window.open(`https://wa.me/${WA_STORE_PHONE}?text=${encodeURIComponent(waMessage)}`, "_blank");
+        
+        openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
         
         btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
         btn.disabled = false;
