@@ -230,6 +230,7 @@
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
       <div class="relative w-full h-60 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
+        <!-- Foto di Pop-up Detail Tetap Berwarna Penuh -->
         <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
         <button onclick="closeProductDetailModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition">
           <i class="fa-solid fa-xmark text-sm"></i>
@@ -532,7 +533,7 @@
       console.warn("Firestore fallback aktif:", err);
     });
 
-    // 3. Render Katalog (DENGAN SORTING: Ready di Atas, Habis di Paling Bawah)
+    // 3. Render Katalog (Gambar Tetap Berwarna, Urutan Habis di Bawah)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -556,8 +557,8 @@
         const isSoldOutA = a.status === "OUT_OF_STOCK" || stockA <= 0;
         const isSoldOutB = b.status === "OUT_OF_STOCK" || stockB <= 0;
 
-        if (isSoldOutA && !isSoldOutB) return 1;  // A habis -> pindah ke bawah
-        if (!isSoldOutA && isSoldOutB) return -1; // B habis -> A tetap di atas
+        if (isSoldOutA && !isSoldOutB) return 1;
+        if (!isSoldOutA && isSoldOutB) return -1;
         return 0;
       });
 
@@ -585,12 +586,13 @@
         const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
         
         const card = document.createElement("div");
-        card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/60 bg-gray-50/50' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
+        card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/80 bg-white' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
         
         card.innerHTML = `
           <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
             <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
-              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover ${isSoldOut ? 'grayscale opacity-75' : 'group-hover:scale-105'} transition duration-300" onerror="this.src='${fallbackImg}'">
+              <!-- GAMBAR TETAP BERWARNA PENUH (TANPA GRAYSCALE) -->
+              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
               
               <!-- Badge Kategori (Kiri Atas) -->
               <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
@@ -599,7 +601,7 @@
 
               <!-- BADGE HABIS HARI INI DI POJOK KANAN ATAS -->
               ${isSoldOut ? `
-                <span class="absolute top-2 right-2 bg-red-600/95 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                <span class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                   Habis Hari Ini
                 </span>
@@ -782,7 +784,7 @@
       const badge = document.getElementById("cart-badge");
       const stickyBar = document.getElementById("sticky-cart");
 
-      // Cek apakah ada menu yang habis hari ini di dalam keranjang
+      // Cek apakah ada kue yang habis hari ini di dalam keranjang
       let hasSoldOutTodayItem = false;
       Object.values(cart).forEach(item => {
         const liveProd = allProducts.find(p => p.id === item.id);
@@ -792,7 +794,6 @@
         }
       });
 
-      // Jika ada kue yang habis hari ini, otomatis sarankan tanggal acara minimal adalah BESOK
       const dateInput = document.getElementById("order-date");
       if (hasSoldOutTodayItem) {
         if (dateInput.value === getTodayDateWIB()) {
