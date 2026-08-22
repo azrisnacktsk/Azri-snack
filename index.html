@@ -81,7 +81,7 @@
   <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       
-      <!-- Logo Toko & Brand (Wadah Diperbesar & Logo Utuh Tanpa Terpotong) -->
+      <!-- Logo Toko & Brand -->
       <div class="flex items-center gap-3.5">
         <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md shadow-amber-500/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
           <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
@@ -151,6 +151,32 @@
     </div>
   </section>
 
+  <!-- PEMBERITAHUAN STOK HARI INI & PESANAN PARTAI BANYAK -->
+  <section class="max-w-5xl mx-auto px-4 mt-3">
+    <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i class="fa-solid fa-circle-info text-base"></i>
+          </div>
+          <div class="text-xs text-gray-700 leading-relaxed">
+            <p class="font-bold text-gray-900 flex items-center gap-1.5">
+              <span>Informasi Stok & Pesanan Partai</span>
+              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
+            </p>
+            <p class="text-gray-600 mt-0.5">
+              Jumlah stok di bawah adalah <strong>stok siap saji (ready) hari ini</strong>. Jika ingin pesan dalam <strong>jumlah banyak (puluhan/ratusan box)</strong> untuk acara besok atau lusa, silakan langsung pesan di keranjang atau konfirmasi via WhatsApp.
+            </p>
+          </div>
+        </div>
+        <a href="https://wa.me/6285892022079?text=Halo%20Admin%20AZRI%20SNACK,%20saya%20mau%20tanya%20pesanan%20kue%20dalam%20jumlah%20banyak%20untuk%20acara" target="_blank" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3.5 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap self-start sm:self-center">
+          <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
+          <span>Konsultasi Acara via WA</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Loading State -->
   <div id="loading" class="max-w-5xl mx-auto px-4 py-20 text-center">
     <div class="w-10 h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -158,7 +184,7 @@
   </div>
 
   <!-- Product Catalog Grid -->
-  <main class="max-w-5xl mx-auto px-4 mt-7">
+  <main class="max-w-5xl mx-auto px-4 mt-6">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
         <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu</h3>
@@ -222,7 +248,10 @@
         </div>
 
         <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
-          <span class="text-xs font-semibold text-gray-700">Jumlah Pesanan:</span>
+          <div>
+            <span class="text-xs font-semibold text-gray-700 block">Jumlah Pesanan:</span>
+            <span id="detail-remaining-info" class="text-[10px] text-gray-400">Tersedia hari ini</span>
+          </div>
           
           <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
             <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-xl bg-white text-amber-800 font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-100 active:scale-90 transition">-</button>
@@ -442,7 +471,7 @@
       renderFilteredProducts();
     }
 
-    // 3. Render Produk Grid Card
+    // 3. Render Produk Grid Card (Dengan Sisa Stok Dinamis)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -473,9 +502,13 @@
       }
 
       filtered.forEach(p => {
-        const stock = p.stock !== undefined ? Number(p.stock) : 50;
-        const isSoldOut = p.status === "OUT_OF_STOCK" || stock <= 0;
-        const qty = cart[p.id]?.qty || 0;
+        const initialStock = p.stock !== undefined ? Number(p.stock) : 50;
+        const inCartQty = cart[p.id]?.qty || 0;
+        
+        // Sisa stok riil dinamis yang tampil
+        const remainingStock = Math.max(0, initialStock - inCartQty);
+        const isSoldOut = p.status === "OUT_OF_STOCK" || initialStock <= 0 || (remainingStock <= 0 && inCartQty === 0);
+        
         const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
         
         const card = document.createElement("div");
@@ -485,12 +518,22 @@
           <div onclick="${isSoldOut ? '' : `openProductDetailModal('${p.id}')`}" class="${isSoldOut ? 'cursor-not-allowed' : 'cursor-pointer'}">
             <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
               <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover ${isSoldOut ? 'grayscale opacity-50' : 'group-hover:scale-105'} transition duration-300" onerror="this.src='${fallbackImg}'">
+              
+              <!-- Badge Kategori -->
               <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
                 ${p.category || 'Kue'}
               </span>
+
+              <!-- Badge Sisa Stok Hari Ini -->
+              ${!isSoldOut ? `
+                <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
+                  Sisa: ${remainingStock} pcs
+                </span>
+              ` : ''}
+
               ${isSoldOut ? `
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <span class="bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md tracking-wider">HABIS</span>
+                  <span class="bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md tracking-wider">HABIS HARI INI</span>
                 </div>
               ` : ''}
             </div>
@@ -502,15 +545,15 @@
             <span class="font-bold text-xs sm:text-sm ${isSoldOut ? 'text-gray-400' : 'text-amber-600'}">Rp${Number(p.price).toLocaleString('id-ID')}</span>
             
             <div id="btn-container-${p.id}">
-              ${isSoldOut ? `
+              ${isSoldOut && inCartQty === 0 ? `
                 <button disabled class="bg-gray-100 text-gray-400 text-[11px] font-semibold px-3 py-1.5 rounded-xl cursor-not-allowed border border-gray-200">
                   Habis
                 </button>
-              ` : (qty > 0 ? `
+              ` : (inCartQty > 0 ? `
                 <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" value="${qty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
-                  <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+                  <input type="number" min="0" max="${initialStock}" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+                  <button onclick="updateQty('${p.id}', 1)" ${remainingStock <= 0 ? 'disabled class="w-6 h-6 rounded-lg bg-gray-200 text-gray-400 font-bold text-xs flex items-center justify-center cursor-not-allowed"' : 'class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90"'} >+</button>
                 </div>
               ` : `
                 <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
@@ -529,15 +572,16 @@
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const stock = prod.stock !== undefined ? Number(prod.stock) : 50;
-      if (prod.status === "OUT_OF_STOCK" || stock <= 0) return;
+      const initialStock = prod.stock !== undefined ? Number(prod.stock) : 50;
+      if (prod.status === "OUT_OF_STOCK" || initialStock <= 0) return;
 
       selectedModalProduct = prod;
       const currentQty = cart[productId]?.qty || 1;
+      const remaining = Math.max(0, initialStock - (cart[productId]?.qty || 0));
 
       document.getElementById("detail-img").src = prod.image_url || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
       document.getElementById("detail-category").innerText = prod.category || "Menu AZRI SNACK";
-      document.getElementById("detail-stock-badge").innerText = `Sisa Stok: ${stock} pcs`;
+      document.getElementById("detail-stock-badge").innerText = `Sisa Siap Saji: ${remaining} pcs`;
       document.getElementById("detail-title").innerText = prod.name;
       document.getElementById("detail-price").innerText = "Rp" + Number(prod.price).toLocaleString("id-ID") + " / pcs";
       document.getElementById("detail-desc").innerText = prod.description || "Dibuat dengan bahan baku segar pilihan dan resep tradisional istimewa dari AZRI SNACK.";
@@ -554,19 +598,32 @@
     };
 
     window.changeModalQty = function(delta) {
+      if (!selectedModalProduct) return;
+      const initialStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 50;
       const input = document.getElementById("detail-qty-input");
+      
       let currentVal = parseInt(input.value);
       if (isNaN(currentVal) || currentVal < 1) currentVal = 1;
 
       let nextVal = currentVal + delta;
       if (nextVal < 1) nextVal = 1;
+      if (nextVal > initialStock) {
+        alert(`Maksimal porsi yang tersedia hari ini hanya ${initialStock} pcs. Untuk pesan lebih banyak, silakan hubungi WhatsApp kami.`);
+        nextVal = initialStock;
+      }
 
       input.value = nextVal;
     };
 
     window.handleModalManualInput = function(input) {
+      if (!selectedModalProduct) return;
+      const initialStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 50;
       let val = parseInt(input.value);
-      if (isNaN(val) || val < 1) {
+      
+      if (val > initialStock) {
+        alert(`Maksimal porsi yang tersedia hari ini adalah ${initialStock} pcs.`);
+        input.value = initialStock;
+      } else if (isNaN(val) || val < 1) {
         if (input.value !== "") input.value = 1;
       }
     };
@@ -581,10 +638,12 @@
       closeProductDetailModal();
     };
 
-    // 5. Logika Keranjang
+    // 5. Logika Keranjang (Pengurangan Stok & Pengembalian Stok Otomatis)
     window.updateQty = function(productId, delta) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
+
+      const maxStock = prod.stock !== undefined ? Number(prod.stock) : 9999;
 
       if (!cart[productId]) {
         cart[productId] = { ...prod, qty: 0 };
@@ -592,7 +651,13 @@
 
       const nextQty = cart[productId].qty + delta;
 
+      if (nextQty > maxStock) {
+        alert(`Maaf, sisa stok ${prod.name} hari ini hanya ${maxStock} pcs. Untuk pesanan jumlah banyak silakan chat WhatsApp.`);
+        return;
+      }
+
       if (nextQty <= 0) {
+        // Otomatis mengembalikan stok karena item dihapus
         delete cart[productId];
       } else {
         cart[productId].qty = nextQty;
@@ -606,8 +671,16 @@
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
+      const maxStock = prod.stock !== undefined ? Number(prod.stock) : 9999;
       let qty = parseInt(rawValue);
+
+      if (qty > maxStock) {
+        alert(`Maaf, jumlah stok ${prod.name} yang siap hari ini hanya ${maxStock} pcs.`);
+        qty = maxStock;
+      }
+
       if (isNaN(qty) || qty <= 0) {
+        // Kembali ke stok awal jika dibatalkan/0
         delete cart[productId];
       } else {
         cart[productId] = { ...prod, qty: qty };
@@ -619,7 +692,7 @@
 
     window.removeItemFromCart = function(productId) {
       if (cart[productId]) {
-        delete cart[productId];
+        delete cart[productId]; // Stok otomatis kembali penuh
         updateCartUI();
         renderFilteredProducts();
       }
@@ -664,6 +737,9 @@
       }
 
       items.forEach(item => {
+        const prod = allProducts.find(p => p.id === item.id);
+        const maxStock = prod && prod.stock !== undefined ? Number(prod.stock) : 9999;
+
         const row = document.createElement("div");
         row.className = "flex items-center justify-between bg-gray-50/80 p-2.5 rounded-2xl text-xs border border-gray-100";
         row.innerHTML = `
@@ -675,13 +751,13 @@
           <div class="flex items-center gap-2">
             <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5">
               <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center">-</button>
-              <input type="number" min="1" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
+              <input type="number" min="1" max="${maxStock}" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
               <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center">+</button>
             </div>
 
             <span class="font-bold text-gray-700 min-w-[70px] text-right">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
 
-            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini" class="w-7 h-7 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition ml-1">
+            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini (stok kembali)" class="w-7 h-7 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition ml-1">
               <i class="fa-solid fa-trash-can text-xs"></i>
             </button>
           </div>
@@ -802,6 +878,7 @@
 
         cart = {};
         updateCartUI();
+        renderFilteredProducts();
         document.getElementById("order-form").reset();
         alert(`Pesanan #${invoiceNo} berhasil dicatat! Menghubungkan ke WhatsApp...`);
         btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
