@@ -157,15 +157,15 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <i class="fa-solid fa-circle-info text-base"></i>
+            <i class="fa-solid fa-rotate text-base"></i>
           </div>
           <div class="text-xs text-gray-700 leading-relaxed">
             <p class="font-bold text-gray-900 flex items-center gap-1.5">
-              <span>Informasi Stok & Pesanan Partai</span>
-              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
+              <span>Stok Segar Harian (Otomatis Reset Pkl 05:00 WIB)</span>
+              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Fresh Daily</span>
             </p>
             <p class="text-gray-600 mt-0.5">
-              Jumlah stok di bawah adalah <strong>stok siap saji (ready) hari ini</strong>. Jika ingin pesan dalam <strong>jumlah banyak (puluhan/ratusan box)</strong> untuk acara besok atau lusa, silakan langsung pesan di keranjang atau konfirmasi via WhatsApp.
+              Jumlah stok di bawah berkurang otomatis setiap ada pesanan masuk hari ini. Ingin pesan dalam <strong>jumlah banyak untuk acara besok/lusa</strong>? Silakan pesan langsung via formulir atau konsultasi lewat WhatsApp.
             </p>
           </div>
         </div>
@@ -250,7 +250,7 @@
         <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
           <div>
             <span class="text-xs font-semibold text-gray-700 block">Jumlah Pesanan:</span>
-            <span id="detail-remaining-info" class="text-[10px] text-gray-400">Tersedia hari ini</span>
+            <span class="text-[10px] text-gray-400">Siap saji hari ini</span>
           </div>
           
           <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
@@ -409,7 +409,9 @@
   <!-- Firebase & App Script Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, increment, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAzriSnackPlaceholderKey",
@@ -431,6 +433,22 @@
     let cart = {};
     let selectedModalProduct = null;
 
+    // Helper: Ambil Kunci Tanggal Hari Ini (Format YYYY-MM-DD) berdasarkan Waktu Jam 5 Pagi WIB
+    function getBusinessDateKey() {
+      const now = new Date();
+      // Konversi ke Waktu Indonesia Barat (WIB / UTC+7)
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      
+      // Jika jam masih di bawah 05:00 subuh, maka masih terhitung siklus hari kemarin
+      if (wibDate.getHours() < 5) {
+        wibDate.setDate(wibDate.getDate() - 1);
+      }
+      return wibDate.toISOString().split("T")[0];
+    }
+
+    const currentBusinessDate = getBusinessDateKey();
+
     // 1. Sinkronisasi Logo Real-time
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists()) {
@@ -445,12 +463,41 @@
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
-    // 2. Sinkronisasi Produk Real-time
-    onSnapshot(collection(db, "products"), (snapshot) => {
+    // 2. Sinkronisasi Produk Real-time & Auto Reset Jam 5 Pagi
+    onSnapshot(collection(db, "products"), async (snapshot) => {
       allProducts = [];
+      const updatePromises = [];
+
       snapshot.forEach(docSnap => {
-        allProducts.push({ id: docSnap.id, ...docSnap.data() });
+        const p = { id: docSnap.id, ...docSnap.data() };
+        
+        // Cek apakah tanggal siklus stok produk sudah lewat dari hari ini jam 5 pagi
+        const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
+        
+        if (p.last_stock_date !== currentBusinessDate) {
+          // Reset otomatis ke kuota penuh harian
+          p.stock = quota;
+          p.last_stock_date = currentBusinessDate;
+          p.status = quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK";
+
+          updatePromises.push(updateDoc(doc(db, "products", p.id), {
+            stock: quota,
+            daily_quota: quota,
+            last_stock_date: currentBusinessDate,
+            status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK"
+          }));
+        }
+
+        allProducts.push(p);
       });
+
+      if (updatePromises.length > 0) {
+        try {
+          await Promise.all(updatePromises);
+        } catch (e) {
+          console.warn("Gagal auto reset stok:", e);
+        }
+      }
 
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
@@ -462,16 +509,16 @@
 
     function loadFallbackProducts() {
       allProducts = [
-        { id: "1", name: "Pastel", category: "Snack", price: 2500, stock: 50, status: "AVAILABLE", description: "Pastel gurih renyah dengan isian lezat", image_url: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&q=60" },
-        { id: "2", name: "Risol Mayo Keju", category: "Snack", price: 3500, stock: 40, status: "AVAILABLE", description: "Isian telur, smoked beef, keju lumer & saus mayo.", image_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=60" },
-        { id: "3", name: "Lemper Ayam Bakar", category: "Kue Basah", price: 4000, stock: 30, status: "AVAILABLE", description: "Ketan pulen wangi daun pisang isi ayam suwir gurih.", image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60" }
+        { id: "1", name: "Pastel", category: "Snack", price: 2500, stock: 50, daily_quota: 50, status: "AVAILABLE", description: "Pastel gurih renyah dengan isian lezat", image_url: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&q=60" },
+        { id: "2", name: "Risol Mayo Keju", category: "Snack", price: 3500, stock: 40, daily_quota: 40, status: "AVAILABLE", description: "Isian telur, smoked beef, keju lumer & saus mayo.", image_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=60" },
+        { id: "3", name: "Lemper Ayam Bakar", category: "Kue Basah", price: 4000, stock: 30, daily_quota: 30, status: "AVAILABLE", description: "Ketan pulen wangi daun pisang isi ayam suwir gurih.", image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60" }
       ];
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
     }
 
-    // 3. Render Produk Grid Card (Dengan Sisa Stok Dinamis)
+    // 3. Render Produk Grid Card
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -502,13 +549,9 @@
       }
 
       filtered.forEach(p => {
-        const initialStock = p.stock !== undefined ? Number(p.stock) : 50;
+        const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
         const inCartQty = cart[p.id]?.qty || 0;
-        
-        // Sisa stok riil dinamis yang tampil
-        const remainingStock = Math.max(0, initialStock - inCartQty);
-        const isSoldOut = p.status === "OUT_OF_STOCK" || initialStock <= 0 || (remainingStock <= 0 && inCartQty === 0);
-        
+        const isSoldOut = p.status === "OUT_OF_STOCK" || liveStock <= 0;
         const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
         
         const card = document.createElement("div");
@@ -519,15 +562,13 @@
             <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
               <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover ${isSoldOut ? 'grayscale opacity-50' : 'group-hover:scale-105'} transition duration-300" onerror="this.src='${fallbackImg}'">
               
-              <!-- Badge Kategori -->
               <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
                 ${p.category || 'Kue'}
               </span>
 
-              <!-- Badge Sisa Stok Hari Ini -->
               ${!isSoldOut ? `
                 <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
-                  Sisa: ${remainingStock} pcs
+                  Sisa: ${liveStock} pcs
                 </span>
               ` : ''}
 
@@ -545,15 +586,15 @@
             <span class="font-bold text-xs sm:text-sm ${isSoldOut ? 'text-gray-400' : 'text-amber-600'}">Rp${Number(p.price).toLocaleString('id-ID')}</span>
             
             <div id="btn-container-${p.id}">
-              ${isSoldOut && inCartQty === 0 ? `
+              ${isSoldOut ? `
                 <button disabled class="bg-gray-100 text-gray-400 text-[11px] font-semibold px-3 py-1.5 rounded-xl cursor-not-allowed border border-gray-200">
                   Habis
                 </button>
               ` : (inCartQty > 0 ? `
                 <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
                   <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" max="${initialStock}" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
-                  <button onclick="updateQty('${p.id}', 1)" ${remainingStock <= 0 ? 'disabled class="w-6 h-6 rounded-lg bg-gray-200 text-gray-400 font-bold text-xs flex items-center justify-center cursor-not-allowed"' : 'class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90"'} >+</button>
+                  <input type="number" min="0" max="${liveStock}" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+                  <button onclick="updateQty('${p.id}', 1)" ${inCartQty >= liveStock ? 'disabled class="w-6 h-6 rounded-lg bg-gray-200 text-gray-400 font-bold text-xs flex items-center justify-center cursor-not-allowed"' : 'class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90"'} >+</button>
                 </div>
               ` : `
                 <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
@@ -572,22 +613,21 @@
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const initialStock = prod.stock !== undefined ? Number(prod.stock) : 50;
-      if (prod.status === "OUT_OF_STOCK" || initialStock <= 0) return;
+      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
+      if (prod.status === "OUT_OF_STOCK" || liveStock <= 0) return;
 
       selectedModalProduct = prod;
       const currentQty = cart[productId]?.qty || 1;
-      const remaining = Math.max(0, initialStock - (cart[productId]?.qty || 0));
 
       document.getElementById("detail-img").src = prod.image_url || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
       document.getElementById("detail-category").innerText = prod.category || "Menu AZRI SNACK";
-      document.getElementById("detail-stock-badge").innerText = `Sisa Siap Saji: ${remaining} pcs`;
+      document.getElementById("detail-stock-badge").innerText = `Sisa Stok Hari Ini: ${liveStock} pcs`;
       document.getElementById("detail-title").innerText = prod.name;
       document.getElementById("detail-price").innerText = "Rp" + Number(prod.price).toLocaleString("id-ID") + " / pcs";
       document.getElementById("detail-desc").innerText = prod.description || "Dibuat dengan bahan baku segar pilihan dan resep tradisional istimewa dari AZRI SNACK.";
       
       const qtyInput = document.getElementById("detail-qty-input");
-      qtyInput.value = currentQty;
+      qtyInput.value = Math.min(currentQty, liveStock);
 
       document.getElementById("product-detail-modal").classList.remove("hidden");
     };
@@ -599,7 +639,7 @@
 
     window.changeModalQty = function(delta) {
       if (!selectedModalProduct) return;
-      const initialStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 50;
+      const liveStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 0;
       const input = document.getElementById("detail-qty-input");
       
       let currentVal = parseInt(input.value);
@@ -607,9 +647,9 @@
 
       let nextVal = currentVal + delta;
       if (nextVal < 1) nextVal = 1;
-      if (nextVal > initialStock) {
-        alert(`Maksimal porsi yang tersedia hari ini hanya ${initialStock} pcs. Untuk pesan lebih banyak, silakan hubungi WhatsApp kami.`);
-        nextVal = initialStock;
+      if (nextVal > liveStock) {
+        alert(`Maksimal porsi yang tersedia hari ini hanya ${liveStock} pcs. Untuk pesan lebih banyak silakan chat WhatsApp kami.`);
+        nextVal = liveStock;
       }
 
       input.value = nextVal;
@@ -617,12 +657,12 @@
 
     window.handleModalManualInput = function(input) {
       if (!selectedModalProduct) return;
-      const initialStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 50;
+      const liveStock = selectedModalProduct.stock !== undefined ? Number(selectedModalProduct.stock) : 0;
       let val = parseInt(input.value);
       
-      if (val > initialStock) {
-        alert(`Maksimal porsi yang tersedia hari ini adalah ${initialStock} pcs.`);
-        input.value = initialStock;
+      if (val > liveStock) {
+        alert(`Maksimal porsi yang tersedia hari ini adalah ${liveStock} pcs.`);
+        input.value = liveStock;
       } else if (isNaN(val) || val < 1) {
         if (input.value !== "") input.value = 1;
       }
@@ -638,12 +678,12 @@
       closeProductDetailModal();
     };
 
-    // 5. Logika Keranjang (Pengurangan Stok & Pengembalian Stok Otomatis)
+    // 5. Logika Keranjang
     window.updateQty = function(productId, delta) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const maxStock = prod.stock !== undefined ? Number(prod.stock) : 9999;
+      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
 
       if (!cart[productId]) {
         cart[productId] = { ...prod, qty: 0 };
@@ -651,13 +691,12 @@
 
       const nextQty = cart[productId].qty + delta;
 
-      if (nextQty > maxStock) {
-        alert(`Maaf, sisa stok ${prod.name} hari ini hanya ${maxStock} pcs. Untuk pesanan jumlah banyak silakan chat WhatsApp.`);
+      if (nextQty > liveStock) {
+        alert(`Maaf, sisa stok ${prod.name} hari ini hanya ${liveStock} pcs.`);
         return;
       }
 
       if (nextQty <= 0) {
-        // Otomatis mengembalikan stok karena item dihapus
         delete cart[productId];
       } else {
         cart[productId].qty = nextQty;
@@ -671,16 +710,15 @@
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
 
-      const maxStock = prod.stock !== undefined ? Number(prod.stock) : 9999;
+      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
       let qty = parseInt(rawValue);
 
-      if (qty > maxStock) {
-        alert(`Maaf, jumlah stok ${prod.name} yang siap hari ini hanya ${maxStock} pcs.`);
-        qty = maxStock;
+      if (qty > liveStock) {
+        alert(`Maaf, jumlah stok ${prod.name} yang siap hari ini hanya ${liveStock} pcs.`);
+        qty = liveStock;
       }
 
       if (isNaN(qty) || qty <= 0) {
-        // Kembali ke stok awal jika dibatalkan/0
         delete cart[productId];
       } else {
         cart[productId] = { ...prod, qty: qty };
@@ -692,7 +730,7 @@
 
     window.removeItemFromCart = function(productId) {
       if (cart[productId]) {
-        delete cart[productId]; // Stok otomatis kembali penuh
+        delete cart[productId];
         updateCartUI();
         renderFilteredProducts();
       }
@@ -738,7 +776,7 @@
 
       items.forEach(item => {
         const prod = allProducts.find(p => p.id === item.id);
-        const maxStock = prod && prod.stock !== undefined ? Number(prod.stock) : 9999;
+        const liveStock = prod && prod.stock !== undefined ? Number(prod.stock) : 9999;
 
         const row = document.createElement("div");
         row.className = "flex items-center justify-between bg-gray-50/80 p-2.5 rounded-2xl text-xs border border-gray-100";
@@ -751,13 +789,13 @@
           <div class="flex items-center gap-2">
             <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5">
               <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center">-</button>
-              <input type="number" min="1" max="${maxStock}" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
+              <input type="number" min="1" max="${liveStock}" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
               <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center">+</button>
             </div>
 
             <span class="font-bold text-gray-700 min-w-[70px] text-right">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
 
-            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini (stok kembali)" class="w-7 h-7 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition ml-1">
+            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini" class="w-7 h-7 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition ml-1">
               <i class="fa-solid fa-trash-can text-xs"></i>
             </button>
           </div>
@@ -803,7 +841,7 @@
       }
     };
 
-    // 9. Submit Order
+    // 9. Submit Order & Pengurangan Stok Paten Real-Time di Firestore
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
@@ -830,10 +868,11 @@
       const invoiceNo = "AZRI-" + Math.floor(100000 + Math.random() * 900000);
 
       const btn = document.getElementById("btn-submit-order");
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan Pesanan...`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses Pesanan...`;
       btn.disabled = true;
 
       try {
+        // 1. Simpan Invoice Pesanan Baru
         await addDoc(collection(db, "orders"), {
           invoice_no: invoiceNo,
           customer_name: name,
@@ -849,6 +888,15 @@
           created_at: serverTimestamp()
         });
 
+        // 2. Potong Stok Paten di Database untuk Hari Ini
+        const stockDeductionPromises = items.map(item => {
+          return updateDoc(doc(db, "products", item.product_id), {
+            stock: increment(-item.qty)
+          });
+        });
+        await Promise.all(stockDeductionPromises);
+
+        // 3. Format Teks WhatsApp
         let itemText = "";
         items.forEach(i => {
           itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
@@ -880,7 +928,7 @@
         updateCartUI();
         renderFilteredProducts();
         document.getElementById("order-form").reset();
-        alert(`Pesanan #${invoiceNo} berhasil dicatat! Menghubungkan ke WhatsApp...`);
+        alert(`Pesanan #${invoiceNo} berhasil dicatat dan stok harian langsung dikurangi! Menghubungkan ke WhatsApp...`);
         btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
         btn.disabled = false;
 
