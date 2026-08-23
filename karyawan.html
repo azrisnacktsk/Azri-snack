@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Update Stok Karyawan - AZRI SNACK</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Google Font Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] { -moz-appearance: textfield; }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-[#f4f5f8] text-gray-800 pb-32 min-h-screen">
+
+  <!-- Header Panel Karyawan (Logo Terhubung Real-Time ke Web Admin) -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xs">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- Logo Container -->
+        <div id="store-logo-container" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
+          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-0.5">
+            <span id="store-logo-fallback" class="text-xl">🍰</span>
+            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
+          </div>
+        </div>
+
+        <div>
+          <h1 class="font-bold text-sm sm:text-base text-gray-900 leading-tight">Update Stok Karyawan</h1>
+          <p class="text-[11px] text-amber-700 font-medium">AZRI SNACK Dapur & Outlet</p>
+        </div>
+      </div>
+
+      <!-- Nama Karyawan Aktif -->
+      <div class="flex items-center gap-2">
+        <div class="text-right hidden sm:block">
+          <p class="text-[10px] text-gray-400">Petugas:</p>
+          <input type="text" id="staff-name-desktop" value="Tim Dapur" oninput="syncStaffName(this.value)" class="text-xs font-bold text-gray-800 bg-transparent text-right outline-none border-b border-dashed border-gray-300 w-28">
+        </div>
+        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="max-w-3xl mx-auto px-4 pb-3 pt-1 space-y-2">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Cari nama kue untuk update stok..." class="w-full bg-gray-50 pl-9 pr-8 py-2 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/30 outline-none transition border border-gray-200">
+        <button id="clear-search" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+          <i class="fa-solid fa-circle-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex gap-1.5 overflow-x-auto hide-scrollbar">
+          <button onclick="filterCategory('All')" class="cat-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-gray-900 text-white shadow-xs">Semua</button>
+          <button onclick="filterCategory('Snack')" class="cat-btn px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200">Snack</button>
+          <button onclick="filterCategory('Kue Basah')" class="cat-btn px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200">Kue Basah</button>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <!-- Tombol Pintasan Scroll ke Bawah -->
+          <button id="btn-scroll-soldout" onclick="scrollToSoldOut()" class="hidden text-[11px] font-bold text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg border border-red-200 flex items-center gap-1 transition">
+            <i class="fa-solid fa-arrow-down text-[10px]"></i>
+            <span id="soldout-btn-text">Menu Habis (0)</span>
+          </button>
+          <span id="product-count-badge" class="text-[11px] font-bold text-amber-800 bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 whitespace-nowrap">0 Menu</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Input Nama Karyawan untuk HP -->
+  <div class="max-w-3xl mx-auto px-4 mt-3 sm:hidden">
+    <div class="bg-white p-2.5 rounded-xl border border-gray-200 flex items-center justify-between gap-2 text-xs shadow-2xs">
+      <span class="text-gray-500 font-medium flex items-center gap-1.5">
+        <i class="fa-solid fa-user-pen text-amber-500"></i>
+        <span>Nama Anda:</span>
+      </span>
+      <input type="text" id="staff-name-mobile" value="Tim Dapur" oninput="syncStaffName(this.value)" class="font-bold text-gray-900 outline-none text-right flex-1 bg-transparent placeholder-gray-300" placeholder="Ketik nama...">
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="loading" class="max-w-3xl mx-auto px-4 py-20 text-center">
+    <div class="w-9 h-9 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+    <p class="mt-3 text-xs text-gray-400 font-medium">Sinkronisasi stok dengan toko...</p>
+  </div>
+
+  <!-- DAFTAR PRODUK READY (BAGIAN ATAS) -->
+  <main class="max-w-3xl mx-auto px-4 mt-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Menu Siap Saji (Ready)</span>
+      </h2>
+      <span id="ready-badge-count" class="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">0 Ready</span>
+    </div>
+
+    <div id="ready-products-container" class="space-y-3">
+      <!-- Diisi via JavaScript -->
+    </div>
+  </main>
+
+  <!-- DAFTAR PRODUK HABIS (BAGIAN BAWAH DENGAN SCROLL OTOMATIS) -->
+  <section id="soldout-section" class="max-w-3xl mx-auto px-4 mt-8 pt-6 border-t-2 border-dashed border-gray-300 space-y-3 hidden scroll-mt-24">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-1.5">
+        <div class="w-5 h-5 rounded bg-red-100 text-red-600 flex items-center justify-center text-[10px]">
+          <i class="fa-solid fa-ban"></i>
+        </div>
+        <h2 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Menu Habis (0 Pcs)</h2>
+      </div>
+      <span id="soldout-badge-count" class="text-[11px] font-semibold text-red-800 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">0 Habis</span>
+    </div>
+
+    <p class="text-[11px] text-gray-500 bg-white p-2.5 rounded-xl border border-gray-200">
+      💡 <strong>Petunjuk:</strong> Tekan tombol <strong>Refill</strong> atau <strong>+ pcs</strong> saat adonan kue baru sudah siap saji.
+    </p>
+
+    <div id="soldout-products-container" class="space-y-3">
+      <!-- Diisi via JavaScript -->
+    </div>
+  </section>
+
+  <!-- Sticky Bottom Bar: Tombol Laporan WhatsApp Cepat -->
+  <div class="fixed bottom-3 left-3 right-3 max-w-lg mx-auto z-40">
+    <div class="bg-gray-900/95 text-white rounded-2xl p-3 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
+      <div>
+        <p class="text-[10px] text-gray-300 leading-tight">Laporan Harian Dapur</p>
+        <p class="text-xs font-bold text-amber-400 mt-0.5" id="summary-badge-text">0 Ready • 0 Habis</p>
+      </div>
+      <button onclick="sendStockReportToWA()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-emerald-600/30">
+        <i class="fa-brands fa-whatsapp text-base"></i>
+        <span>Kirim Laporan WA</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Firebase Script Module -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, updateDoc, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAzriSnackPlaceholderKey",
+      authDomain: "azri-snack-db.firebaseapp.com",
+      projectId: "azri-snack-db",
+      storageBucket: "azri-snack-db.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
+    };
+
+    const WA_STORE_PHONE = "6285892022079";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let allProducts = [];
+    let currentFilter = "All";
+    let searchQuery = "";
+    let staffName = "Tim Dapur";
+
+    window.syncStaffName = function(val) {
+      staffName = val.trim() || "Tim Dapur";
+      document.getElementById("staff-name-desktop").value = staffName;
+      document.getElementById("staff-name-mobile").value = staffName;
+    };
+
+    // 1. Sinkronisasi Logo Real-time dari Web Admin (settings/store_config)
+    onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.logo_url) {
+          const logoImg = document.getElementById("store-logo-img");
+          const fallback = document.getElementById("store-logo-fallback");
+          logoImg.src = data.logo_url;
+          logoImg.classList.remove("hidden");
+          fallback.classList.add("hidden");
+        }
+      }
+    }, (err) => console.log("Gagal sync logo:", err));
+
+    // Scroll Otomatis ke Bagian Produk Habis
+    window.scrollToSoldOut = function() {
+      const el = document.getElementById("soldout-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    // 2. Sinkronisasi Data Produk Realtime
+    onSnapshot(collection(db, "products"), (snapshot) => {
+      allProducts = [];
+      snapshot.forEach(docSnap => {
+        allProducts.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      document.getElementById("loading").classList.add("hidden");
+      renderProductsList();
+    }, (err) => {
+      console.error("Gagal membaca produk:", err);
+    });
+
+    // Render Produk Card (Terpisah: Ready di Atas, Habis di Bawah)
+    function renderProductsList() {
+      let filtered = [...allProducts];
+
+      if (currentFilter !== "All") {
+        filtered = filtered.filter(p => p.category === currentFilter);
+      }
+
+      if (searchQuery.trim() !== "") {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.category && p.category.toLowerCase().includes(q)));
+      }
+
+      const readyItems = [];
+      const soldOutItems = [];
+
+      filtered.forEach(p => {
+        const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+        const isSoldOut = p.status === "OUT_OF_STOCK" || liveStock <= 0;
+        if (isSoldOut) {
+          soldOutItems.push(p);
+        } else {
+          readyItems.push(p);
+        }
+      });
+
+      // Update Badge Status
+      document.getElementById("ready-badge-count").innerText = `${readyItems.length} Ready`;
+      document.getElementById("soldout-badge-count").innerText = `${soldOutItems.length} Habis`;
+      document.getElementById("product-count-badge").innerText = `${filtered.length} Menu`;
+      document.getElementById("summary-badge-text").innerText = `${readyItems.length} Ready • ${soldOutItems.length} Habis`;
+
+      // Kontrol Tombol Pintasan Scroll
+      const scrollBtn = document.getElementById("btn-scroll-soldout");
+      if (soldOutItems.length > 0) {
+        scrollBtn.classList.remove("hidden");
+        document.getElementById("soldout-btn-text").innerText = `Menu Habis (${soldOutItems.length})`;
+      } else {
+        scrollBtn.classList.add("hidden");
+      }
+
+      const readyContainer = document.getElementById("ready-products-container");
+      const soldOutContainer = document.getElementById("soldout-products-container");
+      const soldOutSection = document.getElementById("soldout-section");
+
+      readyContainer.innerHTML = "";
+      soldOutContainer.innerHTML = "";
+
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+
+      // 1. Render Menu Ready (Atas)
+      if (readyItems.length === 0 && soldOutItems.length === 0) {
+        readyContainer.innerHTML = `
+          <div class="bg-white rounded-2xl p-8 text-center text-xs text-gray-400 border border-gray-200">
+            <i class="fa-solid fa-cookie-bite text-3xl text-gray-300 mb-2"></i>
+            <p>Menu tidak ditemukan.</p>
+          </div>
+        `;
+      } else if (readyItems.length === 0) {
+        readyContainer.innerHTML = `
+          <div class="bg-amber-50/60 rounded-2xl p-6 text-center text-xs text-amber-800 border border-amber-200">
+            <p class="font-bold">Semua menu siap saji sedang habis.</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Lihat daftar menu di bawah untuk menambahkan stok baru.</p>
+          </div>
+        `;
+      } else {
+        readyItems.forEach(p => {
+          const card = createStaffProductCard(p, false, fallbackImg);
+          readyContainer.appendChild(card);
+        });
+      }
+
+      // 2. Render Menu Habis (Bawah)
+      if (soldOutItems.length > 0) {
+        soldOutSection.classList.remove("hidden");
+        soldOutItems.forEach(p => {
+          const card = createStaffProductCard(p, true, fallbackImg);
+          soldOutContainer.appendChild(card);
+        });
+      } else {
+        soldOutSection.classList.add("hidden");
+      }
+    }
+
+    // Helper Pembuat Kartu Produk Karyawan
+    function createStaffProductCard(p, isSoldOut, fallbackImg) {
+      const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+      const dailyQuota = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
+
+      const card = document.createElement("div");
+      card.className = `bg-white rounded-2xl p-3 sm:p-4 border transition shadow-2xs ${isSoldOut ? 'border-red-200 bg-red-50/20' : 'border-gray-200'}`;
+      
+      card.innerHTML = `
+        <div class="flex items-center gap-3">
+          <!-- Foto Kue (Tetap Berwarna) -->
+          <img src="${p.image_url || fallbackImg}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover flex-shrink-0 border border-gray-100" onerror="this.src='${fallbackImg}'">
+
+          <!-- Detail Info -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5">
+              <h3 class="font-bold text-xs sm:text-sm text-gray-900 truncate">${p.name}</h3>
+              <span class="text-[9px] font-semibold px-2 py-0.2 rounded-md ${isSoldOut ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">
+                ${isSoldOut ? 'HABIS' : 'READY'}
+              </span>
+            </div>
+            <p class="text-[11px] text-gray-400 mt-0.5">
+              <span class="text-amber-700 font-semibold">Rp${Number(p.price || 0).toLocaleString('id-ID')}</span> • Kuota Awal: ${dailyQuota} pcs
+            </p>
+          </div>
+
+          <!-- Kontrol Angka Stok -->
+          <div class="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
+            <button onclick="changeStock('${p.id}', -1)" class="w-7 h-7 rounded-lg bg-white hover:bg-gray-100 text-gray-700 font-bold text-sm shadow-2xs active:scale-90 transition">-</button>
+            <input type="number" min="0" value="${liveStock}" onchange="setStockDirect('${p.id}', this.value)" class="w-11 text-center text-xs sm:text-sm font-bold text-gray-900 bg-transparent outline-none">
+            <button onclick="changeStock('${p.id}', 1)" class="w-7 h-7 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-2xs active:scale-90 transition">+</button>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Cepat Bawah -->
+        <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between gap-1.5 text-[11px]">
+          <div class="flex items-center gap-1">
+            <button onclick="changeStock('${p.id}', 5)" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition active:scale-95">+5</button>
+            <button onclick="changeStock('${p.id}', 10)" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition active:scale-95">+10</button>
+            <button onclick="setStockDirect('${p.id}', ${dailyQuota})" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-lg transition active:scale-95 flex items-center gap-1" title="Isi Penuh Sesuai Kuota Harian">
+              <i class="fa-solid fa-arrows-rotate text-[10px]"></i> Refill (${dailyQuota})
+            </button>
+          </div>
+
+          ${!isSoldOut ? `
+            <button onclick="setStockDirect('${p.id}', 0)" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-lg transition active:scale-95 flex items-center gap-1">
+              <i class="fa-solid fa-ban text-[10px]"></i>
+              <span>Set Habis (0)</span>
+            </button>
+          ` : `
+            <span class="text-[10px] text-red-500 font-semibold italic">Stok Kosong</span>
+          `}
+        </div>
+      `;
+      return card;
+    }
+
+    // Ubah Stok Secara Relatif (+ / -)
+    window.changeStock = async function(prodId, delta) {
+      const prod = allProducts.find(p => p.id === prodId);
+      if (!prod) return;
+
+      const current = prod.stock !== undefined ? Number(prod.stock) : 0;
+      const next = Math.max(0, current + delta);
+      const newStatus = next <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
+
+      try {
+        await updateDoc(doc(db, "products", prodId), {
+          stock: next,
+          status: newStatus,
+          updated_at: serverTimestamp()
+        });
+      } catch (err) {
+        alert("Gagal update stok: " + err.message);
+      }
+    };
+
+    // Ubah Stok Langsung
+    window.setStockDirect = async function(prodId, rawVal) {
+      const num = Math.max(0, parseInt(rawVal) || 0);
+      const newStatus = num <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
+
+      try {
+        await updateDoc(doc(db, "products", prodId), {
+          stock: num,
+          status: newStatus,
+          updated_at: serverTimestamp()
+        });
+      } catch (err) {
+        alert("Gagal update stok: " + err.message);
+      }
+    };
+
+    // Filter & Search
+    window.filterCategory = function(cat) {
+      currentFilter = cat;
+      document.querySelectorAll(".cat-btn").forEach(btn => {
+        btn.classList.remove("bg-gray-900", "text-white", "shadow-xs");
+        btn.classList.add("bg-white", "text-gray-600");
+      });
+      event.target.classList.remove("bg-white", "text-gray-600");
+      event.target.classList.add("bg-gray-900", "text-white", "shadow-xs");
+      renderProductsList();
+    };
+
+    window.handleSearch = function() {
+      searchQuery = document.getElementById("search-input").value;
+      const clearBtn = document.getElementById("clear-search");
+      if (searchQuery.trim() !== "") {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      renderProductsList();
+    };
+
+    window.clearSearch = function() {
+      document.getElementById("search-input").value = "";
+      handleSearch();
+    };
+
+    // Buat & Kirim Laporan Stok WhatsApp ke Admin/Pemilik
+    window.sendStockReportToWA = function() {
+      const now = new Date();
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const timeStr = now.toLocaleDateString('id-ID', options);
+
+      const readyItems = allProducts.filter(p => p.status !== "OUT_OF_STOCK" && Number(p.stock || 0) > 0);
+      const soldOutItems = allProducts.filter(p => p.status === "OUT_OF_STOCK" || Number(p.stock || 0) <= 0);
+
+      let msg = `📋 *LAPORAN UPDATE STOK - AZRI SNACK*\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `👤 *Petugas:* ${staffName}\n`;
+      msg += `⏰ *Waktu:* ${timeStr} WIB\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+      msg += `✅ *MENU READY SIAP SAJI (${readyItems.length} Menu):*\n`;
+      if (readyItems.length === 0) {
+        msg += `_(Semua menu saat ini sedang habis)_\n`;
+      } else {
+        readyItems.forEach(item => {
+          msg += `• ${item.name} : *${item.stock} pcs*\n`;
+        });
+      }
+
+      msg += `\n❌ *MENU HABIS (${soldOutItems.length} Menu):*\n`;
+      if (soldOutItems.length === 0) {
+        msg += `_(Tidak ada menu yang habis)_\n`;
+      } else {
+        soldOutItems.forEach(item => {
+          msg += `• ${item.name} *(HABIS / 0 pcs)*\n`;
+        });
+      }
+
+      msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `_Laporan otomatis dikirim dari Panel Karyawan AZRI SNACK._`;
+
+      const encoded = encodeURIComponent(msg);
+      const waUrl = `https://api.whatsapp.com/send?phone=${WA_STORE_PHONE}&text=${encoded}`;
+      window.open(waUrl, "_blank");
+    };
+  </script>
+</body>
+</html>
