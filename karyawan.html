@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Update Stok Karyawan - AZRI SNACK</title>
   
+  <!-- Konfigurasi PWA Web App Karyawan -->
+  <link rel="manifest" href="./manifest-karyawan.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Azri Stok">
+  <link rel="apple-touch-icon" href="./logo.png">
+  <link rel="icon" type="image/png" href="./logo.png">
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome -->
@@ -27,6 +37,24 @@
 </head>
 <body class="bg-[#f4f5f8] text-gray-800 pb-32 min-h-screen">
 
+  <!-- Banner PWA Install Khusus Karyawan -->
+  <div id="pwa-install-banner" class="hidden bg-gray-950 text-white px-4 py-2.5 shadow-md sticky top-0 z-40 border-b border-amber-500/20">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📲</span>
+        <span>Pasang aplikasi <strong>Azri Stok</strong> di layar utama HP untuk akses cepat!</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="triggerPWAInstall()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 font-bold px-3 py-1.5 rounded-xl shadow-xs transition whitespace-nowrap text-white">
+          Pasang App
+        </button>
+        <button onclick="dismissPWABanner()" class="text-gray-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Header Panel Karyawan (Logo Terhubung Real-Time ke Web Admin) -->
   <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xs">
     <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -45,8 +73,13 @@
         </div>
       </div>
 
-      <!-- Nama Karyawan Aktif -->
+      <!-- Nama Karyawan Aktif & Tombol Pasang App Cepat -->
       <div class="flex items-center gap-2">
+        <button id="btn-manual-install" onclick="triggerPWAInstall()" class="hidden text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+          <i class="fa-solid fa-download text-[10px]"></i>
+          <span>App</span>
+        </button>
+
         <div class="text-right hidden sm:block">
           <p class="text-[10px] text-gray-400">Petugas:</p>
           <input type="text" id="staff-name-desktop" value="Tim Dapur" oninput="syncStaffName(this.value)" class="text-xs font-bold text-gray-800 bg-transparent text-right outline-none border-b border-dashed border-gray-300 w-28">
@@ -185,7 +218,7 @@
       document.getElementById("staff-name-mobile").value = staffName;
     };
 
-    // 1. Sinkronisasi Logo Real-time dari Web Admin (settings/store_config)
+    // 1. Sinkronisasi Logo Real-time dari Web Admin
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -464,6 +497,51 @@
       const encoded = encodeURIComponent(msg);
       const waUrl = `https://api.whatsapp.com/send?phone=${WA_STORE_PHONE}&text=${encoded}`;
       window.open(waUrl, "_blank");
+    };
+  </script>
+
+  <!-- PWA Service Worker & Install Prompt Logic Khusus Karyawan -->
+  <script>
+    let deferredPrompt;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker Karyawan aktif:', reg.scope))
+          .catch(err => console.log('Gagal pasang Service Worker:', err));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.remove('hidden');
+
+      const btnManual = document.getElementById('btn-manual-install');
+      if (btnManual) btnManual.classList.remove('hidden');
+    });
+
+    window.triggerPWAInstall = function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Karyawan memasang aplikasi stok');
+          }
+          deferredPrompt = null;
+          dismissPWABanner();
+        });
+      } else {
+        // Fallback jika dibuka lewat browser yang tidak mendukung event otomatis
+        alert("Untuk memasang aplikasi di HP:\n1. Ketuk titik tiga (⋮) di pojok kanan atas browser\n2. Pilih 'Tambahkan ke Layar Utama' (Add to Home Screen)");
+      }
+    };
+
+    window.dismissPWABanner = function() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.add('hidden');
     };
   </script>
 </body>
