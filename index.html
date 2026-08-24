@@ -313,7 +313,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
+  <!-- MODAL CHECKOUT & RINCIAN KERANJANG (DENGAN FOTO PRODUK) -->
   <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
@@ -333,12 +333,13 @@
         <div>
           <div class="flex items-center justify-between mb-2">
             <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Item Terpilih</h4>
-            <span class="text-[10px] text-gray-400">Ketik angka untuk atur porsi</span>
+            <span class="text-[10px] text-gray-400">Atur porsi pesanan</span>
           </div>
 
-          <div id="cart-items-container" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
+          <!-- Container Item Keranjang (Gambar Produk Ditampilkan) -->
+          <div id="cart-items-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
 
-          <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
+          <div class="mt-3.5 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
             <span>Total Pembayaran Sementara</span>
             <span id="modal-subtotal" class="text-amber-600 text-base">Rp0</span>
           </div>
@@ -568,7 +569,7 @@
       console.warn("Firestore fallback aktif:", err);
     });
 
-    // 3. Render Katalog: Siap Saji di Atas & Habis di Bawah (Keduanya Urut A-Z)
+    // 3. Render Katalog: Siap Saji di Atas & Habis di Bawah (Urut A-Z)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -585,7 +586,6 @@
         );
       }
 
-      // Pisahkan produk Ready vs Habis Hari Ini
       const readyProducts = [];
       const soldOutProducts = [];
 
@@ -599,14 +599,12 @@
         }
       });
 
-      // PENGURUTAN ALFABETIS (A-Z) UNTUK MASING-MASING KELOMPOK
       readyProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
       soldOutProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
 
       document.getElementById("product-count-badge").innerText = `${readyProducts.length} Ready`;
       document.getElementById("soldout-count-badge").innerText = `${soldOutProducts.length} Menu`;
 
-      // Kontrol Tombol Pintasan Scroll ke Bawah
       const scrollBtn = document.getElementById("btn-scroll-soldout");
       if (soldOutProducts.length > 0) {
         scrollBtn.classList.remove("hidden");
@@ -623,7 +621,6 @@
 
       const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
 
-      // 1. Render Grid Ready (Atas)
       if (readyProducts.length === 0 && soldOutProducts.length === 0) {
         gridReady.innerHTML = `
           <div class="col-span-full text-center py-14 bg-white rounded-3xl border border-gray-100">
@@ -649,7 +646,6 @@
         });
       }
 
-      // 2. Render Grid Habis (Bawah)
       if (soldOutProducts.length > 0) {
         soldOutSection.classList.remove("hidden");
         soldOutProducts.forEach(p => {
@@ -662,7 +658,6 @@
       }
     }
 
-    // Helper Pembuat Elemen Card Produk
     function createProductCardHTML(p, liveStock, inCartQty, isSoldOut, fallbackImg) {
       const card = document.createElement("div");
       card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/80' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
@@ -859,7 +854,6 @@
       const badge = document.getElementById("cart-badge");
       const stickyBar = document.getElementById("sticky-cart");
 
-      // Cek apakah ada kue yang habis hari ini di dalam keranjang
       let hasSoldOutTodayItem = false;
       Object.values(cart).forEach(item => {
         const liveProd = allProducts.find(p => p.id === item.id);
@@ -897,6 +891,7 @@
       renderCartModalList();
     }
 
+    // Render List Keranjang Belanja dengan Foto Kue Lengkap & Rapi
     function renderCartModalList() {
       const container = document.getElementById("cart-items-container");
       container.innerHTML = "";
@@ -907,32 +902,40 @@
         return;
       }
 
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
+
       items.forEach(item => {
         const liveProd = allProducts.find(p => p.id === item.id);
         const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
         const isSoldOutToday = liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0);
+        const imgUrl = (liveProd && liveProd.image_url) || item.image_url || fallbackImg;
 
         const row = document.createElement("div");
-        row.className = "flex items-center justify-between bg-gray-50/80 p-2.5 rounded-2xl text-xs border border-gray-100";
+        row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
         row.innerHTML = `
-          <div class="flex-1 pr-2">
-            <div class="flex items-center gap-1.5">
-              <p class="font-bold text-gray-800 line-clamp-1">${item.name}</p>
-              ${isSoldOutToday ? '<span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded font-semibold">Pre-Order Besok</span>' : ''}
+          <!-- Foto Thumbnail Produk di Keranjang -->
+          <img src="${imgUrl}" alt="${item.name}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200/80 shadow-2xs" onerror="this.src='${fallbackImg}'">
+
+          <!-- Detail Nama & Harga Satuan -->
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-[11px] text-gray-400">Rp${item.price.toLocaleString('id-ID')}</span>
+              ${isSoldOutToday ? '<span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded font-semibold whitespace-nowrap">Pre-Order Besok</span>' : ''}
             </div>
-            <p class="text-gray-400 text-[11px]">Rp${item.price.toLocaleString('id-ID')} / pcs</p>
           </div>
 
-          <div class="flex items-center gap-2">
-            <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5">
-              <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center">-</button>
-              <input type="number" min="1" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-10 text-center font-bold text-gray-800 text-xs outline-none bg-transparent">
-              <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center">+</button>
+          <!-- Kontrol Qty (+ / -) & Total Harga Item -->
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5 shadow-2xs">
+              <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
+              <input type="number" min="1" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-8 text-center font-bold text-gray-900 text-xs outline-none bg-transparent">
+              <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
             </div>
 
-            <span class="font-bold text-gray-700 min-w-[70px] text-right">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
+            <span class="font-bold text-xs text-gray-900 text-right min-w-[55px]">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
 
-            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini" class="w-7 h-7 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition ml-1">
+            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini" class="w-6 h-6 rounded-lg text-gray-300 hover:text-red-500 flex items-center justify-center transition">
               <i class="fa-solid fa-trash-can text-xs"></i>
             </button>
           </div>
