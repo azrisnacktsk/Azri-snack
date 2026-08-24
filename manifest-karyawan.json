@@ -1,25 +1,21 @@
 {
-  "id": "/Azri-snack/karyawan.html",
   "name": "Azri Stok - Tim Dapur",
   "short_name": "Azri Stok",
-  "description": "Panel Khusus Update Stok Harian AZRI SNACK",
-  "start_url": "karyawan.html",
-  "scope": "/Azri-snack/karyawan.html",
+  "start_url": "./karyawan.html",
   "display": "standalone",
   "background_color": "#f4f5f8",
   "theme_color": "#f59e0b",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "./logo.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "./logo.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
