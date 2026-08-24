@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Google Font Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Library html2canvas untuk Simpan Gambar PNG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <style>
     body { font-family: 'Poppins', sans-serif; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -177,7 +180,7 @@
         <div id="orders-container" class="space-y-3 no-print"></div>
       </section>
 
-      <!-- ================= TAB 2: MANAJEMEN PRODUK & KUOTA STOK (DIPISAH READY VS HABIS & URUT A-Z) ================= -->
+      <!-- ================= TAB 2: MANAJEMEN PRODUK & KUOTA STOK ================= -->
       <section id="view-products" class="tab-view hidden space-y-6 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
@@ -385,13 +388,19 @@
             </div>
             <div>
               <h3 class="font-bold text-gray-900 text-sm">Nota / Struk Pesanan Resmi</h3>
-              <p class="text-[11px] text-gray-400">Pilih status pembayaran sebelum cetak</p>
+              <p class="text-[11px] text-gray-400">Pilih status pembayaran & format ekspor</p>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="printReceiptNow()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
-              <i class="fa-solid fa-print"></i>
-              <span>Cetak / PDF</span>
+          <div class="flex items-center gap-1.5">
+            <!-- Tombol Cetak PDF -->
+            <button onclick="printReceiptNow()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+              <i class="fa-solid fa-file-pdf"></i>
+              <span>PDF</span>
+            </button>
+            <!-- Tombol Simpan Gambar PNG -->
+            <button onclick="downloadReceiptAsPNG()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+              <i class="fa-solid fa-image"></i>
+              <span>PNG</span>
             </button>
             <button onclick="closeReceiptModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 flex items-center justify-center">
               <i class="fa-solid fa-xmark"></i>
@@ -523,10 +532,16 @@
             <p class="text-[11px] text-gray-400">Gunakan untuk daftar belanja bahan & produksi dapur</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="printSummaryNow()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
-            <i class="fa-solid fa-print"></i>
-            <span>Cetak / Simpan PDF</span>
+        <div class="flex items-center gap-1.5">
+          <!-- Tombol Cetak PDF -->
+          <button onclick="printSummaryNow()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>PDF</span>
+          </button>
+          <!-- Tombol Simpan Gambar PNG -->
+          <button onclick="downloadSummaryAsPNG()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+            <i class="fa-solid fa-image"></i>
+            <span>PNG</span>
           </button>
           <button onclick="closeDailySummaryModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 flex items-center justify-center">
             <i class="fa-solid fa-xmark"></i>
@@ -534,15 +549,23 @@
         </div>
       </div>
 
-      <div id="summary-print-area" class="p-6 overflow-y-auto space-y-6 text-gray-800 text-xs">
+      <div id="summary-print-area" class="p-6 overflow-y-auto space-y-6 text-gray-800 text-xs bg-white">
         
-        <div class="border-b-2 border-amber-500 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <div>
-            <h1 class="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
-              <span>🍰 AZRI SNACK</span>
-            </h1>
-            <p class="text-gray-500 text-xs mt-0.5">Lembar Rekap Produksi Dapur & Pesanan Pelanggan</p>
+        <!-- Header Lembar Rekap Belanja dengan Logo Sinkron -->
+        <div class="border-b-2 border-amber-500 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
+              <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center overflow-hidden p-0.5">
+                <span id="summary-logo-fallback" class="text-2xl">🍰</span>
+                <img id="summary-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('summary-logo-fallback').classList.remove('hidden');">
+              </div>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold text-gray-900 tracking-tight">AZRI SNACK</h1>
+              <p class="text-gray-500 text-xs mt-0.5">Lembar Rekap Produksi Dapur & Pesanan Pelanggan</p>
+            </div>
           </div>
+
           <div class="text-left sm:text-right bg-amber-50 p-2.5 rounded-xl border border-amber-200">
             <p class="font-bold text-amber-900 text-sm" id="summary-date-title">Hari, Tanggal Bulan Tahun</p>
             <p class="text-[10px] text-gray-500 mt-0.5" id="summary-generated-time">Dibuat: -</p>
@@ -708,11 +731,12 @@
       }
     });
 
-    // 2. Sinkronisasi Logo Global Real-time
+    // 2. Sinkronisasi Logo Global Real-time (Login, Navbar, Preview, Lembar Rekap, Watermark)
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists() && docSnap.data().logo_url) {
         currentStoreLogoUrl = docSnap.data().logo_url;
         
+        // Preview Tab Pengaturan
         const img = document.getElementById("logo-img-preview");
         const icon = document.getElementById("logo-icon-placeholder");
         if (img && icon) {
@@ -721,6 +745,7 @@
           icon.classList.add("hidden");
         }
 
+        // Top Navbar
         const navImg = document.getElementById("nav-logo-img");
         const navFallback = document.getElementById("nav-logo-fallback");
         if (navImg && navFallback) {
@@ -729,6 +754,7 @@
           navFallback.classList.add("hidden");
         }
 
+        // Layar Login
         const loginImg = document.getElementById("login-logo-img");
         const loginFallback = document.getElementById("login-logo-fallback");
         if (loginImg && loginFallback) {
@@ -737,6 +763,16 @@
           loginFallback.classList.add("hidden");
         }
 
+        // Lembar Rekap Belanja Harian
+        const sumImg = document.getElementById("summary-logo-img");
+        const sumFallback = document.getElementById("summary-logo-fallback");
+        if (sumImg && sumFallback) {
+          sumImg.src = currentStoreLogoUrl;
+          sumImg.classList.remove("hidden");
+          sumFallback.classList.add("hidden");
+        }
+
+        // Watermark Nota
         const watermarkImg = document.getElementById("receipt-watermark-img");
         if (watermarkImg) watermarkImg.src = currentStoreLogoUrl;
       }
@@ -929,7 +965,7 @@
       }
     };
 
-    // 4. Render Produk & Kuota Harian (DIPISAH READY VS HABIS & URUT A-Z)
+    // 4. Render Produk (DIPISAH READY VS HABIS & URUT A-Z)
     window.renderProductsTable = function() {
       const readyTbody = document.getElementById("products-ready-table-body");
       const soldOutTbody = document.getElementById("products-soldout-table-body");
@@ -959,7 +995,6 @@
         }
       });
 
-      // PENGURUTAN ALFABETIS (A-Z)
       readyProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
       soldOutProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
 
@@ -1245,7 +1280,7 @@
       }
     };
 
-    // 6. FITUR NOTA STRUK PEMBELIAN
+    // 6. FITUR NOTA STRUK PEMBELIAN (PDF & PNG)
     window.openReceiptModal = function(orderId) {
       const order = ordersList.find(o => o.id === orderId);
       if (!order) {
@@ -1407,6 +1442,7 @@
       }
     }
 
+    // 1. Cetak / Simpan PDF Nota
     window.printReceiptNow = function() {
       const receiptArea = document.getElementById("receipt-print-area");
       const summaryArea = document.getElementById("summary-print-area");
@@ -1417,7 +1453,20 @@
       window.print();
     };
 
-    // 7. FITUR MODAL RANGKUMAN BELANJA & PESANAN HARIAN
+    // 2. Simpan Gambar PNG Nota
+    window.downloadReceiptAsPNG = function() {
+      const receiptArea = document.getElementById("receipt-print-area");
+      const invNo = activeReceiptOrder ? (activeReceiptOrder.invoice_no || activeReceiptOrder.id) : "Nota";
+      
+      html2canvas(receiptArea, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `Nota-${invNo}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    };
+
+    // 7. FITUR MODAL RANGKUMAN BELANJA & PESANAN HARIAN (PDF & PNG)
     window.openDailySummaryModal = function() {
       let targetDate = document.getElementById("filter-order-date").value;
       if (!targetDate) {
@@ -1430,6 +1479,15 @@
 
       document.getElementById("summary-date-title").innerText = formattedDateString;
       document.getElementById("summary-generated-time").innerText = "Dicetak pada: " + new Date().toLocaleString('id-ID');
+
+      // Update Logo di Header Rangkuman
+      const sumImg = document.getElementById("summary-logo-img");
+      const sumFallback = document.getElementById("summary-logo-fallback");
+      if (currentStoreLogoUrl) {
+        sumImg.src = currentStoreLogoUrl;
+        sumImg.classList.remove("hidden");
+        sumFallback.classList.add("hidden");
+      }
 
       const dailyOrders = ordersList.filter(o => o.event_date === targetDate && o.status !== 'CANCELLED');
 
@@ -1537,6 +1595,7 @@
       document.getElementById("summary-modal").classList.add("hidden");
     };
 
+    // 1. Cetak / Simpan PDF Rangkuman
     window.printSummaryNow = function() {
       const receiptArea = document.getElementById("receipt-print-area");
       const summaryArea = document.getElementById("summary-print-area");
@@ -1545,6 +1604,19 @@
       summaryArea.classList.add("printable-active");
       
       window.print();
+    };
+
+    // 2. Simpan Gambar PNG Rangkuman
+    window.downloadSummaryAsPNG = function() {
+      const summaryArea = document.getElementById("summary-print-area");
+      const targetDate = document.getElementById("filter-order-date").value || "Harian";
+      
+      html2canvas(summaryArea, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `Rekap-Belanja-${targetDate}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
     };
 
     // 8. Laporan Keuangan
