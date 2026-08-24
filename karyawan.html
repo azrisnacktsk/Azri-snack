@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Update Stok Karyawan - AZRI SNACK</title>
   
-  <!-- Konfigurasi PWA Web App Karyawan -->
+  <!-- Konfigurasi PWA Mandiri Khusus Karyawan -->
   <link rel="manifest" href="./manifest-karyawan.json">
   <meta name="theme-color" content="#f59e0b">
   <meta name="mobile-web-app-capable" content="yes">
@@ -42,7 +42,7 @@
     <div class="max-w-3xl mx-auto flex items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
         <span class="text-base">📲</span>
-        <span>Pasang aplikasi <strong>Azri Stok</strong> di layar utama HP untuk akses cepat!</span>
+        <span>Pasang aplikasi <strong>Azri Stok</strong> di layar utama HP!</span>
       </div>
       <div class="flex items-center gap-2">
         <button onclick="triggerPWAInstall()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 font-bold px-3 py-1.5 rounded-xl shadow-xs transition whitespace-nowrap text-white">
@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      <!-- Nama Karyawan Aktif & Tombol Pasang App Cepat -->
+      <!-- Nama Karyawan Aktif & Tombol Pasang App -->
       <div class="flex items-center gap-2">
         <button id="btn-manual-install" onclick="triggerPWAInstall()" class="hidden text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
           <i class="fa-solid fa-download text-[10px]"></i>
@@ -500,15 +500,15 @@
     };
   </script>
 
-  <!-- PWA Service Worker & Install Prompt Logic Khusus Karyawan -->
+  <!-- PWA Service Worker Khusus Karyawan (sw-karyawan.js) -->
   <script>
     let deferredPrompt;
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('PWA Service Worker Karyawan aktif:', reg.scope))
-          .catch(err => console.log('Gagal pasang Service Worker:', err));
+        navigator.serviceWorker.register('./sw-karyawan.js', { scope: './karyawan.html' })
+          .then(reg => console.log('Service Worker Karyawan aktif:', reg.scope))
+          .catch(err => console.log('Gagal pasang SW Karyawan:', err));
       });
     }
 
@@ -528,14 +528,13 @@
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            console.log('Karyawan memasang aplikasi stok');
+            console.log('App Stok Terpasang');
           }
           deferredPrompt = null;
           dismissPWABanner();
         });
       } else {
-        // Fallback jika dibuka lewat browser yang tidak mendukung event otomatis
-        alert("Untuk memasang aplikasi di HP:\n1. Ketuk titik tiga (⋮) di pojok kanan atas browser\n2. Pilih 'Tambahkan ke Layar Utama' (Add to Home Screen)");
+        alert("Untuk memasang aplikasi:\n1. Ketuk titik tiga (⋮) di pojok kanan atas Chrome\n2. Pilih 'Tambahkan ke Layar Utama' / 'Instal aplikasi'");
       }
     };
 
