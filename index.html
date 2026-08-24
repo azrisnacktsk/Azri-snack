@@ -157,7 +157,7 @@
     </div>
   </section>
 
-  <!-- PEMBERITAHUAN STOK HARI INI & PRE-ORDER BESOK -->
+  <!-- PEMBERITAHUAN STOK HARI INI & PINTASAN SCROLL KE PRODUK HABIS -->
   <section class="max-w-5xl mx-auto px-4 mt-3">
     <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -171,14 +171,22 @@
               <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
             </p>
             <p class="text-gray-600 mt-0.5">
-              Menu yang <strong>habis hari ini</strong> otomatis berada di urutan bawah, namun <strong>tetap bisa Anda pesan untuk hari besok atau lusa</strong>. Pilih tanggal acara pada saat rincian belanja.
+              Menu yang <strong>habis hari ini</strong> otomatis berada di urutan paling bawah, namun <strong>tetap bisa Anda pesan untuk jadwal besok atau lusa</strong>.
             </p>
           </div>
         </div>
-        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3.5 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap self-start sm:self-center">
-          <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
-          <span>Konsultasi Acara via WA</span>
-        </button>
+        
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-scroll-soldout" onclick="scrollToSoldOutProducts()" class="hidden inline-flex items-center justify-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-2 rounded-xl border border-blue-200 transition shadow-2xs whitespace-nowrap">
+            <i class="fa-solid fa-arrow-down text-xs"></i>
+            <span>Menu Habis (Bisa Pesan Besok)</span>
+          </button>
+          
+          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap">
+            <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
+            <span>Konsultasi WA</span>
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -189,20 +197,44 @@
     <p class="mt-3 text-xs sm:text-sm text-gray-400 font-medium">Menyiapkan aneka menu lezat...</p>
   </div>
 
-  <!-- Product Catalog Grid -->
+  <!-- Product Catalog Grid (Siap Saji / Ready Hari Ini - Urut A-Z) -->
   <main id="catalog-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
-        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu</h3>
+        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu Siap Saji</h3>
         <span id="product-count-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
       </div>
-      <span class="text-[11px] text-gray-400">Klik kartu kue untuk detail porsi</span>
+      <span class="text-[11px] text-gray-400">Urut A-Z • Klik kartu untuk detail</span>
     </div>
 
     <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5 hidden">
       <!-- Diisi otomatis oleh JavaScript -->
     </div>
   </main>
+
+  <!-- BAGIAN PRODUK HABIS HARI INI (SCROLL KE BAWAH - Urut A-Z) -->
+  <section id="soldout-section" class="max-w-5xl mx-auto px-4 mt-12 scroll-mt-24 hidden">
+    <div class="border-t-2 border-dashed border-gray-200 pt-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-xs">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Habis Hari Ini (Bisa Dipesan untuk Besok/Lusa)</h3>
+          <span id="soldout-count-badge" class="bg-red-50 text-red-700 border border-red-200 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
+        </div>
+      </div>
+
+      <p class="text-xs text-gray-500 mb-4 bg-blue-50/80 p-3 rounded-2xl border border-blue-100 flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-blue-600"></i>
+        <span>Stok siap saji untuk hari ini sudah habis terjual. Anda tetap bisa memasukkan menu di bawah ke keranjang untuk jadwal <strong>besok, lusa, atau acara mendatang</strong>.</span>
+      </p>
+
+      <div id="soldout-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5">
+        <!-- Diisi otomatis oleh JavaScript -->
+      </div>
+    </div>
+  </section>
 
   <!-- Sticky Bottom Cart Bar -->
   <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
@@ -230,7 +262,6 @@
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
       <div class="relative w-full h-60 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
-        <!-- Foto di Pop-up Detail Tetap Berwarna Penuh -->
         <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
         <button onclick="closeProductDetailModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition">
           <i class="fa-solid fa-xmark text-sm"></i>
@@ -245,7 +276,6 @@
           <p id="detail-price" class="text-base font-bold text-amber-600 mt-0.5">Rp0</p>
         </div>
 
-        <!-- Banner Khusus Jika Menu Habis Hari Ini -->
         <div id="detail-preorder-notice" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-3 text-xs text-blue-800 flex items-start gap-2.5">
           <i class="fa-solid fa-calendar-day text-blue-600 mt-0.5"></i>
           <div>
@@ -431,7 +461,6 @@
     let cart = {};
     let selectedModalProduct = null;
 
-    // Helper Tanggal Hari Ini & Besok (WIB)
     function getTodayDateWIB() {
       const now = new Date();
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -450,7 +479,15 @@
     const todayWIBString = getTodayDateWIB();
     document.getElementById("order-date").value = todayWIBString;
 
-    // Handler Tombol Enter Pencarian (Tutup Keyboard & Scroll)
+    // Handler Tombol Scroll ke Bagian Produk Habis
+    window.scrollToSoldOutProducts = function() {
+      const el = document.getElementById("soldout-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    // Handler Tombol Enter Pencarian
     window.submitSearchOnEnter = function(e) {
       if (e) e.preventDefault();
       const input = document.getElementById("search-input");
@@ -465,7 +502,6 @@
       }
     };
 
-    // Tombol X Hapus Pencarian & Langsung Kembalikan Semua Menu
     window.clearSearchInput = function() {
       const input = document.getElementById("search-input");
       input.value = "";
@@ -473,7 +509,6 @@
       input.focus();
     };
 
-    // Handler Keyboard Dismiss Otomatis di Input Lain
     document.addEventListener("keydown", function(e) {
       if (e.key === "Enter" && e.target && e.target.tagName === "INPUT") {
         if (e.target.id !== "search-input") {
@@ -533,7 +568,7 @@
       console.warn("Firestore fallback aktif:", err);
     });
 
-    // 3. Render Katalog (Gambar Tetap Berwarna, Urutan Habis di Bawah)
+    // 3. Render Katalog: Siap Saji di Atas & Habis di Bawah (Keduanya Urut A-Z)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -550,24 +585,47 @@
         );
       }
 
-      // LOGIKA URUTAN: Produk Ready di atas, Produk Habis otomatis turun ke paling bawah
-      filtered.sort((a, b) => {
-        const stockA = a.stock !== undefined ? Number(a.stock) : 0;
-        const stockB = b.stock !== undefined ? Number(b.stock) : 0;
-        const isSoldOutA = a.status === "OUT_OF_STOCK" || stockA <= 0;
-        const isSoldOutB = b.status === "OUT_OF_STOCK" || stockB <= 0;
+      // Pisahkan produk Ready vs Habis Hari Ini
+      const readyProducts = [];
+      const soldOutProducts = [];
 
-        if (isSoldOutA && !isSoldOutB) return 1;
-        if (!isSoldOutA && isSoldOutB) return -1;
-        return 0;
+      filtered.forEach(p => {
+        const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+        const isSoldOut = p.status === "OUT_OF_STOCK" || liveStock <= 0;
+        if (isSoldOut) {
+          soldOutProducts.push(p);
+        } else {
+          readyProducts.push(p);
+        }
       });
 
-      document.getElementById("product-count-badge").innerText = `${filtered.length} Menu`;
-      const grid = document.getElementById("product-grid");
-      grid.innerHTML = "";
+      // PENGURUTAN ALFABETIS (A-Z) UNTUK MASING-MASING KELOMPOK
+      readyProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOutProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
 
-      if (filtered.length === 0) {
-        grid.innerHTML = `
+      document.getElementById("product-count-badge").innerText = `${readyProducts.length} Ready`;
+      document.getElementById("soldout-count-badge").innerText = `${soldOutProducts.length} Menu`;
+
+      // Kontrol Tombol Pintasan Scroll ke Bawah
+      const scrollBtn = document.getElementById("btn-scroll-soldout");
+      if (soldOutProducts.length > 0) {
+        scrollBtn.classList.remove("hidden");
+      } else {
+        scrollBtn.classList.add("hidden");
+      }
+
+      const gridReady = document.getElementById("product-grid");
+      const gridSoldOut = document.getElementById("soldout-grid");
+      const soldOutSection = document.getElementById("soldout-section");
+
+      gridReady.innerHTML = "";
+      gridSoldOut.innerHTML = "";
+
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
+
+      // 1. Render Grid Ready (Atas)
+      if (readyProducts.length === 0 && soldOutProducts.length === 0) {
+        gridReady.innerHTML = `
           <div class="col-span-full text-center py-14 bg-white rounded-3xl border border-gray-100">
             <i class="fa-solid fa-cookie-bite text-3xl text-amber-200 mb-2"></i>
             <p class="text-xs text-gray-400 font-medium">Menu yang Anda cari tidak ditemukan.</p>
@@ -576,83 +634,100 @@
             </button>
           </div>
         `;
-        return;
+      } else if (readyProducts.length === 0) {
+        gridReady.innerHTML = `
+          <div class="col-span-full text-center py-8 bg-amber-50/60 rounded-3xl border border-amber-200/60">
+            <p class="text-xs text-amber-800 font-medium">Semua stok siap saji untuk kategori ini sudah habis hari ini. Silakan lihat daftar menu di bawah untuk pesan besok.</p>
+          </div>
+        `;
+      } else {
+        readyProducts.forEach(p => {
+          const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+          const inCartQty = cart[p.id]?.qty || 0;
+          const card = createProductCardHTML(p, liveStock, inCartQty, false, fallbackImg);
+          gridReady.appendChild(card);
+        });
       }
 
-      filtered.forEach(p => {
-        const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
-        const inCartQty = cart[p.id]?.qty || 0;
-        const isSoldOut = p.status === "OUT_OF_STOCK" || liveStock <= 0;
-        const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
-        
-        const card = document.createElement("div");
-        card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/80 bg-white' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
-        
-        card.innerHTML = `
-          <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
-            <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
-              <!-- GAMBAR TETAP BERWARNA PENUH (TANPA GRAYSCALE) -->
-              <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
-              
-              <!-- Badge Kategori (Kiri Atas) -->
-              <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
-                ${p.category || 'Kue'}
-              </span>
+      // 2. Render Grid Habis (Bawah)
+      if (soldOutProducts.length > 0) {
+        soldOutSection.classList.remove("hidden");
+        soldOutProducts.forEach(p => {
+          const inCartQty = cart[p.id]?.qty || 0;
+          const card = createProductCardHTML(p, 0, inCartQty, true, fallbackImg);
+          gridSoldOut.appendChild(card);
+        });
+      } else {
+        soldOutSection.classList.add("hidden");
+      }
+    }
 
-              <!-- BADGE HABIS HARI INI DI POJOK KANAN ATAS -->
-              ${isSoldOut ? `
-                <span class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                  Habis Hari Ini
-                </span>
-              ` : `
-                <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
-                  Sisa Hari Ini: ${liveStock} pcs
-                </span>
-              `}
-            </div>
-
-            <h3 class="font-bold text-xs sm:text-sm line-clamp-1 text-gray-900 group-hover:text-amber-600 transition">${p.name}</h3>
+    // Helper Pembuat Elemen Card Produk
+    function createProductCardHTML(p, liveStock, inCartQty, isSoldOut, fallbackImg) {
+      const card = document.createElement("div");
+      card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/80' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
+      
+      card.innerHTML = `
+        <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
+          <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
+            <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
             
+            <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
+              ${p.category || 'Kue'}
+            </span>
+
             ${isSoldOut ? `
-              <p class="text-blue-600 font-medium text-[10px] line-clamp-1 mt-0.5">
-                <i class="fa-solid fa-calendar-plus text-[9px]"></i> Bisa dipesan untuk besok/lusa
-              </p>
+              <span class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                Habis Hari Ini
+              </span>
             ` : `
-              <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
+              <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
+                Sisa Hari Ini: ${liveStock} pcs
+              </span>
             `}
           </div>
 
-          <div class="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
-            <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
-            
-            <div id="btn-container-${p.id}">
-              ${isSoldOut ? (inCartQty > 0 ? `
-                <div class="flex items-center bg-blue-50 border border-blue-200 rounded-xl p-0.5">
-                  <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-blue-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-blue-950 bg-transparent outline-none">
-                  <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
-                </div>
-              ` : `
-                <button onclick="updateQty('${p.id}', 1)" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition shadow-2xs">
-                  <i class="fa-solid fa-calendar-plus"></i> Pesan Besok
-                </button>
-              `) : (inCartQty > 0 ? `
-                <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
-                  <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                  <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
-                  <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
-                </div>
-              ` : `
-                <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
-                  <i class="fa-solid fa-plus text-[10px]"></i> Pesan
-                </button>
-              `)}
-            </div>
+          <h3 class="font-bold text-xs sm:text-sm line-clamp-1 text-gray-900 group-hover:text-amber-600 transition">${p.name}</h3>
+          
+          ${isSoldOut ? `
+            <p class="text-blue-600 font-medium text-[10px] line-clamp-1 mt-0.5">
+              <i class="fa-solid fa-calendar-plus text-[9px]"></i> Bisa dipesan untuk besok/lusa
+            </p>
+          ` : `
+            <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
+          `}
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-gray-50 flex items-center justify-between">
+          <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
+          
+          <div id="btn-container-${p.id}">
+            ${isSoldOut ? (inCartQty > 0 ? `
+              <div class="flex items-center bg-blue-50 border border-blue-200 rounded-xl p-0.5">
+                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-blue-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-blue-950 bg-transparent outline-none">
+                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+              </div>
+            ` : `
+              <button onclick="updateQty('${p.id}', 1)" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition shadow-2xs">
+                <i class="fa-solid fa-calendar-plus"></i> Pesan Besok
+              </button>
+            `) : (inCartQty > 0 ? `
+              <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
+                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+              </div>
+            ` : `
+              <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
+                <i class="fa-solid fa-plus text-[10px]"></i> Pesan
+              </button>
+            `)}
           </div>
-        `;
-        grid.appendChild(card);
-      });
+        </div>
+      `;
+      return card;
     }
 
     // 4. Modal Detail Produk
@@ -951,10 +1026,10 @@
           items: items,
           total_price: grandTotal,
           status: "PENDING",
+          payment_status: "UNPAID",
           created_at: serverTimestamp()
         });
 
-        // Potong stok HANYA jika tanggal acara adalah HARI INI
         const isOrderForToday = (date === getTodayDateWIB());
 
         if (isOrderForToday) {
