@@ -56,9 +56,66 @@
     }
     input[type=number] { -moz-appearance: textfield; }
     html { scroll-behavior: smooth; }
+
+    /* Animasi Preload / Splash Screen */
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); }
+      50% { transform: scale(1.04); box-shadow: 0 0 45px rgba(245, 158, 11, 0.6); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 2.2s infinite ease-in-out;
+    }
+    @keyframes shimmerBar {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+    .animate-shimmer {
+      animation: shimmerBar 1.5s infinite linear;
+    }
   </style>
 </head>
 <body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
+
+  <!-- ================= PRELOAD / SPLASH SCREEN PEMBUKA ================= -->
+  <div id="app-preload-screen" class="fixed inset-0 z-50 bg-[#faf8f5] flex flex-col items-center justify-center p-6 transition-all duration-700">
+    <div class="flex flex-col items-center text-center max-w-xs w-full space-y-6">
+      
+      <!-- Wadah Logo Beranimasi Glow -->
+      <div class="relative">
+        <div class="absolute -inset-2 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-[32px] blur-md opacity-70 animate-pulse"></div>
+        <div class="relative w-28 h-28 rounded-3xl bg-white p-1 shadow-2xl animate-pulse-glow flex items-center justify-center overflow-hidden border border-amber-200/80">
+          <div class="w-full h-full bg-gradient-to-br from-amber-50 to-orange-50 rounded-[20px] flex items-center justify-center overflow-hidden p-2">
+            <span id="preload-logo-fallback" class="text-5xl">🍰</span>
+            <img id="preload-logo-img" src="./logo.png" alt="AZRI SNACK" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('preload-logo-fallback').classList.remove('hidden');">
+          </div>
+        </div>
+      </div>
+
+      <!-- Teks Branding -->
+      <div class="space-y-1">
+        <h1 class="font-serif font-bold text-2xl text-gray-900 tracking-tight">AZRI SNACK</h1>
+        <p class="text-xs text-amber-700 font-medium tracking-wide">Kue Tradisional & Snack Box</p>
+      </div>
+
+      <!-- Indikator Loading Bar & Status -->
+      <div class="w-full space-y-2.5 pt-2">
+        <div class="w-48 h-2 bg-amber-100 rounded-full overflow-hidden mx-auto relative shadow-inner">
+          <div id="preload-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full w-1/3 transition-all duration-500"></div>
+          <div class="absolute inset-0 bg-white/40 w-1/2 animate-shimmer"></div>
+        </div>
+        
+        <p id="preload-status-text" class="text-[11px] text-gray-400 font-medium animate-pulse">
+          <i class="fa-solid fa-cookie text-amber-500 mr-1"></i> Menyiapkan sajian fresh...
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Tagline Bawah -->
+    <div class="absolute bottom-6 text-center text-[10px] text-gray-400 font-medium">
+      Dibuat Fresh Setiap Hari • Sejak 2026
+    </div>
+  </div>
 
   <!-- Banner PWA Install -->
   <div id="pwa-install-banner" class="hidden bg-gray-900 text-white px-4 py-2.5 shadow-md sticky top-0 z-40">
@@ -191,7 +248,7 @@
     </div>
   </section>
 
-  <!-- Loading State -->
+  <!-- Loading State (Dalam Halaman) -->
   <div id="loading" class="max-w-5xl mx-auto px-4 py-20 text-center">
     <div class="w-10 h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
     <p class="mt-3 text-xs sm:text-sm text-gray-400 font-medium">Menyiapkan aneka menu lezat...</p>
@@ -336,7 +393,6 @@
             <span class="text-[10px] text-gray-400">Atur porsi pesanan</span>
           </div>
 
-          <!-- Container Item Keranjang (Gambar Produk Ditampilkan) -->
           <div id="cart-items-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
 
           <div class="mt-3.5 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
@@ -461,6 +517,31 @@
     let searchQuery = "";
     let cart = {};
     let selectedModalProduct = null;
+    let isInitialDataLoaded = false;
+
+    // Helper Animasi Preload Dismiss
+    function hidePreloadScreen() {
+      const preload = document.getElementById("app-preload-screen");
+      const pBar = document.getElementById("preload-progress-bar");
+      const pText = document.getElementById("preload-status-text");
+
+      if (pBar) pBar.style.width = "100%";
+      if (pText) pText.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Siap disajikan!';
+
+      setTimeout(() => {
+        if (preload) {
+          preload.classList.add("opacity-0", "-translate-y-4", "pointer-events-none");
+          setTimeout(() => preload.remove(), 700);
+        }
+      }, 450);
+    }
+
+    // Safety fallback: Preload otomatis tertutup maksimal 2.2 detik
+    setTimeout(() => {
+      if (!isInitialDataLoaded) {
+        hidePreloadScreen();
+      }
+    }, 2200);
 
     function getTodayDateWIB() {
       const now = new Date();
@@ -544,14 +625,26 @@
       openUniversalWhatsApp(WA_STORE_PHONE, msg);
     };
 
-    // 1. Sync Logo Toko
+    // 1. Sync Logo Toko (Termasuk Logo Preload Screen)
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists() && docSnap.data().logo_url) {
+        const logoUrl = docSnap.data().logo_url;
+        
+        // Logo Header
         const logoImg = document.getElementById("store-logo-img");
         const fallback = document.getElementById("store-logo-fallback");
-        logoImg.src = docSnap.data().logo_url;
+        logoImg.src = logoUrl;
         logoImg.classList.remove("hidden");
         fallback.classList.add("hidden");
+
+        // Logo Preload Splash Screen
+        const preImg = document.getElementById("preload-logo-img");
+        const preFallback = document.getElementById("preload-logo-fallback");
+        if (preImg && preFallback) {
+          preImg.src = logoUrl;
+          preImg.classList.remove("hidden");
+          preFallback.classList.add("hidden");
+        }
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
@@ -565,8 +658,15 @@
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
+
+      // Tutup Preload Splash Screen setelah data produk selesai dimuat
+      if (!isInitialDataLoaded) {
+        isInitialDataLoaded = true;
+        hidePreloadScreen();
+      }
     }, (err) => {
       console.warn("Firestore fallback aktif:", err);
+      hidePreloadScreen();
     });
 
     // 3. Render Katalog: Siap Saji di Atas & Habis di Bawah (Urut A-Z)
@@ -891,7 +991,6 @@
       renderCartModalList();
     }
 
-    // Render List Keranjang Belanja dengan Foto Kue Lengkap & Rapi
     function renderCartModalList() {
       const container = document.getElementById("cart-items-container");
       container.innerHTML = "";
@@ -913,10 +1012,8 @@
         const row = document.createElement("div");
         row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
         row.innerHTML = `
-          <!-- Foto Thumbnail Produk di Keranjang -->
           <img src="${imgUrl}" alt="${item.name}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200/80 shadow-2xs" onerror="this.src='${fallbackImg}'">
 
-          <!-- Detail Nama & Harga Satuan -->
           <div class="flex-1 min-w-0">
             <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
             <div class="flex items-center gap-1.5 mt-0.5">
@@ -925,7 +1022,6 @@
             </div>
           </div>
 
-          <!-- Kontrol Qty (+ / -) & Total Harga Item -->
           <div class="flex items-center gap-2 flex-shrink-0">
             <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5 shadow-2xs">
               <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
