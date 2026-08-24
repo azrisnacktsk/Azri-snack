@@ -61,9 +61,14 @@
   <!-- ================= AUTH / LOGIN PIN SCREEN ================= -->
   <div id="login-screen" class="fixed inset-0 z-50 bg-gray-900 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
-      <div class="w-16 h-16 bg-amber-500 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-md">
-        🍰
+      <!-- Logo Dinamis Login Screen -->
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 mx-auto shadow-md overflow-hidden flex items-center justify-center">
+        <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
+          <span id="login-logo-fallback" class="text-3xl">🍰</span>
+          <img id="login-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('login-logo-fallback').classList.remove('hidden');">
+        </div>
       </div>
+
       <div>
         <h2 class="text-xl font-bold text-gray-900">Admin AZRI SNACK</h2>
         <p class="text-xs text-gray-400 mt-1">Masukkan PIN untuk mengakses panel toko</p>
@@ -86,9 +91,14 @@
     <header class="bg-white shadow-xs sticky top-0 z-30 border-b border-gray-200 no-print">
       <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-            🍰
+          <!-- Logo Dinamis Top Navbar -->
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
+            <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-0.5">
+              <span id="nav-logo-fallback" class="text-xl">🍰</span>
+              <img id="nav-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('nav-logo-fallback').classList.remove('hidden');">
+            </div>
           </div>
+
           <div>
             <h1 class="font-bold text-base text-gray-900 leading-tight">Admin AZRI SNACK</h1>
             <p class="text-xs text-gray-400">Panel Pengelola Toko</p>
@@ -320,7 +330,7 @@
         <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Ganti Logo Toko AZRI SNACK</h3>
-            <p class="text-xs text-gray-400 mt-0.5">Logo akan otomatis tampil di web pelanggan, panel karyawan, & watermark nota</p>
+            <p class="text-xs text-gray-400 mt-0.5">Logo akan otomatis tampil di web pelanggan, panel karyawan, navbar admin, & watermark nota</p>
           </div>
 
           <div class="flex items-center gap-4">
@@ -699,6 +709,42 @@
       }
     });
 
+    // 2. Sinkronisasi Logo Global Real-time (Login, Navbar, Preview, Watermark)
+    onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().logo_url) {
+        currentStoreLogoUrl = docSnap.data().logo_url;
+        
+        // Update Logo Preview di Tab Pengaturan
+        const img = document.getElementById("logo-img-preview");
+        const icon = document.getElementById("logo-icon-placeholder");
+        img.src = currentStoreLogoUrl;
+        img.classList.remove("hidden");
+        icon.classList.add("hidden");
+
+        // Update Logo di Top Navbar
+        const navImg = document.getElementById("nav-logo-img");
+        const navFallback = document.getElementById("nav-logo-fallback");
+        if (navImg && navFallback) {
+          navImg.src = currentStoreLogoUrl;
+          navImg.classList.remove("hidden");
+          navFallback.classList.add("hidden");
+        }
+
+        // Update Logo di Layar Login
+        const loginImg = document.getElementById("login-logo-img");
+        const loginFallback = document.getElementById("login-logo-fallback");
+        if (loginImg && loginFallback) {
+          loginImg.src = currentStoreLogoUrl;
+          loginImg.classList.remove("hidden");
+          loginFallback.classList.add("hidden");
+        }
+
+        // Update Logo Watermark Nota
+        const watermarkImg = document.getElementById("receipt-watermark-img");
+        if (watermarkImg) watermarkImg.src = currentStoreLogoUrl;
+      }
+    });
+
     window.handleLogin = function() {
       const pin = document.getElementById("pin-input").value;
       if (pin === currentAdminPin) {
@@ -756,23 +802,9 @@
         renderExpenses();
         calculateFinance();
       });
-
-      onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
-        if (docSnap.exists() && docSnap.data().logo_url) {
-          currentStoreLogoUrl = docSnap.data().logo_url;
-          const img = document.getElementById("logo-img-preview");
-          const icon = document.getElementById("logo-icon-placeholder");
-          img.src = currentStoreLogoUrl;
-          img.classList.remove("hidden");
-          icon.classList.add("hidden");
-
-          const watermarkImg = document.getElementById("receipt-watermark-img");
-          if (watermarkImg) watermarkImg.src = currentStoreLogoUrl;
-        }
-      });
     }
 
-    // 2. Render Orders
+    // 3. Render Orders
     window.renderOrders = function() {
       const filterStatus = document.getElementById("filter-order-status").value;
       const filterDate = document.getElementById("filter-order-date").value;
@@ -900,7 +932,7 @@
       }
     };
 
-    // 3. Render Produk & Kuota Harian (DIPISAH READY VS HABIS & URUT A-Z)
+    // 4. Render Produk & Kuota Harian (DIPISAH READY VS HABIS & URUT A-Z)
     window.renderProductsTable = function() {
       const readyTbody = document.getElementById("products-ready-table-body");
       const soldOutTbody = document.getElementById("products-soldout-table-body");
@@ -1085,7 +1117,7 @@
       }
     };
 
-    // 4. Modal Tambah / Edit Produk
+    // 5. Modal Tambah / Edit Produk
     window.openProductModal = function() {
       document.getElementById("prod-edit-id").value = "";
       document.getElementById("prod-name").value = "";
@@ -1216,299 +1248,7 @@
       }
     };
 
-    // 5. FITUR NOTA STRUK PEMBELIAN
-    window.openReceiptModal = function(orderId) {
-      const order = ordersList.find(o => o.id === orderId);
-      if (!order) return;
-
-      activeReceiptOrder = order;
-
-      document.getElementById("receipt-inv").innerText = "#" + (order.invoice_no || order.id);
-      document.getElementById("receipt-customer").innerText = order.customer_name || "Pelanggan";
-      document.getElementById("receipt-phone").innerText = order.customer_phone || "-";
-      document.getElementById("receipt-date").innerText = order.event_date || "-";
-      document.getElementById("receipt-time").innerText = order.event_time || "Bebas";
-      document.getElementById("receipt-delivery").innerText = order.delivery_type || "Ambil Sendiri";
-      
-      let noteFull = order.notes && order.notes !== '-' ? order.notes : '-';
-      if (order.delivery_address && order.delivery_address !== '-') {
-        noteFull = `Alamat: ${order.delivery_address} | Catatan: ${noteFull}`;
-      }
-      document.getElementById("receipt-notes").innerText = noteFull;
-      document.getElementById("receipt-sign-customer").innerText = `( ${order.customer_name || 'Pelanggan'} )`;
-
-      const tbody = document.getElementById("receipt-items-body");
-      tbody.innerHTML = "";
-
-      let grandTotal = 0;
-      if (order.items && Array.isArray(order.items)) {
-        order.items.forEach(item => {
-          const sub = (item.price || 0) * (item.qty || 1);
-          grandTotal += sub;
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="py-1.5 font-bold text-gray-800">${item.name}</td>
-            <td class="py-1.5 text-center text-gray-600">Rp${Number(item.price || 0).toLocaleString('id-ID')}</td>
-            <td class="py-1.5 text-center font-bold text-gray-900">${item.qty} pcs</td>
-            <td class="py-1.5 text-right font-bold text-gray-900">Rp${Number(sub).toLocaleString('id-ID')}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      const totalVal = order.total_price ? Number(order.total_price) : grandTotal;
-      document.getElementById("receipt-gross-total").innerText = "Rp" + totalVal.toLocaleString('id-ID');
-
-      const paymentStatus = order.payment_status || "UNPAID";
-      const dpAmount = Number(order.dp_amount || 0);
-
-      document.getElementById("modal-payment-status").value = paymentStatus;
-      document.getElementById("modal-dp-amount").value = dpAmount > 0 ? dpAmount : "";
-
-      updateReceiptPaymentDisplay(totalVal, paymentStatus, dpAmount);
-
-      document.getElementById("receipt-modal").classList.remove("hidden");
-    };
-
-    window.closeReceiptModal = function() {
-      document.getElementById("receipt-modal").classList.add("hidden");
-      activeReceiptOrder = null;
-    };
-
-    window.onModalPaymentStatusChange = async function() {
-      if (!activeReceiptOrder) return;
-      const status = document.getElementById("modal-payment-status").value;
-      const dpBox = document.getElementById("modal-dp-box");
-      const dpInput = document.getElementById("modal-dp-amount");
-
-      if (status === "DP") {
-        dpBox.classList.remove("hidden");
-      } else {
-        dpBox.classList.add("hidden");
-        if (status === "PAID" || status === "UNPAID") {
-          dpInput.value = "";
-        }
-      }
-
-      const totalVal = Number(activeReceiptOrder.total_price || 0);
-      const dpAmount = status === "DP" ? Number(dpInput.value || 0) : 0;
-
-      updateReceiptPaymentDisplay(totalVal, status, dpAmount);
-
-      try {
-        await updateDoc(doc(db, "orders", activeReceiptOrder.id), {
-          payment_status: status,
-          dp_amount: dpAmount
-        });
-        activeReceiptOrder.payment_status = status;
-        activeReceiptOrder.dp_amount = dpAmount;
-      } catch (e) {
-        console.warn("Gagal auto-update status pembayaran:", e);
-      }
-    };
-
-    window.onModalDpAmountInput = async function() {
-      if (!activeReceiptOrder) return;
-      const status = document.getElementById("modal-payment-status").value;
-      const dpInput = document.getElementById("modal-dp-amount");
-      const dpAmount = Number(dpInput.value || 0);
-      const totalVal = Number(activeReceiptOrder.total_price || 0);
-
-      updateReceiptPaymentDisplay(totalVal, status, dpAmount);
-
-      try {
-        await updateDoc(doc(db, "orders", activeReceiptOrder.id), {
-          payment_status: "DP",
-          dp_amount: dpAmount
-        });
-        activeReceiptOrder.payment_status = "DP";
-        activeReceiptOrder.dp_amount = dpAmount;
-      } catch (e) {
-        console.warn("Gagal simpan nominal DP:", e);
-      }
-    };
-
-    function updateReceiptPaymentDisplay(total, status, dp) {
-      const dpRow = document.getElementById("receipt-dp-row");
-      const dpPaidEl = document.getElementById("receipt-dp-paid");
-      const balanceLabel = document.getElementById("receipt-balance-label");
-      const balanceAmount = document.getElementById("receipt-balance-amount");
-      const stamp = document.getElementById("receipt-stamp");
-      const payGuide = document.getElementById("receipt-payment-guide");
-
-      if (status === "PAID") {
-        dpRow.classList.add("hidden");
-        balanceLabel.innerText = "TOTAL TELAH DIBAYAR:";
-        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
-
-        stamp.classList.remove("hidden");
-        stamp.className = "text-[10px] font-bold tracking-wider border-2 rounded px-2.5 py-0.5 uppercase text-emerald-700 border-emerald-600 bg-emerald-50";
-        stamp.innerText = "LUNAS / VALID";
-
-        payGuide.classList.add("hidden");
-
-      } else if (status === "DP") {
-        dpRow.classList.remove("hidden");
-        dpPaidEl.innerText = "-Rp" + dp.toLocaleString('id-ID');
-        
-        const remaining = Math.max(0, total - dp);
-        balanceLabel.innerText = "SISA YANG HARUS DIBAYAR:";
-        balanceAmount.innerText = "Rp" + remaining.toLocaleString('id-ID');
-
-        stamp.classList.add("hidden");
-        payGuide.classList.remove("hidden");
-
-      } else {
-        dpRow.classList.add("hidden");
-        balanceLabel.innerText = "TOTAL YANG HARUS DIBAYAR:";
-        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
-
-        stamp.classList.add("hidden");
-        payGuide.classList.remove("hidden");
-      }
-    }
-
-    window.printReceiptNow = function() {
-      const receiptArea = document.getElementById("receipt-print-area");
-      const summaryArea = document.getElementById("summary-print-area");
-      
-      summaryArea.classList.remove("printable-active");
-      receiptArea.classList.add("printable-active");
-      
-      window.print();
-    };
-
-    // 6. FITUR MODAL RANGKUMAN BELANJA & PESANAN HARIAN
-    window.openDailySummaryModal = function() {
-      let targetDate = document.getElementById("filter-order-date").value;
-      if (!targetDate) {
-        targetDate = new Date().toISOString().split("T")[0];
-      }
-
-      const dateObj = new Date(targetDate);
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const formattedDateString = dateObj.toLocaleDateString('id-ID', options);
-
-      document.getElementById("summary-date-title").innerText = formattedDateString;
-      document.getElementById("summary-generated-time").innerText = "Dicetak pada: " + new Date().toLocaleString('id-ID');
-
-      const dailyOrders = ordersList.filter(o => o.event_date === targetDate && o.status !== 'CANCELLED');
-
-      const aggregatedItems = {};
-      dailyOrders.forEach(order => {
-        if (order.items && Array.isArray(order.items)) {
-          order.items.forEach(item => {
-            if (!aggregatedItems[item.name]) {
-              aggregatedItems[item.name] = 0;
-            }
-            aggregatedItems[item.name] += Number(item.qty || 0);
-          });
-        }
-      });
-
-      const itemsTableBody = document.getElementById("summary-items-table");
-      itemsTableBody.innerHTML = "";
-
-      const itemNames = Object.keys(aggregatedItems);
-      itemNames.sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
-
-      if (itemNames.length === 0) {
-        itemsTableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Tidak ada pesanan aktif pada tanggal ini.</td></tr>`;
-      } else {
-        let no = 1;
-        let totalPcsSemua = 0;
-        itemNames.forEach(name => {
-          const qty = aggregatedItems[name];
-          totalPcsSemua += qty;
-          const tr = document.createElement("tr");
-          tr.className = "hover:bg-gray-50/50";
-          tr.innerHTML = `
-            <td class="p-2.5 font-bold text-gray-500">${no++}</td>
-            <td class="p-2.5 font-bold text-gray-900 text-sm">${name}</td>
-            <td class="p-2.5 text-center font-bold text-base text-amber-700 bg-amber-50/40">${qty} pcs</td>
-            <td class="p-2.5 text-right"><span class="border border-gray-300 px-3 py-1 rounded-md text-[10px] text-gray-400 font-mono">[  ] Siap</span></td>
-          `;
-          itemsTableBody.appendChild(tr);
-        });
-
-        const trTotal = document.createElement("tr");
-        trTotal.className = "bg-gray-50 font-bold border-t-2 border-gray-300";
-        trTotal.innerHTML = `
-          <td colspan="2" class="p-2.5 text-right uppercase">TOTAL KESELURUHAN KUE:</td>
-          <td class="p-2.5 text-center text-base text-emerald-700">${totalPcsSemua} pcs</td>
-          <td></td>
-        `;
-        itemsTableBody.appendChild(trTotal);
-      }
-
-      const ordersListContainer = document.getElementById("summary-orders-list");
-      ordersListContainer.innerHTML = "";
-
-      if (dailyOrders.length === 0) {
-        ordersListContainer.innerHTML = `<p class="text-gray-400 text-center py-4">Belum ada data pesanan masuk.</p>`;
-      } else {
-        dailyOrders.forEach((o, index) => {
-          let itemDetails = "";
-          if (o.items && Array.isArray(o.items)) {
-            itemDetails = o.items.map(i => `<li class="font-medium text-gray-800">• <strong>${i.name}</strong> : ${i.qty} pcs (Rp${(i.subtotal || 0).toLocaleString('id-ID')})</li>`).join("");
-          }
-
-          const paySt = o.payment_status || "UNPAID";
-          const dpVal = Number(o.dp_amount || 0);
-
-          const box = document.createElement("div");
-          box.className = "border border-gray-200 rounded-xl p-3 bg-gray-50/60 space-y-2 text-xs";
-          box.innerHTML = `
-            <div class="flex justify-between items-start border-b border-gray-200 pb-2">
-              <div>
-                <span class="font-bold text-amber-700 text-xs">#${o.invoice_no || o.id}</span>
-                <h3 class="font-bold text-sm text-gray-900">${index + 1}. ${o.customer_name} <span class="font-normal text-gray-500">(${o.customer_phone})</span></h3>
-              </div>
-              <div class="text-right">
-                <span class="bg-white border border-gray-300 text-gray-700 px-2 py-0.5 rounded font-bold text-[10px]">${o.status}</span>
-                <p class="font-bold text-emerald-700 text-xs mt-1">Rp${Number(o.total_price || 0).toLocaleString('id-ID')}</p>
-                <p class="text-[10px] font-semibold ${getPaymentColorClass(paySt)}">(${getPaymentLabel(paySt, dpVal)})</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-gray-600 pt-1">
-              <div>
-                <p><strong>Jam Diambil/Kirim:</strong> ${o.event_time || 'Bebas'}</p>
-                <p><strong>Metode:</strong> ${o.delivery_type || 'Ambil Sendiri'}</p>
-                ${o.delivery_address && o.delivery_address !== '-' ? `<p><strong>Alamat:</strong> ${o.delivery_address}</p>` : ''}
-              </div>
-              <div>
-                <p><strong>Catatan Khusus:</strong> ${o.notes && o.notes !== '-' ? o.notes : 'Tidak ada catatan'}</p>
-              </div>
-            </div>
-
-            <div class="bg-white p-2.5 rounded-lg border border-gray-200 mt-2">
-              <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Menu Pesanan:</p>
-              <ul class="space-y-0.5 text-xs">${itemDetails}</ul>
-            </div>
-          `;
-          ordersListContainer.appendChild(box);
-        });
-      }
-
-      document.getElementById("summary-modal").classList.remove("hidden");
-    };
-
-    window.closeDailySummaryModal = function() {
-      document.getElementById("summary-modal").classList.add("hidden");
-    };
-
-    window.printSummaryNow = function() {
-      const receiptArea = document.getElementById("receipt-print-area");
-      const summaryArea = document.getElementById("summary-print-area");
-      
-      receiptArea.classList.remove("printable-active");
-      summaryArea.classList.add("printable-active");
-      
-      window.print();
-    };
-
-    // 7. Laporan Keuangan
+    // 6. Catatan Keuangan
     window.calculateFinance = function() {
       const filterDate = document.getElementById("filter-finance-date").value;
       const filterInfo = document.getElementById("finance-filter-info");
@@ -1595,7 +1335,7 @@
       }
     };
 
-    // 8. Pengaturan Logo & Ganti PIN
+    // 7. Pengaturan Logo & Ganti PIN
     window.handleLogoUpload = function(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1617,7 +1357,7 @@
           try {
             await setDoc(doc(db, "settings", "store_config"), { logo_url: compressedLogo }, { merge: true });
             currentStoreLogoUrl = compressedLogo;
-            alert("Logo toko berhasil diperbarui & otomatis tayang di web pelanggan, panel karyawan, serta watermark nota!");
+            alert("Logo toko berhasil diperbarui & otomatis tayang di web pelanggan, panel karyawan, navbar admin, serta watermark nota!");
           } catch (err) {
             alert("Gagal menyimpan logo: " + err.message);
           }
