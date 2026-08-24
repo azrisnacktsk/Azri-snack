@@ -24,7 +24,7 @@
     /* Pengaturan Cetak: Hilangkan Header/Footer/URL Bawaan Browser */
     @page {
       size: auto;
-      margin: 0mm; /* Menghilangkan URL dan header/footer bawaan browser */
+      margin: 0mm;
     }
 
     @media print {
@@ -168,12 +168,12 @@
         <div id="orders-container" class="space-y-3 no-print"></div>
       </section>
 
-      <!-- ================= TAB 2: MANAJEMEN PRODUK & KUOTA STOK HARIAN ================= -->
-      <section id="view-products" class="tab-view hidden space-y-4 no-print">
+      <!-- ================= TAB 2: MANAJEMEN PRODUK & KUOTA STOK (DIPISAH READY VS HABIS & URUT A-Z) ================= -->
+      <section id="view-products" class="tab-view hidden space-y-6 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Katalog Menu & Kuota Harian (Pukul 05.00 WIB)</h2>
-            <p class="text-xs text-gray-400">Atur batas produksi harian. Sisa stok berkurang otomatis setiap ada pesanan hari ini & kembali penuh setiap subuh.</p>
+            <p class="text-xs text-gray-400">Daftar kue dipisahkan antara yang Siap Saji dan Habis, masing-masing terurut otomatis dari A ke Z.</p>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="resetAllDailyStockNow()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition border border-blue-200">
@@ -187,22 +187,63 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-gray-600">
-              <thead class="bg-gray-50 border-b border-gray-200 text-gray-700 font-semibold">
-                <tr>
-                  <th class="p-3.5">Foto & Nama Kue</th>
-                  <th class="p-3.5">Kategori</th>
-                  <th class="p-3.5">Harga Satuan</th>
-                  <th class="p-3.5 text-center">Kuota Harian (Pcs)</th>
-                  <th class="p-3.5 text-center">Sisa Siap Saji Hari Ini</th>
-                  <th class="p-3.5 text-center">Status</th>
-                  <th class="p-3.5 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="products-table-body" class="divide-y divide-gray-100"></tbody>
-            </table>
+        <!-- 1. TABEL PRODUK READY (URUT A-Z) -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span>1. Menu Siap Saji / Ready (Urut A-Z)</span>
+            </h3>
+            <span id="admin-ready-count-badge" class="bg-emerald-50 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-emerald-200">0 Ready</span>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-gray-600">
+                <thead class="bg-gray-50 border-b border-gray-200 text-gray-700 font-semibold">
+                  <tr>
+                    <th class="p-3.5">Foto & Nama Kue</th>
+                    <th class="p-3.5">Kategori</th>
+                    <th class="p-3.5">Harga Satuan</th>
+                    <th class="p-3.5 text-center">Kuota Harian (Pcs)</th>
+                    <th class="p-3.5 text-center">Sisa Siap Saji Hari Ini</th>
+                    <th class="p-3.5 text-center">Status</th>
+                    <th class="p-3.5 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="products-ready-table-body" class="divide-y divide-gray-100"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. TABEL PRODUK HABIS (URUT A-Z) -->
+        <div class="space-y-2 pt-2">
+          <div class="flex items-center justify-between px-1">
+            <h3 class="text-xs font-bold text-red-700 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+              <span>2. Menu Habis / Kosong Hari Ini (Urut A-Z)</span>
+            </h3>
+            <span id="admin-soldout-count-badge" class="bg-red-50 text-red-700 text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-red-200">0 Habis</span>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-red-200 overflow-hidden shadow-xs">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-gray-600">
+                <thead class="bg-red-50/50 border-b border-red-100 text-red-900 font-semibold">
+                  <tr>
+                    <th class="p-3.5">Foto & Nama Kue</th>
+                    <th class="p-3.5">Kategori</th>
+                    <th class="p-3.5">Harga Satuan</th>
+                    <th class="p-3.5 text-center">Kuota Harian (Pcs)</th>
+                    <th class="p-3.5 text-center">Sisa Stok Sekarang</th>
+                    <th class="p-3.5 text-center">Status</th>
+                    <th class="p-3.5 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="products-soldout-table-body" class="divide-y divide-red-50"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -279,7 +320,7 @@
         <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Ganti Logo Toko AZRI SNACK</h3>
-            <p class="text-xs text-gray-400 mt-0.5">Logo akan otomatis tampil di web pelanggan & watermark nota</p>
+            <p class="text-xs text-gray-400 mt-0.5">Logo akan otomatis tampil di web pelanggan, panel karyawan, & watermark nota</p>
           </div>
 
           <div class="flex items-center gap-4">
@@ -327,7 +368,6 @@
   <div id="receipt-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
       
-      <!-- Modal Header Action & Pengaturan Pembayaran -->
       <div class="px-5 py-3.5 border-b border-gray-100 flex flex-col gap-2.5 bg-gray-50 no-print">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -350,7 +390,6 @@
           </div>
         </div>
 
-        <!-- Panel Opsi Pembayaran Cepat -->
         <div class="bg-white p-2.5 rounded-xl border border-gray-200 flex flex-wrap items-center gap-2.5 text-xs">
           <span class="font-bold text-gray-700">Status Bayar:</span>
           <select id="modal-payment-status" onchange="onModalPaymentStatusChange()" class="bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-1 text-xs font-semibold outline-none">
@@ -359,7 +398,6 @@
             <option value="PAID">Lunas</option>
           </select>
 
-          <!-- Input Nominal DP -->
           <div id="modal-dp-box" class="hidden flex items-center gap-1.5">
             <span class="text-gray-500">Nominal DP (Rp):</span>
             <input type="number" id="modal-dp-amount" oninput="onModalDpAmountInput()" placeholder="Contoh: 50000" class="w-28 bg-gray-50 border border-amber-300 rounded-lg px-2 py-1 text-xs font-bold outline-none text-amber-900 focus:ring-1 focus:ring-amber-500">
@@ -367,18 +405,12 @@
         </div>
       </div>
 
-      <!-- Area Lembar Nota -->
       <div id="receipt-print-area" class="p-6 overflow-y-auto relative bg-white text-gray-800 text-xs">
-        
-        <!-- WATERMARK LOGO RESMI TRANSPARAN DI TENGAH -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
           <img id="receipt-watermark-img" src="./logo.png" alt="Watermark" class="w-72 h-72 object-contain opacity-[0.18]" onerror="this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60'">
         </div>
 
-        <!-- Konten Nota di Atas Watermark -->
         <div class="relative z-10 space-y-4">
-          
-          <!-- Header Nota Toko -->
           <div class="text-center border-b-2 border-gray-800 pb-3">
             <h1 class="text-lg font-bold text-gray-900 tracking-wide uppercase">AZRI SNACK</h1>
             <p class="text-[11px] text-gray-600 font-medium">Kue Tradisional & Snack Box Berkualitas</p>
@@ -388,7 +420,6 @@
             </p>
           </div>
 
-          <!-- Informasi Transaksi -->
           <div class="grid grid-cols-2 gap-2 text-[11px] border-b border-dashed border-gray-300 pb-3">
             <div>
               <p><span class="text-gray-500">No. Invoice:</span> <strong id="receipt-inv" class="text-amber-800">#AZRI-000000</strong></p>
@@ -405,7 +436,6 @@
             </div>
           </div>
 
-          <!-- Tabel Item Menu -->
           <div class="space-y-1">
             <table class="w-full text-left text-xs">
               <thead class="border-b border-gray-300 text-gray-700 font-bold">
@@ -420,27 +450,23 @@
             </table>
           </div>
 
-          <!-- RINCIAN PEMBAYARAN -->
           <div class="border-t-2 border-gray-800 pt-2.5 space-y-1 text-xs">
             <div class="flex justify-between items-center text-gray-700 font-semibold">
               <span>Total Keseluruhan:</span>
               <span id="receipt-gross-total">Rp0</span>
             </div>
 
-            <!-- Baris DP (Hanya tampil jika ada DP) -->
             <div id="receipt-dp-row" class="hidden flex justify-between items-center text-emerald-700 font-semibold">
               <span>Uang Muka (DP Terbayar):</span>
               <span id="receipt-dp-paid">-Rp0</span>
             </div>
 
-            <!-- Total Akhir / Sisa Yang Harus Dibayar -->
             <div class="flex justify-between items-center text-sm font-bold text-gray-900 border-t border-gray-200 pt-1.5">
               <span id="receipt-balance-label" class="uppercase">SISA YANG HARUS DIBAYAR:</span>
               <span id="receipt-balance-amount" class="text-base text-amber-700">Rp0</span>
             </div>
           </div>
 
-          <!-- KOTAK PETUNJUK PEMBAYARAN QRIS & BCA (Hanya muncul jika Belum Lunas / DP) -->
           <div id="receipt-payment-guide" class="hidden bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-[10px] text-gray-600 leading-relaxed">
             <p class="font-bold text-gray-800 flex items-center gap-1 mb-1">
               <i class="fa-solid fa-credit-card text-amber-600"></i>
@@ -450,7 +476,6 @@
             <p>• <strong>Konfirmasi Bukti Transfer:</strong> Kirim ke WA <strong>0858-9202-2079</strong></p>
           </div>
 
-          <!-- Tanda Tangan & Cap (Hanya Muncul Cap Jika LUNAS) -->
           <div class="pt-4 grid grid-cols-2 gap-4 text-center text-[11px] text-gray-600">
             <div>
               <p>Tanda Terima Pelanggan,</p>
@@ -466,14 +491,11 @@
             </div>
           </div>
 
-          <!-- Catatan Kaki Nota (Bersih Tanpa URL Website) -->
           <div class="pt-3 text-center text-[9px] text-gray-400 italic border-t border-gray-100">
             <p>Terima kasih atas kepercayaan Anda memesan di AZRI SNACK.</p>
             <p>Kue dibuat fresh dengan bahan pilihan berkualitas & halal.</p>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
@@ -878,7 +900,323 @@
       }
     };
 
-    // 3. FITUR NOTA STRUK PEMBELIAN
+    // 3. Render Produk & Kuota Harian (DIPISAH READY VS HABIS & URUT A-Z)
+    window.renderProductsTable = function() {
+      const readyTbody = document.getElementById("products-ready-table-body");
+      const soldOutTbody = document.getElementById("products-soldout-table-body");
+      readyTbody.innerHTML = "";
+      soldOutTbody.innerHTML = "";
+
+      if (productsList.length === 0) {
+        readyTbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">Belum ada produk di database.</td></tr>`;
+        soldOutTbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">Tidak ada produk yang habis.</td></tr>`;
+        return;
+      }
+
+      const readyProducts = [];
+      const soldOutProducts = [];
+
+      productsList.forEach(p => {
+        const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
+        const liveStock = p.stock !== undefined ? Number(p.stock) : quota;
+        const isOutOfStock = p.status === "OUT_OF_STOCK" || liveStock <= 0;
+
+        if (isOutOfStock) {
+          soldOutProducts.push(p);
+        } else {
+          readyProducts.push(p);
+        }
+      });
+
+      // PENGURUTAN ALFABETIS (A-Z)
+      readyProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOutProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+
+      document.getElementById("admin-ready-count-badge").innerText = `${readyProducts.length} Ready`;
+      document.getElementById("admin-soldout-count-badge").innerText = `${soldOutProducts.length} Habis`;
+
+      // Render Baris Tabel Ready
+      if (readyProducts.length === 0) {
+        readyTbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">Semua produk saat ini sedang habis.</td></tr>`;
+      } else {
+        readyProducts.forEach(p => {
+          readyTbody.appendChild(createAdminProductRow(p, false));
+        });
+      }
+
+      // Render Baris Tabel Habis
+      if (soldOutProducts.length === 0) {
+        soldOutTbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">Bagus! Tidak ada menu yang stoknya habis.</td></tr>`;
+      } else {
+        soldOutProducts.forEach(p => {
+          soldOutTbody.appendChild(createAdminProductRow(p, true));
+        });
+      }
+    };
+
+    function createAdminProductRow(p, isOutOfStock) {
+      const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
+      const liveStock = p.stock !== undefined ? Number(p.stock) : quota;
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+      
+      const tr = document.createElement("tr");
+      tr.className = isOutOfStock ? "hover:bg-red-50/40 transition" : "hover:bg-gray-50/80 transition";
+      tr.innerHTML = `
+        <td class="p-3.5 flex items-center gap-3">
+          <img src="${p.image_url || fallbackImg}" class="w-11 h-11 rounded-xl object-cover border border-gray-100" onerror="this.src='${fallbackImg}'">
+          <div>
+            <p class="font-bold text-gray-900">${p.name}</p>
+            <p class="text-[11px] text-gray-400 line-clamp-1">${p.description || '-'}</p>
+          </div>
+        </td>
+        <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-medium text-[10px]">${p.category || 'Kue'}</span></td>
+        <td class="p-3.5 font-bold text-amber-600">Rp${Number(p.price || 0).toLocaleString('id-ID')}</td>
+        
+        <td class="p-3.5 text-center">
+          <span class="bg-amber-50 text-amber-800 font-bold px-2.5 py-1 rounded-lg border border-amber-200">${quota} pcs/hari</span>
+        </td>
+
+        <td class="p-3.5 text-center">
+          <div class="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
+            <button onclick="quickChangeStock('${p.id}', -5)" class="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs text-gray-600 shadow-2xs">-5</button>
+            <input type="number" min="0" value="${liveStock}" onchange="updateProductCurrentStock('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
+            <button onclick="quickChangeStock('${p.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-2xs">+5</button>
+          </div>
+        </td>
+
+        <td class="p-3.5 text-center">
+          <button onclick="toggleProductStock('${p.id}', '${p.status || 'AVAILABLE'}')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition ${isOutOfStock ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'}">
+            ${isOutOfStock ? '<i class="fa-solid fa-ban mr-1"></i> Habis' : '<i class="fa-solid fa-check mr-1"></i> Ready'}
+          </button>
+        </td>
+
+        <td class="p-3.5 text-center">
+          <div class="flex items-center justify-center gap-1.5">
+            <button onclick="refillSingleProductStock('${p.id}')" class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center" title="Refill ke Kuota Harian Penuh">
+              <i class="fa-solid fa-arrows-rotate text-xs"></i>
+            </button>
+            <button onclick="editProduct('${p.id}')" class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center" title="Edit Menu & Kuota">
+              <i class="fa-solid fa-pen text-xs"></i>
+            </button>
+            <button onclick="deleteProduct('${p.id}', '${p.name}')" class="w-7 h-7 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center" title="Hapus Kue">
+              <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      return tr;
+    }
+
+    window.updateProductCurrentStock = async function(prodId, newStockVal) {
+      const stockNum = Math.max(0, parseInt(newStockVal) || 0);
+      const newStatus = stockNum <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
+      try {
+        await updateDoc(doc(db, "products", prodId), { 
+          stock: stockNum,
+          status: newStatus,
+          last_stock_date: currentBusinessDate
+        });
+      } catch (err) {
+        alert("Gagal mengubah sisa stok: " + err.message);
+      }
+    };
+
+    window.quickChangeStock = async function(prodId, delta) {
+      const prod = productsList.find(p => p.id === prodId);
+      if (!prod) return;
+
+      let currentStock = prod.stock !== undefined ? Number(prod.stock) : 50;
+      let nextStock = Math.max(0, currentStock + delta);
+      updateProductCurrentStock(prodId, nextStock);
+    };
+
+    window.refillSingleProductStock = async function(prodId) {
+      const prod = productsList.find(p => p.id === prodId);
+      if (!prod) return;
+
+      const quota = prod.daily_quota !== undefined ? Number(prod.daily_quota) : 50;
+      try {
+        await updateDoc(doc(db, "products", prodId), { 
+          stock: quota,
+          status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK",
+          last_stock_date: currentBusinessDate
+        });
+        alert(`Stok ${prod.name} berhasil di-refill ke kuota awal (${quota} pcs)!`);
+      } catch (err) {
+        alert("Gagal refill stok: " + err.message);
+      }
+    };
+
+    window.resetAllDailyStockNow = async function() {
+      if (confirm("Reset SEMUA kue ke Kuota Stok Penuh sekarang?")) {
+        try {
+          const promises = productsList.map(p => {
+            const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
+            return updateDoc(doc(db, "products", p.id), {
+              stock: quota,
+              daily_quota: quota,
+              status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK",
+              last_stock_date: currentBusinessDate
+            });
+          });
+          await Promise.all(promises);
+          alert("Semua stok menu kue telah kembali ke kuota harian penuh!");
+        } catch (err) {
+          alert("Gagal reset semua stok: " + err.message);
+        }
+      }
+    };
+
+    window.toggleProductStock = async function(prodId, currentStatus) {
+      const prod = productsList.find(p => p.id === prodId);
+      const isOut = currentStatus === "OUT_OF_STOCK" || (prod && prod.stock <= 0);
+      const newStatus = isOut ? "AVAILABLE" : "OUT_OF_STOCK";
+      const quota = prod && prod.daily_quota !== undefined ? prod.daily_quota : 50;
+      const newStock = isOut ? ((prod && prod.stock > 0) ? prod.stock : quota) : 0;
+
+      try {
+        await updateDoc(doc(db, "products", prodId), { 
+          status: newStatus,
+          stock: newStock,
+          last_stock_date: currentBusinessDate
+        });
+      } catch (err) {
+        alert("Gagal mengubah status stok: " + err.message);
+      }
+    };
+
+    // 4. Modal Tambah / Edit Produk
+    window.openProductModal = function() {
+      document.getElementById("prod-edit-id").value = "";
+      document.getElementById("prod-name").value = "";
+      document.getElementById("prod-price").value = "";
+      document.getElementById("prod-daily-quota").value = "50";
+      document.getElementById("prod-current-stock").value = "50";
+      document.getElementById("prod-desc").value = "";
+      document.getElementById("prod-image-base64").value = "";
+      document.getElementById("prod-img-tag").classList.add("hidden");
+      document.getElementById("prod-img-icon").classList.remove("hidden");
+      document.getElementById("product-modal-title").innerText = "Tambah Produk Baru";
+      document.getElementById("product-modal").classList.remove("hidden");
+    };
+
+    window.closeProductModal = function() {
+      document.getElementById("product-modal").classList.add("hidden");
+    };
+
+    window.handleProductImageUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 480;
+          const scale = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.75);
+          document.getElementById("prod-image-base64").value = compressedBase64;
+          
+          const imgTag = document.getElementById("prod-img-tag");
+          imgTag.src = compressedBase64;
+          imgTag.classList.remove("hidden");
+          document.getElementById("prod-img-icon").classList.add("hidden");
+        };
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.saveProduct = async function() {
+      const editId = document.getElementById("prod-edit-id").value;
+      const name = document.getElementById("prod-name").value.trim();
+      const category = document.getElementById("prod-category").value;
+      const price = Number(document.getElementById("prod-price").value);
+      const dailyQuota = Number(document.getElementById("prod-daily-quota").value) || 50;
+      const currentStock = Number(document.getElementById("prod-current-stock").value) || 0;
+      const desc = document.getElementById("prod-desc").value.trim();
+      const imgBase64 = document.getElementById("prod-image-base64").value;
+
+      const status = currentStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
+      const btn = document.getElementById("btn-save-prod");
+      btn.innerText = "Menyimpan...";
+      btn.disabled = true;
+
+      try {
+        const payload = {
+          name: name,
+          category: category,
+          price: price,
+          daily_quota: dailyQuota,
+          stock: currentStock,
+          status: status,
+          description: desc,
+          last_stock_date: currentBusinessDate,
+          updated_at: serverTimestamp()
+        };
+
+        if (imgBase64) payload.image_url = imgBase64;
+
+        if (editId) {
+          await updateDoc(doc(db, "products", editId), payload);
+        } else {
+          payload.created_at = serverTimestamp();
+          if (!imgBase64) {
+            payload.image_url = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+          }
+          await addDoc(collection(db, "products"), payload);
+        }
+
+        closeProductModal();
+      } catch (err) {
+        alert("Gagal menyimpan produk: " + err.message);
+      } finally {
+        btn.innerText = "Simpan Menu & Kuota Stok";
+        btn.disabled = false;
+      }
+    };
+
+    window.editProduct = function(id) {
+      const prod = productsList.find(p => p.id === id);
+      if (!prod) return;
+
+      document.getElementById("prod-edit-id").value = prod.id;
+      document.getElementById("prod-name").value = prod.name;
+      document.getElementById("prod-category").value = prod.category || "Snack";
+      document.getElementById("prod-price").value = prod.price;
+      document.getElementById("prod-daily-quota").value = prod.daily_quota !== undefined ? prod.daily_quota : (prod.stock || 50);
+      document.getElementById("prod-current-stock").value = prod.stock !== undefined ? prod.stock : 50;
+      document.getElementById("prod-desc").value = prod.description || "";
+      document.getElementById("prod-image-base64").value = prod.image_url || "";
+
+      if (prod.image_url) {
+        const imgTag = document.getElementById("prod-img-tag");
+        imgTag.src = prod.image_url;
+        imgTag.classList.remove("hidden");
+        document.getElementById("prod-img-icon").classList.add("hidden");
+      }
+
+      document.getElementById("product-modal-title").innerText = "Edit Menu & Kuota Harian";
+      document.getElementById("product-modal").classList.remove("hidden");
+    };
+
+    window.deleteProduct = async function(id, name) {
+      if (confirm(`Yakin ingin menghapus menu "${name}"?`)) {
+        try {
+          await deleteDoc(doc(db, "products", id));
+        } catch (err) {
+          alert("Gagal menghapus produk: " + err.message);
+        }
+      }
+    };
+
+    // 5. FITUR NOTA STRUK PEMBELIAN
     window.openReceiptModal = function(orderId) {
       const order = ordersList.find(o => o.id === orderId);
       if (!order) return;
@@ -1040,7 +1378,7 @@
       window.print();
     };
 
-    // 4. FITUR MODAL RANGKUMAN BELANJA & PESANAN HARIAN
+    // 6. FITUR MODAL RANGKUMAN BELANJA & PESANAN HARIAN
     window.openDailySummaryModal = function() {
       let targetDate = document.getElementById("filter-order-date").value;
       if (!targetDate) {
@@ -1072,6 +1410,8 @@
       itemsTableBody.innerHTML = "";
 
       const itemNames = Object.keys(aggregatedItems);
+      itemNames.sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+
       if (itemNames.length === 0) {
         itemsTableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Tidak ada pesanan aktif pada tanggal ini.</td></tr>`;
       } else {
@@ -1166,280 +1506,6 @@
       summaryArea.classList.add("printable-active");
       
       window.print();
-    };
-
-    // 5. Render Produk & Kuota Harian
-    window.renderProductsTable = function() {
-      const tbody = document.getElementById("products-table-body");
-      tbody.innerHTML = "";
-
-      if (productsList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">Belum ada produk di database.</td></tr>`;
-        return;
-      }
-
-      productsList.forEach(p => {
-        const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
-        const liveStock = p.stock !== undefined ? Number(p.stock) : quota;
-        const isOutOfStock = p.status === "OUT_OF_STOCK" || liveStock <= 0;
-        const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
-        
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50/80 transition";
-        tr.innerHTML = `
-          <td class="p-3.5 flex items-center gap-3">
-            <img src="${p.image_url || fallbackImg}" class="w-11 h-11 rounded-xl object-cover border border-gray-100 ${isOutOfStock ? 'grayscale opacity-60' : ''}">
-            <div>
-              <p class="font-bold text-gray-900 ${isOutOfStock ? 'line-through text-gray-400' : ''}">${p.name}</p>
-              <p class="text-[11px] text-gray-400 line-clamp-1">${p.description || '-'}</p>
-            </div>
-          </td>
-          <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-medium text-[10px]">${p.category || 'Kue'}</span></td>
-          <td class="p-3.5 font-bold text-amber-600">Rp${Number(p.price || 0).toLocaleString('id-ID')}</td>
-          
-          <td class="p-3.5 text-center">
-            <span class="bg-amber-50 text-amber-800 font-bold px-2.5 py-1 rounded-lg border border-amber-200">${quota} pcs/hari</span>
-          </td>
-
-          <td class="p-3.5 text-center">
-            <div class="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
-              <button onclick="quickChangeStock('${p.id}', -5)" class="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs text-gray-600 shadow-2xs">-5</button>
-              <input type="number" min="0" value="${liveStock}" onchange="updateProductCurrentStock('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
-              <button onclick="quickChangeStock('${p.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-2xs">+5</button>
-            </div>
-          </td>
-
-          <td class="p-3.5 text-center">
-            <button onclick="toggleProductStock('${p.id}', '${p.status || 'AVAILABLE'}')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition ${isOutOfStock ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'}">
-              ${isOutOfStock ? '<i class="fa-solid fa-ban mr-1"></i> Habis' : '<i class="fa-solid fa-check mr-1"></i> Ready'}
-            </button>
-          </td>
-
-          <td class="p-3.5 text-center">
-            <div class="flex items-center justify-center gap-1.5">
-              <button onclick="refillSingleProductStock('${p.id}')" class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center" title="Refill ke Kuota Harian Penuh">
-                <i class="fa-solid fa-arrows-rotate text-xs"></i>
-              </button>
-              <button onclick="editProduct('${p.id}')" class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center" title="Edit Menu & Kuota">
-                <i class="fa-solid fa-pen text-xs"></i>
-              </button>
-              <button onclick="deleteProduct('${p.id}', '${p.name}')" class="w-7 h-7 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center" title="Hapus Kue">
-                <i class="fa-solid fa-trash text-xs"></i>
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    };
-
-    window.updateProductCurrentStock = async function(prodId, newStockVal) {
-      const stockNum = Math.max(0, parseInt(newStockVal) || 0);
-      const newStatus = stockNum <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
-      try {
-        await updateDoc(doc(db, "products", prodId), { 
-          stock: stockNum,
-          status: newStatus,
-          last_stock_date: currentBusinessDate
-        });
-      } catch (err) {
-        alert("Gagal mengubah sisa stok: " + err.message);
-      }
-    };
-
-    window.quickChangeStock = async function(prodId, delta) {
-      const prod = productsList.find(p => p.id === prodId);
-      if (!prod) return;
-
-      let currentStock = prod.stock !== undefined ? Number(prod.stock) : 50;
-      let nextStock = Math.max(0, currentStock + delta);
-      updateProductCurrentStock(prodId, nextStock);
-    };
-
-    window.refillSingleProductStock = async function(prodId) {
-      const prod = productsList.find(p => p.id === prodId);
-      if (!prod) return;
-
-      const quota = prod.daily_quota !== undefined ? Number(prod.daily_quota) : 50;
-      try {
-        await updateDoc(doc(db, "products", prodId), { 
-          stock: quota,
-          status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK",
-          last_stock_date: currentBusinessDate
-        });
-        alert(`Stok ${prod.name} berhasil di-refill ke kuota awal (${quota} pcs)!`);
-      } catch (err) {
-        alert("Gagal refill stok: " + err.message);
-      }
-    };
-
-    window.resetAllDailyStockNow = async function() {
-      if (confirm("Reset SEMUA kue ke Kuota Stok Penuh sekarang?")) {
-        try {
-          const promises = productsList.map(p => {
-            const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock !== undefined ? Number(p.stock) : 50);
-            return updateDoc(doc(db, "products", p.id), {
-              stock: quota,
-              daily_quota: quota,
-              status: quota > 0 ? "AVAILABLE" : "OUT_OF_STOCK",
-              last_stock_date: currentBusinessDate
-            });
-          });
-          await Promise.all(promises);
-          alert("Semua stok menu kue telah kembali ke kuota harian penuh!");
-        } catch (err) {
-          alert("Gagal reset semua stok: " + err.message);
-        }
-      }
-    };
-
-    window.toggleProductStock = async function(prodId, currentStatus) {
-      const prod = productsList.find(p => p.id === prodId);
-      const isOut = currentStatus === "OUT_OF_STOCK" || (prod && prod.stock <= 0);
-      const newStatus = isOut ? "AVAILABLE" : "OUT_OF_STOCK";
-      const quota = prod && prod.daily_quota !== undefined ? prod.daily_quota : 50;
-      const newStock = isOut ? ((prod && prod.stock > 0) ? prod.stock : quota) : 0;
-
-      try {
-        await updateDoc(doc(db, "products", prodId), { 
-          status: newStatus,
-          stock: newStock,
-          last_stock_date: currentBusinessDate
-        });
-      } catch (err) {
-        alert("Gagal mengubah status stok: " + err.message);
-      }
-    };
-
-    // 6. Modal Tambah / Edit Produk
-    window.openProductModal = function() {
-      document.getElementById("prod-edit-id").value = "";
-      document.getElementById("prod-name").value = "";
-      document.getElementById("prod-price").value = "";
-      document.getElementById("prod-daily-quota").value = "50";
-      document.getElementById("prod-current-stock").value = "50";
-      document.getElementById("prod-desc").value = "";
-      document.getElementById("prod-image-base64").value = "";
-      document.getElementById("prod-img-tag").classList.add("hidden");
-      document.getElementById("prod-img-icon").classList.remove("hidden");
-      document.getElementById("product-modal-title").innerText = "Tambah Produk Baru";
-      document.getElementById("product-modal").classList.remove("hidden");
-    };
-
-    window.closeProductModal = function() {
-      document.getElementById("product-modal").classList.add("hidden");
-    };
-
-    window.handleProductImageUpload = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = function() {
-          const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 480;
-          const scale = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.75);
-          document.getElementById("prod-image-base64").value = compressedBase64;
-          
-          const imgTag = document.getElementById("prod-img-tag");
-          imgTag.src = compressedBase64;
-          imgTag.classList.remove("hidden");
-          document.getElementById("prod-img-icon").classList.add("hidden");
-        };
-      };
-      reader.readAsDataURL(file);
-    };
-
-    window.saveProduct = async function() {
-      const editId = document.getElementById("prod-edit-id").value;
-      const name = document.getElementById("prod-name").value.trim();
-      const category = document.getElementById("prod-category").value;
-      const price = Number(document.getElementById("prod-price").value);
-      const dailyQuota = Number(document.getElementById("prod-daily-quota").value) || 50;
-      const currentStock = Number(document.getElementById("prod-current-stock").value) || 0;
-      const desc = document.getElementById("prod-desc").value.trim();
-      const imgBase64 = document.getElementById("prod-image-base64").value;
-
-      const status = currentStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
-      const btn = document.getElementById("btn-save-prod");
-      btn.innerText = "Menyimpan...";
-      btn.disabled = true;
-
-      try {
-        const payload = {
-          name: name,
-          category: category,
-          price: price,
-          daily_quota: dailyQuota,
-          stock: currentStock,
-          status: status,
-          description: desc,
-          last_stock_date: currentBusinessDate,
-          updated_at: serverTimestamp()
-        };
-
-        if (imgBase64) payload.image_url = imgBase64;
-
-        if (editId) {
-          await updateDoc(doc(db, "products", editId), payload);
-        } else {
-          payload.created_at = serverTimestamp();
-          if (!imgBase64) {
-            payload.image_url = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
-          }
-          await addDoc(collection(db, "products"), payload);
-        }
-
-        closeProductModal();
-      } catch (err) {
-        alert("Gagal menyimpan produk: " + err.message);
-      } finally {
-        btn.innerText = "Simpan Menu & Kuota Stok";
-        btn.disabled = false;
-      }
-    };
-
-    window.editProduct = function(id) {
-      const prod = productsList.find(p => p.id === id);
-      if (!prod) return;
-
-      document.getElementById("prod-edit-id").value = prod.id;
-      document.getElementById("prod-name").value = prod.name;
-      document.getElementById("prod-category").value = prod.category || "Snack";
-      document.getElementById("prod-price").value = prod.price;
-      document.getElementById("prod-daily-quota").value = prod.daily_quota !== undefined ? prod.daily_quota : (prod.stock || 50);
-      document.getElementById("prod-current-stock").value = prod.stock !== undefined ? prod.stock : 50;
-      document.getElementById("prod-desc").value = prod.description || "";
-      document.getElementById("prod-image-base64").value = prod.image_url || "";
-
-      if (prod.image_url) {
-        const imgTag = document.getElementById("prod-img-tag");
-        imgTag.src = prod.image_url;
-        imgTag.classList.remove("hidden");
-        document.getElementById("prod-img-icon").classList.add("hidden");
-      }
-
-      document.getElementById("product-modal-title").innerText = "Edit Menu & Kuota Harian";
-      document.getElementById("product-modal").classList.remove("hidden");
-    };
-
-    window.deleteProduct = async function(id, name) {
-      if (confirm(`Yakin ingin menghapus menu "${name}"?`)) {
-        try {
-          await deleteDoc(doc(db, "products", id));
-        } catch (err) {
-          alert("Gagal menghapus produk: " + err.message);
-        }
-      }
     };
 
     // 7. Laporan Keuangan
@@ -1551,7 +1617,7 @@
           try {
             await setDoc(doc(db, "settings", "store_config"), { logo_url: compressedLogo }, { merge: true });
             currentStoreLogoUrl = compressedLogo;
-            alert("Logo toko berhasil diperbarui & otomatis tayang di web pelanggan serta watermark nota!");
+            alert("Logo toko berhasil diperbarui & otomatis tayang di web pelanggan, panel karyawan, serta watermark nota!");
           } catch (err) {
             alert("Gagal menyimpan logo: " + err.message);
           }
