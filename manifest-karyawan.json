@@ -1,12 +1,13 @@
 {
-  "name": "AZRI SNACK - Tim Stok Dapur",
+  "id": "azri-snack-karyawan",
+  "name": "Azri Stok - Tim Dapur",
   "short_name": "Azri Stok",
-  "description": "Aplikasi Khusus Karyawan & Dapur AZRI SNACK untuk Update Stok Harian",
+  "description": "Panel Khusus Update Stok Harian AZRI SNACK",
   "start_url": "./karyawan.html",
+  "scope": "./karyawan.html",
   "display": "standalone",
   "background_color": "#f4f5f8",
   "theme_color": "#f59e0b",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "./logo.png",
