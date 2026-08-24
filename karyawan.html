@@ -136,12 +136,12 @@
     <p class="mt-3 text-xs text-gray-400 font-medium">Sinkronisasi stok dengan toko...</p>
   </div>
 
-  <!-- DAFTAR PRODUK READY (BAGIAN ATAS) -->
+  <!-- DAFTAR PRODUK READY (BAGIAN ATAS - DIURUTKAN A-Z) -->
   <main class="max-w-3xl mx-auto px-4 mt-4 space-y-3">
     <div class="flex items-center justify-between">
       <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span>Menu Siap Saji (Ready)</span>
+        <span>Menu Siap Saji (Urut A-Z)</span>
       </h2>
       <span id="ready-badge-count" class="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">0 Ready</span>
     </div>
@@ -151,14 +151,14 @@
     </div>
   </main>
 
-  <!-- DAFTAR PRODUK HABIS (BAGIAN BAWAH DENGAN SCROLL OTOMATIS) -->
+  <!-- DAFTAR PRODUK HABIS (BAGIAN BAWAH - DIURUTKAN A-Z DENGAN SCROLL OTOMATIS) -->
   <section id="soldout-section" class="max-w-3xl mx-auto px-4 mt-8 pt-6 border-t-2 border-dashed border-gray-300 space-y-3 hidden scroll-mt-24">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-1.5">
         <div class="w-5 h-5 rounded bg-red-100 text-red-600 flex items-center justify-center text-[10px]">
           <i class="fa-solid fa-ban"></i>
         </div>
-        <h2 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Menu Habis (0 Pcs)</h2>
+        <h2 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Menu Habis (Urut A-Z)</h2>
       </div>
       <span id="soldout-badge-count" class="text-[11px] font-semibold text-red-800 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">0 Habis</span>
     </div>
@@ -253,7 +253,7 @@
       console.error("Gagal membaca produk:", err);
     });
 
-    // Render Produk Card (Terpisah: Ready di Atas, Habis di Bawah)
+    // Render Produk Card (Diurutkan Abjad A-Z)
     function renderProductsList() {
       let filtered = [...allProducts];
 
@@ -278,6 +278,10 @@
           readyItems.push(p);
         }
       });
+
+      // PENGURUTAN ALFABETIS (A-Z)
+      readyItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOutItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
 
       // Update Badge Status
       document.getElementById("ready-badge-count").innerText = `${readyItems.length} Ready`;
@@ -458,7 +462,7 @@
       handleSearch();
     };
 
-    // Buat & Kirim Laporan Stok WhatsApp ke Admin/Pemilik
+    // Buat & Kirim Laporan Stok WhatsApp ke Admin/Pemilik (Otomatis Urut A-Z)
     window.sendStockReportToWA = function() {
       const now = new Date();
       const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -466,6 +470,9 @@
 
       const readyItems = allProducts.filter(p => p.status !== "OUT_OF_STOCK" && Number(p.stock || 0) > 0);
       const soldOutItems = allProducts.filter(p => p.status === "OUT_OF_STOCK" || Number(p.stock || 0) <= 0);
+
+      readyItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOutItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
 
       let msg = `📋 *LAPORAN UPDATE STOK - AZRI SNACK*\n`;
       msg += `━━━━━━━━━━━━━━━━━━━━\n`;
@@ -500,7 +507,7 @@
     };
   </script>
 
-  <!-- PWA Service Worker Khusus Karyawan (sw-karyawan.js) -->
+  <!-- PWA Service Worker Khusus Karyawan -->
   <script>
     let deferredPrompt;
 
