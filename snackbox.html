@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paket Snack Box - AZRI SNACK</title>
+  
+  <!-- SEO & Google Ads Meta Tags -->
+  <title>Snack Box AZRI SNACK | Snack Box Jakarta Selatan</title>
+  <meta name="description" content="Snack Box AZRI SNACK untuk meeting kantor, rapat, arisan, pengajian, seminar, acara keluarga, dan berbagai kebutuhan acara. Dibuat fresh daily, higienis, dan rasa istimewa.">
+  <meta name="keywords" content="snack box jakarta selatan, snack box tebet, snack box meeting, snack box kantor, pesan snack box, kue basah snack box">
 
   <!-- Konfigurasi PWA & Web App Meta -->
   <link rel="manifest" href="./manifest.json">
@@ -61,192 +65,417 @@
 <body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
 
   <!-- Header / Navbar -->
-  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-amber-100/70 shadow-xs">
+    <div class="max-w-4xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between">
       
       <!-- Logo Toko & Link Kembali -->
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center justify-center border border-amber-200/60 transition" title="Kembali ke Menu Utama">
-          <i class="fa-solid fa-arrow-left text-sm"></i>
+      <div class="flex items-center gap-2.5">
+        <a href="index.html" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center justify-center border border-amber-200/60 transition" title="Lihat Katalog Satuan">
+          <i class="fa-solid fa-arrow-left text-xs sm:text-sm"></i>
         </a>
 
-        <div id="store-logo-container" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
+        <div id="store-logo-container" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
           <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-0.5">
             <span id="store-logo-fallback" class="text-xl">🍰</span>
-            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
+            <img id="store-logo-img" src="./logo.png" alt="Logo AZRI SNACK" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
         <div>
-          <h1 class="font-serif font-bold text-base sm:text-lg text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
-          <p class="text-[10px] text-amber-700 font-medium tracking-wide mt-0.5">Custom Snack Box Premium</p>
+          <span class="font-serif font-bold text-sm sm:text-base text-gray-900 leading-none tracking-tight block">AZRI SNACK</span>
+          <span class="text-[10px] text-amber-700 font-medium tracking-wide mt-0.5 block">Spesialis Custom Snack Box</span>
         </div>
       </div>
 
-      <!-- Tombol Keranjang -->
+      <!-- Tombol Aksi Header -->
       <div class="flex items-center gap-2">
-        <a href="index.html" class="text-xs text-gray-600 hover:text-amber-700 font-medium hidden sm:inline-block px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-200">
-          Katalog Satuan
+        <a href="index.html" class="text-xs text-amber-800 hover:text-amber-900 font-semibold px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200/80 transition hidden sm:inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-cake-candles text-[11px]"></i>
+          <span>Katalog Satuan</span>
         </a>
-        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none">
-          <i class="fa-solid fa-basket-shopping text-lg"></i>
+        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none" title="Lihat Keranjang">
+          <i class="fa-solid fa-basket-shopping text-base sm:text-lg"></i>
           <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Hero Header Snack Box -->
-  <section class="max-w-4xl mx-auto px-4 mt-4">
-    <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-lg shadow-amber-500/10 relative overflow-hidden">
+  <!-- ================= 1. SECTION HERO (LANDING PAGE IKLAN) ================= -->
+  <section class="max-w-4xl mx-auto px-4 mt-3 sm:mt-4">
+    <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-amber-500/15 relative overflow-hidden">
       <div class="absolute -right-6 -bottom-10 opacity-15 text-9xl pointer-events-none select-none">🍱</div>
 
-      <div class="relative z-10 space-y-1.5 max-w-lg">
-        <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-0.8 rounded-full text-[10px] font-semibold uppercase tracking-wider">
-          <span class="text-amber-200">★</span> Pilihan Favorit Acara
+      <div class="relative z-10 space-y-2.5 max-w-xl">
+        <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-amber-100 border border-white/20">
+          <span>★</span> Custom Sesuai Kebutuhan Acara Anda
         </div>
-        <h2 class="font-serif text-lg sm:text-2xl font-bold leading-snug">Paket Custom Snack Box</h2>
-        <!-- Subjudul yang diminta -->
-        <p class="text-xs text-amber-50 leading-relaxed font-medium">Praktis untuk meeting, kantor dan berbagai acara</p>
+        
+        <!-- H1 Utama Sesuai Instruksi -->
+        <h1 class="font-serif text-xl sm:text-3xl font-bold leading-tight tracking-tight">
+          SNACK BOX AZRI SNACK
+        </h1>
+        
+        <p class="text-xs sm:text-sm text-amber-50 leading-relaxed font-normal">
+          Fresh, praktis, dan cocok untuk berbagai acara. Bebas tentukan kombinasi kue basah gurih & manis kesukaan Anda!
+        </p>
+
+        <!-- Informasi Harga & Minimal Order Realtime -->
+        <div class="flex flex-wrap items-center gap-2 pt-1 pb-1">
+          <div class="bg-black/25 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs border border-white/15">
+            <span class="text-amber-200 font-medium">Mulai:</span> <strong id="hero-starting-price" class="font-serif">Rp8.000 / box</strong>
+          </div>
+          <div class="bg-black/25 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs border border-white/15">
+            <span class="text-amber-200 font-medium">Order:</span> <strong>Minimal 5 box</strong>
+          </div>
+        </div>
+
+        <!-- Tombol CTA Utama & Sekunder -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-2">
+          <a href="#snackbox-builder" class="bg-white hover:bg-amber-50 text-amber-900 font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-lg transition text-center flex items-center justify-center gap-2 active:scale-98">
+            <i class="fa-solid fa-box-open text-amber-600"></i>
+            <span>🍱 PESAN SNACK BOX</span>
+          </a>
+          <a href="index.html" class="bg-black/25 hover:bg-black/40 text-white font-medium text-xs px-4 py-3 rounded-2xl border border-white/20 transition text-center flex items-center justify-center gap-1.5 active:scale-98">
+            <i class="fa-solid fa-cake-candles text-xs"></i>
+            <span>LIHAT KATALOG SATUAN</span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= FORM KONFIGURASI SNACK BOX ================= -->
-  <main class="max-w-4xl mx-auto px-4 mt-4">
-    <div class="bg-white border border-amber-200/80 rounded-3xl p-4 sm:p-6 shadow-xs space-y-5">
+  <!-- ================= 2. SECTION KEUNGGULAN (TRUST BUILDER) ================= -->
+  <section class="max-w-4xl mx-auto px-4 mt-6">
+    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-amber-100 shadow-2xs space-y-3">
+      <div class="text-center sm:text-left">
+        <h2 class="font-serif font-bold text-base sm:text-lg text-gray-900">Mengapa Pilih AZRI SNACK?</h2>
+        <p class="text-xs text-gray-400 mt-0.5">Solusi sajian snack box berkualitas tanpa repot untuk kelancaran acara Anda.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-2">
+        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
+          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-800">Bisa Custom Isi Snack Box</h3>
+            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Bebas pilih varian kue manis & gurih sesuai selera.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
+          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-800">Pilihan Kue Beragam</h3>
+            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Tersedia aneka gorengan renyah hingga kue basah tradisional.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
+          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-800">Fresh Setiap Hari</h3>
+            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Diproduksi segar daily menggunakan bahan pilihan higienis.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
+          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-800">Cocok untuk Pesanan Acara</h3>
+            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Kemasan box rapi, bersih, dan pantas untuk tamu undangan.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
+          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-800">Kapasitas Produksi Besar</h3>
+            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Siap melayani pesanan puluhan hingga ratusan box tepat waktu.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
+          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-800">Pemesanan Mudah via WA</h3>
+            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Hitung otomatis di web & langsung terhubung ke WhatsApp toko.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. SECTION COCOK UNTUK BERBAGAI ACARA ================= -->
+  <section class="max-w-4xl mx-auto px-4 mt-6">
+    <div class="text-center mb-3">
+      <h2 class="font-serif font-bold text-base sm:text-lg text-gray-900">Cocok Untuk Berbagai Acara</h2>
+      <p class="text-xs text-gray-400">Siap melengkapi hidangan spesial di setiap momen Anda</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+        <span class="text-2xl block">🏢</span>
+        <h3 class="text-xs font-bold text-gray-800">Meeting Kantor</h3>
+      </div>
+      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+        <span class="text-2xl block">🎓</span>
+        <h3 class="text-xs font-bold text-gray-800">Seminar</h3>
+      </div>
+      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+        <span class="text-2xl block">🙏</span>
+        <h3 class="text-xs font-bold text-gray-800">Pengajian</h3>
+      </div>
+      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+        <span class="text-2xl block">👨‍👩‍👧</span>
+        <h3 class="text-xs font-bold text-gray-800">Arisan</h3>
+      </div>
+      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+        <span class="text-2xl block">🎂</span>
+        <h3 class="text-xs font-bold text-gray-800">Ulang Tahun</h3>
+      </div>
+      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+        <span class="text-2xl block">🎉</span>
+        <h3 class="text-xs font-bold text-gray-800">Acara Keluarga</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4 - 9. KONFIGURATOR UTAMA SNACK BOX ================= -->
+  <main id="snackbox-builder" class="max-w-4xl mx-auto px-4 mt-8 scroll-mt-20">
+    <div class="bg-white border-2 border-amber-300 rounded-3xl p-4 sm:p-7 shadow-md space-y-6">
       
-      <!-- 1. Pilihan Jumlah Isi Kue -->
-      <div>
-        <label class="block text-xs font-bold text-gray-800 mb-1.5 flex items-center gap-1.5">
+      <div class="border-b border-gray-100 pb-3">
+        <h2 class="font-serif font-bold text-gray-900 text-lg sm:text-xl">Konfigurator Custom Snack Box</h2>
+        <p class="text-xs text-gray-500 mt-0.5">Tentukan paket isi kue, opsi minuman, dan rincian menu sesuai keinginan Anda.</p>
+      </div>
+
+      <!-- 4. SECTION PILIH PAKET SNACK BOX -->
+      <div class="space-y-2">
+        <label class="block text-xs font-bold text-gray-800 flex items-center gap-1.5">
           <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">1</span>
-          <span>Pilih Mau Isi Berapa Kue:</span>
+          <span>Pilih Paket Snack Box:</span>
         </label>
-        <div class="grid grid-cols-3 gap-2 sm:gap-3">
-          <button type="button" onclick="setBoxItemCount(2)" id="btn-box-2" class="box-count-btn active py-2.5 px-3 rounded-2xl border-2 border-amber-500 bg-amber-50/50 text-gray-900 text-xs font-bold shadow-xs transition flex flex-col items-center justify-center">
-            <span>Isi 2 Kue</span>
-            <span class="text-[10px] text-gray-500 font-normal">Hemat & Ringkas</span>
-          </button>
-          <button type="button" onclick="setBoxItemCount(3)" id="btn-box-3" class="box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-gray-50">
-            <span>Isi 3 Kue</span>
-            <span class="text-[10px] text-amber-600 font-semibold">Paling Populer</span>
-          </button>
-          <button type="button" onclick="setBoxItemCount(4)" id="btn-box-4" class="box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-gray-50">
-            <span>Isi 4 Kue</span>
-            <span class="text-[10px] text-gray-500 font-normal">Paket Komplit</span>
-          </button>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3.5">
+          <!-- Paket 2 Kue -->
+          <div onclick="setBoxItemCount(2)" id="card-box-2" class="box-card active relative p-3.5 sm:p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/40 cursor-pointer transition shadow-2xs hover:shadow-xs">
+            <h3 class="font-serif font-bold text-sm text-gray-900">Paket Hemat (2 Kue)</h3>
+            <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Cocok untuk coffee break santai & acara singkat.</p>
+            <div class="mt-2.5 pt-2 border-t border-amber-200/60 flex items-center justify-between text-xs">
+              <span class="text-gray-400 text-[10px]">Isi Box:</span>
+              <strong class="text-amber-800 font-bold">2 Pcs Kue</strong>
+            </div>
+          </div>
+
+          <!-- Paket 3 Kue (PALING POPULER) -->
+          <div onclick="setBoxItemCount(3)" id="card-box-3" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400">
+            <span class="absolute -top-2.5 right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wider">
+              ★ PALING POPULER
+            </span>
+            <h3 class="font-serif font-bold text-sm text-gray-900">Paket Standar (3 Kue)</h3>
+            <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Porsi pas kombinasi manis, asin, dan gurih.</p>
+            <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
+              <span class="text-gray-400 text-[10px]">Isi Box:</span>
+              <strong class="text-amber-800 font-bold">3 Pcs Kue</strong>
+            </div>
+          </div>
+
+          <!-- Paket 4 Kue -->
+          <div onclick="setBoxItemCount(4)" id="card-box-4" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400">
+            <h3 class="font-serif font-bold text-sm text-gray-900">Paket Komplit (4 Kue)</h3>
+            <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Sajian mewah & kenyang untuk meeting VIP / hajatan.</p>
+            <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
+              <span class="text-gray-400 text-[10px]">Isi Box:</span>
+              <strong class="text-amber-800 font-bold">4 Pcs Kue</strong>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- 2. Pilihan Minuman (Rumus Harga: +3.000 dengan air mineral, +2.000 tanpa air mineral) -->
-      <div>
-        <label class="block text-xs font-bold text-gray-800 mb-1.5 flex items-center gap-1.5">
+      <!-- 5. PILIHAN MINUMAN -->
+      <div class="space-y-2">
+        <label class="block text-xs font-bold text-gray-800 flex items-center gap-1.5">
           <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">2</span>
-          <span>Pilihan Minuman Gelas:</span>
+          <span>Pilihan Minuman:</span>
         </label>
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <label class="flex items-center justify-between p-3 rounded-2xl border-2 border-amber-400 bg-amber-50/40 cursor-pointer shadow-2xs transition">
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-amber-400 bg-amber-50/40 cursor-pointer shadow-2xs transition">
             <div class="flex items-center gap-2.5">
               <input type="radio" name="box_drink_opt" value="with_drink" checked onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
               <div>
                 <p class="font-bold text-xs text-gray-900 flex items-center gap-1.5">
-                  <span>Plus Minuman Air Mineral Gelas</span>
-                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.2 rounded">+ Air Cup</span>
+                  <span>PLUS AIR MINERAL</span>
+                  <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">+ Gelas Cup</span>
                 </p>
                 <p class="text-[11px] text-gray-500">Termasuk Kardus Box Snack + Air Mineral Gelas</p>
               </div>
             </div>
-            <span class="text-xs font-bold text-amber-700">+Rp3.000</span>
+            <span class="text-xs font-bold text-amber-700 whitespace-nowrap">+Rp3.000 / box</span>
           </label>
 
-          <label class="flex items-center justify-between p-3 rounded-2xl border border-gray-200 bg-white cursor-pointer shadow-2xs transition hover:border-amber-300">
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer shadow-2xs transition hover:border-amber-300">
             <div class="flex items-center gap-2.5">
               <input type="radio" name="box_drink_opt" value="no_drink" onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
               <div>
-                <p class="font-bold text-xs text-gray-900">Tanpa Minuman Gelas</p>
-                <p class="text-[11px] text-gray-500">Hanya Kardus Box Snack Cantik</p>
+                <p class="font-bold text-xs text-gray-900">TANPA MINUMAN</p>
+                <p class="text-[11px] text-gray-500">Hanya Kardus Box Snack Cantik & Bersih</p>
               </div>
             </div>
-            <span class="text-xs font-bold text-gray-600">+Rp2.000</span>
+            <span class="text-xs font-bold text-gray-600 whitespace-nowrap">+Rp2.000 / box</span>
           </label>
         </div>
       </div>
 
-      <!-- 3. Pilihan Kue Sesuai Data Produk (Kue 1, Kue 2, Kue 3, Kue 4) -->
-      <div>
-        <label class="block text-xs font-bold text-gray-800 mb-1.5 flex items-center gap-1.5">
-          <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">3</span>
-          <span>Pilih Menu Kue Sesuai Keinginan Pemesan:</span>
-        </label>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="snackbox-cake-selectors">
+      <!-- 6. PILIH MENU KUE (DROPDOWN REALTIME DARI DATABASE) -->
+      <div class="space-y-2">
+        <div>
+          <label class="block text-xs font-bold text-gray-800 flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">3</span>
+            <span>Pilih Menu Kue Sesuai Keinginan Anda:</span>
+          </label>
+          <p class="text-[11px] text-gray-400 mt-0.5 ml-6.5">Silakan pilih kue sesuai jumlah isi paket yang Anda pilih.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1" id="snackbox-cake-selectors">
           <!-- Selector Kue 1 -->
-          <div class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1">
-            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
-              <span>Pilihan Kue 1:</span>
+          <div class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1">
+            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">1</span>
+              <span>Pilihan Kue Pertama:</span>
             </label>
             <select id="box-select-cake-1" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
           </div>
 
           <!-- Selector Kue 2 -->
-          <div class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1">
-            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
-              <span>Pilihan Kue 2:</span>
+          <div class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1">
+            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">2</span>
+              <span>Pilihan Kue Kedua:</span>
             </label>
             <select id="box-select-cake-2" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
           </div>
 
           <!-- Selector Kue 3 -->
-          <div id="wrapper-cake-3" class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
-            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
-              <span>Pilihan Kue 3:</span>
+          <div id="wrapper-cake-3" class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
+            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">3</span>
+              <span>Pilihan Kue Ketiga:</span>
             </label>
             <select id="box-select-cake-3" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
           </div>
 
           <!-- Selector Kue 4 -->
-          <div id="wrapper-cake-4" class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
-            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
-              <span>Pilihan Kue 4:</span>
+          <div id="wrapper-cake-4" class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
+            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">4</span>
+              <span>Pilihan Kue Keempat:</span>
             </label>
             <select id="box-select-cake-4" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
           </div>
         </div>
       </div>
 
-      <!-- 4. Rincian & Total Pembayaran Snack Box -->
-      <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 p-4 rounded-2xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-gray-600 font-medium">Harga per Box:</span>
+      <!-- 7 & 8 & 9. JUMLAH BOX, TOTAL PEMBAYARAN, & TOMBOL MASUKKAN KERANJANG -->
+      <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 p-4 sm:p-5 rounded-3xl border border-amber-200 space-y-4">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs items-center">
+          <!-- Harga per Box -->
+          <div class="bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
+            <span class="text-gray-500 text-[11px] block">Harga per Box:</span>
             <strong id="box-single-price" class="text-base font-bold text-amber-700 font-serif">Rp0</strong>
           </div>
-          
-          <div class="flex items-center gap-2 mt-2">
-            <span class="text-xs text-gray-700 font-semibold">Jumlah Box:</span>
-            <div class="flex items-center bg-white rounded-xl p-0.5 border border-amber-300 shadow-2xs">
-              <button type="button" onclick="changeBoxQty(-5)" class="w-7 h-7 rounded-lg bg-gray-100 font-bold text-xs text-gray-700 flex items-center justify-center active:scale-90">-</button>
-              <input type="number" id="snackbox-qty-input" min="5" value="10" oninput="updateBoxPriceCalculation()" class="w-12 text-center text-xs font-bold text-gray-900 bg-transparent outline-none">
-              <button type="button" onclick="changeBoxQty(5)" class="w-7 h-7 rounded-lg bg-amber-500 font-bold text-xs text-white flex items-center justify-center active:scale-90">+</button>
+
+          <!-- Jumlah Box -->
+          <div class="bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
+            <span class="text-gray-500 text-[11px] block mb-1">Jumlah Box:</span>
+            <div class="flex items-center justify-between bg-gray-50 rounded-xl p-0.5 border border-gray-200">
+              <button type="button" onclick="changeBoxQty(-5)" class="w-8 h-8 rounded-lg bg-white font-bold text-xs text-gray-700 flex items-center justify-center shadow-2xs active:scale-90">-</button>
+              <div class="text-center">
+                <input type="number" id="snackbox-qty-input" min="5" value="10" oninput="updateBoxPriceCalculation()" class="w-12 text-center text-xs font-bold text-gray-900 bg-transparent outline-none inline-block">
+                <span class="text-[10px] text-gray-400 font-medium">box</span>
+              </div>
+              <button type="button" onclick="changeBoxQty(5)" class="w-8 h-8 rounded-lg bg-amber-500 font-bold text-xs text-white flex items-center justify-center shadow-2xs active:scale-90">+</button>
             </div>
-            <span class="text-[10px] text-gray-400 italic">(Minimal 5 box)</span>
+            <span class="text-[10px] text-gray-400 italic block mt-1 text-center">Minimal 5 box</span>
+          </div>
+
+          <!-- Total Pembayaran -->
+          <div class="bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
+            <span class="text-gray-500 text-[11px] block">Total Pembayaran:</span>
+            <strong id="box-grand-total" class="text-lg sm:text-xl font-bold text-amber-700 font-serif">Rp0</strong>
           </div>
         </div>
 
-        <div class="flex flex-col sm:items-end gap-2 border-t sm:border-t-0 border-amber-200 pt-3 sm:pt-0">
-          <div class="text-left sm:text-right">
-            <span class="text-[10px] text-gray-500 block">Total Pembayaran Snack Box:</span>
-            <span id="box-grand-total" class="text-lg sm:text-xl font-bold text-amber-700 font-serif">Rp0</span>
-          </div>
+        <!-- Tombol Masukkan ke Keranjang Utama -->
+        <button type="button" onclick="addCustomSnackBoxToCart()" class="w-full bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-98 text-white font-bold py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition">
+          <i class="fa-solid fa-cart-plus text-base"></i>
+          <span>+ Masukkan ke Keranjang</span>
+        </button>
 
-          <button type="button" onclick="addCustomSnackBoxToCart()" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white text-xs font-semibold px-5 py-3 rounded-2xl flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition">
-            <i class="fa-solid fa-cart-plus"></i>
-            <span>+ Masukkan ke Keranjang Belanja</span>
-          </button>
-        </div>
       </div>
 
     </div>
   </main>
+
+  <!-- ================= 10. TRUST / LANGKAH PEMESANAN MUDAH ================= -->
+  <section class="max-w-4xl mx-auto px-4 mt-8">
+    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-gray-200 shadow-2xs space-y-3">
+      <h2 class="font-serif font-bold text-base sm:text-lg text-gray-900 text-center">Pesan Snack Box dengan Mudah</h2>
+      <p class="text-xs text-gray-400 text-center">5 Langkah praktis dari pemesanan hingga diantar ke lokasi acara Anda</p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-2 text-center text-xs">
+        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">1</div>
+          <p class="font-bold text-gray-800">Pilih Paket</p>
+          <p class="text-[10px] text-gray-500">2, 3, atau 4 kue</p>
+        </div>
+
+        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">2</div>
+          <p class="font-bold text-gray-800">Pilih Isi Kue</p>
+          <p class="text-[10px] text-gray-500">Kombinasi selera</p>
+        </div>
+
+        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">3</div>
+          <p class="font-bold text-gray-800">Tentukan Box</p>
+          <p class="text-[10px] text-gray-500">Min. 5 box</p>
+        </div>
+
+        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">4</div>
+          <p class="font-bold text-gray-800">Ke Keranjang</p>
+          <p class="text-[10px] text-gray-500">Cek total rincian</p>
+        </div>
+
+        <div class="col-span-2 sm:col-span-1 p-3 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-emerald-600 text-white text-[11px] font-bold mx-auto flex items-center justify-center">5</div>
+          <p class="font-bold text-emerald-900">Checkout WA</p>
+          <p class="text-[10px] text-emerald-700">Konfirmasi admin</p>
+        </div>
+      </div>
+
+      <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3 text-center text-xs text-emerald-900 mt-2 font-medium flex items-center justify-center gap-2">
+        <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
+        <span>Pesanan akan dikonfirmasi oleh admin AZRI SNACK melalui WhatsApp.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 11. CTA TERAKHIR SEBELUM FOOTER ================= -->
+  <section class="max-w-4xl mx-auto px-4 mt-6">
+    <div class="bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 rounded-3xl p-6 text-white text-center space-y-2 border border-amber-500/30 shadow-xl">
+      <h2 class="font-serif font-bold text-lg sm:text-xl">Siap Pesan Snack Box?</h2>
+      <p class="text-xs text-gray-300 max-w-md mx-auto">Sesuaikan isi snack box dengan kebutuhan acara Anda.</p>
+      
+      <div class="pt-2">
+        <a href="#snackbox-builder" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-lg transition active:scale-95">
+          <i class="fa-solid fa-box-open"></i>
+          <span>🍱 PESAN SNACK BOX SEKARANG</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <!-- Sticky Bottom Cart Bar -->
   <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
@@ -356,10 +585,10 @@
         <span class="text-xl">🍰</span> AZRI SNACK
       </div>
       <p class="text-gray-500 text-xs max-w-md mx-auto leading-relaxed">
-        Menyajikan aneka paket custom snack box berkualitas dan kue basah tradisional untuk memeriahkan setiap acara Anda.
+        Menyajikan aneka paket custom snack box berkualitas dan kue basah tradisional untuk memeriahkan setiap acara Anda di wilayah Jakarta Selatan & sekitarnya.
       </p>
       <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-gray-600 pt-2 border-t border-gray-100">
-        <a href="index.html" class="text-amber-700 hover:underline">← Lihat Katalog Kue Satuan</a>
+        <a href="index.html" class="text-amber-700 hover:underline">← Lihat Katalog Satuan</a>
         <span>•</span>
         <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="text-emerald-600 font-semibold hover:underline">
           <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp: 0858-9202-2079
@@ -410,7 +639,7 @@
       return wibDate.toISOString().split("T")[0];
     }
 
-    // Default H-1 untuk Snack Box
+    // Default tanggal acara
     document.getElementById("order-date").value = getTomorrowDateWIB();
     document.getElementById("order-date").min = getTodayDateWIB();
 
@@ -457,7 +686,7 @@
       populateSnackBoxCakeDropdowns();
     });
 
-    // Mengisi Dropdown Pilihan Kue Sesuai Data Produk
+    // Mengisi Dropdown Pilihan Kue Sesuai Data Produk Real
     function populateSnackBoxCakeDropdowns() {
       const sortedCakes = [...allProducts].sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
 
@@ -492,14 +721,15 @@
       updateBoxPriceCalculation();
     }
 
+    // Set Jumlah Isi Box (2, 3, 4 Kue)
     window.setBoxItemCount = function(count) {
       currentBoxCount = count;
       [2, 3, 4].forEach(n => {
-        const btn = document.getElementById(`btn-box-${n}`);
+        const card = document.getElementById(`card-box-${n}`);
         if (n === count) {
-          btn.className = "box-count-btn active py-2.5 px-3 rounded-2xl border-2 border-amber-500 bg-amber-50/50 text-gray-900 text-xs font-bold shadow-xs transition flex flex-col items-center justify-center";
+          card.className = "box-card active relative p-3.5 sm:p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/40 cursor-pointer transition shadow-2xs";
         } else {
-          btn.className = "box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-gray-50";
+          card.className = "box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400";
         }
       });
 
@@ -515,6 +745,7 @@
       updateBoxPriceCalculation();
     };
 
+    // Kalkulasi Harga Otomatis Berdasarkan Pilihan
     window.updateBoxPriceCalculation = function() {
       let totalCakesPrice = 0;
 
@@ -542,6 +773,13 @@
 
       document.getElementById("box-single-price").innerText = "Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
       document.getElementById("box-grand-total").innerText = "Rp" + grandTotalBox.toLocaleString("id-ID");
+
+      // Update harga awal di hero jika ada
+      const heroPriceEl = document.getElementById("hero-starting-price");
+      if (heroPriceEl && boxSinglePrice > 0) {
+        // Tampilkan harga estimasi riil terkecil
+        heroPriceEl.innerText = "Mulai Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
+      }
     };
 
     window.changeBoxQty = function(delta) {
@@ -720,7 +958,7 @@
       }
     };
 
-    // 7. Submit Order Snack Box
+    // Submit Order Snack Box ke Firestore & WhatsApp
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
