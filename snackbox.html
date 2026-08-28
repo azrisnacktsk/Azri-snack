@@ -1,1 +1,825 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paket Snack Box - AZRI SNACK</title>
 
+  <!-- Konfigurasi PWA & Web App Meta -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AZRI SNACK">
+  <link rel="apple-touch-icon" href="./logo.png">
+  <link rel="icon" type="image/png" href="./logo.png">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Google Font Poppins & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] { -moz-appearance: textfield; }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
+
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Logo Toko & Link Kembali -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center justify-center border border-amber-200/60 transition" title="Kembali ke Menu Utama">
+          <i class="fa-solid fa-arrow-left text-sm"></i>
+        </a>
+
+        <div id="store-logo-container" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
+          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-0.5">
+            <span id="store-logo-fallback" class="text-xl">🍰</span>
+            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
+          </div>
+        </div>
+        <div>
+          <h1 class="font-serif font-bold text-base sm:text-lg text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
+          <p class="text-[10px] text-amber-700 font-medium tracking-wide mt-0.5">Custom Snack Box Premium</p>
+        </div>
+      </div>
+
+      <!-- Tombol Keranjang -->
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="text-xs text-gray-600 hover:text-amber-700 font-medium hidden sm:inline-block px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-200">
+          Katalog Satuan
+        </a>
+        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none">
+          <i class="fa-solid fa-basket-shopping text-lg"></i>
+          <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Header Snack Box -->
+  <section class="max-w-4xl mx-auto px-4 mt-4">
+    <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-lg shadow-amber-500/10 relative overflow-hidden">
+      <div class="absolute -right-6 -bottom-10 opacity-15 text-9xl pointer-events-none select-none">🍱</div>
+
+      <div class="relative z-10 space-y-1.5 max-w-lg">
+        <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-0.8 rounded-full text-[10px] font-semibold uppercase tracking-wider">
+          <span class="text-amber-200">★</span> Pilihan Favorit Acara
+        </div>
+        <h2 class="font-serif text-lg sm:text-2xl font-bold leading-snug">Paket Custom Snack Box</h2>
+        <!-- Subjudul yang diminta -->
+        <p class="text-xs text-amber-50 leading-relaxed font-medium">Praktis untuk meeting, kantor dan berbagai acara</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FORM KONFIGURASI SNACK BOX ================= -->
+  <main class="max-w-4xl mx-auto px-4 mt-4">
+    <div class="bg-white border border-amber-200/80 rounded-3xl p-4 sm:p-6 shadow-xs space-y-5">
+      
+      <!-- 1. Pilihan Jumlah Isi Kue -->
+      <div>
+        <label class="block text-xs font-bold text-gray-800 mb-1.5 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">1</span>
+          <span>Pilih Mau Isi Berapa Kue:</span>
+        </label>
+        <div class="grid grid-cols-3 gap-2 sm:gap-3">
+          <button type="button" onclick="setBoxItemCount(2)" id="btn-box-2" class="box-count-btn active py-2.5 px-3 rounded-2xl border-2 border-amber-500 bg-amber-50/50 text-gray-900 text-xs font-bold shadow-xs transition flex flex-col items-center justify-center">
+            <span>Isi 2 Kue</span>
+            <span class="text-[10px] text-gray-500 font-normal">Hemat & Ringkas</span>
+          </button>
+          <button type="button" onclick="setBoxItemCount(3)" id="btn-box-3" class="box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-gray-50">
+            <span>Isi 3 Kue</span>
+            <span class="text-[10px] text-amber-600 font-semibold">Paling Populer</span>
+          </button>
+          <button type="button" onclick="setBoxItemCount(4)" id="btn-box-4" class="box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-gray-50">
+            <span>Isi 4 Kue</span>
+            <span class="text-[10px] text-gray-500 font-normal">Paket Komplit</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Pilihan Minuman (Rumus Harga: +3.000 dengan air mineral, +2.000 tanpa air mineral) -->
+      <div>
+        <label class="block text-xs font-bold text-gray-800 mb-1.5 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">2</span>
+          <span>Pilihan Minuman Gelas:</span>
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <label class="flex items-center justify-between p-3 rounded-2xl border-2 border-amber-400 bg-amber-50/40 cursor-pointer shadow-2xs transition">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="box_drink_opt" value="with_drink" checked onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
+              <div>
+                <p class="font-bold text-xs text-gray-900 flex items-center gap-1.5">
+                  <span>Plus Minuman Air Mineral Gelas</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.2 rounded">+ Air Cup</span>
+                </p>
+                <p class="text-[11px] text-gray-500">Termasuk Kardus Box Snack + Air Mineral Gelas</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-amber-700">+Rp3.000</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-2xl border border-gray-200 bg-white cursor-pointer shadow-2xs transition hover:border-amber-300">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="box_drink_opt" value="no_drink" onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
+              <div>
+                <p class="font-bold text-xs text-gray-900">Tanpa Minuman Gelas</p>
+                <p class="text-[11px] text-gray-500">Hanya Kardus Box Snack Cantik</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-gray-600">+Rp2.000</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 3. Pilihan Kue Sesuai Data Produk (Kue 1, Kue 2, Kue 3, Kue 4) -->
+      <div>
+        <label class="block text-xs font-bold text-gray-800 mb-1.5 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">3</span>
+          <span>Pilih Menu Kue Sesuai Keinginan Pemesan:</span>
+        </label>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="snackbox-cake-selectors">
+          <!-- Selector Kue 1 -->
+          <div class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1">
+            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
+              <span>Pilihan Kue 1:</span>
+            </label>
+            <select id="box-select-cake-1" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+          </div>
+
+          <!-- Selector Kue 2 -->
+          <div class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1">
+            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
+              <span>Pilihan Kue 2:</span>
+            </label>
+            <select id="box-select-cake-2" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+          </div>
+
+          <!-- Selector Kue 3 -->
+          <div id="wrapper-cake-3" class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
+            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
+              <span>Pilihan Kue 3:</span>
+            </label>
+            <select id="box-select-cake-3" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+          </div>
+
+          <!-- Selector Kue 4 -->
+          <div id="wrapper-cake-4" class="bg-gray-50/80 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
+            <label class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
+              <span>Pilihan Kue 4:</span>
+            </label>
+            <select id="box-select-cake-4" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Rincian & Total Pembayaran Snack Box -->
+      <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 p-4 rounded-2xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-600 font-medium">Harga per Box:</span>
+            <strong id="box-single-price" class="text-base font-bold text-amber-700 font-serif">Rp0</strong>
+          </div>
+          
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-xs text-gray-700 font-semibold">Jumlah Box:</span>
+            <div class="flex items-center bg-white rounded-xl p-0.5 border border-amber-300 shadow-2xs">
+              <button type="button" onclick="changeBoxQty(-5)" class="w-7 h-7 rounded-lg bg-gray-100 font-bold text-xs text-gray-700 flex items-center justify-center active:scale-90">-</button>
+              <input type="number" id="snackbox-qty-input" min="5" value="10" oninput="updateBoxPriceCalculation()" class="w-12 text-center text-xs font-bold text-gray-900 bg-transparent outline-none">
+              <button type="button" onclick="changeBoxQty(5)" class="w-7 h-7 rounded-lg bg-amber-500 font-bold text-xs text-white flex items-center justify-center active:scale-90">+</button>
+            </div>
+            <span class="text-[10px] text-gray-400 italic">(Minimal 5 box)</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:items-end gap-2 border-t sm:border-t-0 border-amber-200 pt-3 sm:pt-0">
+          <div class="text-left sm:text-right">
+            <span class="text-[10px] text-gray-500 block">Total Pembayaran Snack Box:</span>
+            <span id="box-grand-total" class="text-lg sm:text-xl font-bold text-amber-700 font-serif">Rp0</span>
+          </div>
+
+          <button type="button" onclick="addCustomSnackBoxToCart()" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white text-xs font-semibold px-5 py-3 rounded-2xl flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition">
+            <i class="fa-solid fa-cart-plus"></i>
+            <span>+ Masukkan ke Keranjang Belanja</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Sticky Bottom Cart Bar -->
+  <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
+    <div class="bg-gray-950/95 text-white rounded-3xl p-3.5 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
+      <div>
+        <p class="text-[11px] text-gray-300 font-medium">
+          <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Box
+        </p>
+        <p id="cart-price-total" class="text-base font-bold text-amber-400 font-serif">Rp0</p>
+      </div>
+      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-amber-500/20">
+        <span>Rincian Pesanan</span>
+        <i class="fa-solid fa-arrow-right text-[11px]"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
+  <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+      
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm sm:text-base">Rincian Belanja Snack Box</h3>
+        </div>
+        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-5">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Paket Terpilih</h4>
+            <span class="text-[10px] text-gray-400">Atur jumlah box</span>
+          </div>
+
+          <div id="cart-items-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
+
+          <div class="mt-3.5 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
+            <span>Total Pembayaran Sementara</span>
+            <span id="modal-subtotal" class="text-amber-600 text-base font-serif">Rp0</span>
+          </div>
+        </div>
+
+        <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 pt-2 border-t border-gray-100">
+          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Data Pemesan</h4>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan / Kantor / Acara *</label>
+            <input type="text" id="cust-name" required enterkeyhint="next" placeholder="Contoh: Ibu Rina (PT Maju Jaya)" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Nomor WhatsApp Aktif *</label>
+            <input type="tel" id="cust-phone" required enterkeyhint="next" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Acara *</label>
+              <input type="date" id="order-date" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Jam Diambil/Kirim *</label>
+              <input type="time" id="order-time" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Metode Pengambilan *</label>
+            <select id="delivery-type" onchange="toggleAddressField()" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-white">
+              <option value="Ambil Sendiri">Ambil Sendiri di Toko AZRI SNACK</option>
+              <option value="Diantar / Delivery">Diantar ke Kantor / Lokasi Acara</option>
+            </select>
+          </div>
+
+          <div id="address-box" class="hidden">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
+            <textarea id="cust-address" rows="2" enterkeyhint="done" placeholder="Nama gedung, lantai, nama jalan, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Tambahan (Opsional)</label>
+            <input type="text" id="order-notes" enterkeyhint="done" placeholder="Misal: Pisahkan 10 box untuk VIP, tulisan di box" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
+              <i class="fa-brands fa-whatsapp text-lg"></i>
+              <span>Kirim Pesanan ke WhatsApp Toko</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="max-w-4xl mx-auto px-4 mt-16 text-center text-xs text-gray-500">
+    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/70 shadow-xs space-y-4 text-left sm:text-center">
+      <div class="flex items-center justify-center gap-2 font-serif font-bold text-gray-900 text-lg">
+        <span class="text-xl">🍰</span> AZRI SNACK
+      </div>
+      <p class="text-gray-500 text-xs max-w-md mx-auto leading-relaxed">
+        Menyajikan aneka paket custom snack box berkualitas dan kue basah tradisional untuk memeriahkan setiap acara Anda.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-gray-600 pt-2 border-t border-gray-100">
+        <a href="index.html" class="text-amber-700 hover:underline">← Lihat Katalog Kue Satuan</a>
+        <span>•</span>
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="text-emerald-600 font-semibold hover:underline">
+          <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp: 0858-9202-2079
+        </button>
+      </div>
+    </div>
+    <p class="mt-5 text-[11px] text-gray-400">© 2026 AZRI SNACK. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Firebase Module Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, addDoc, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAzriSnackPlaceholderKey",
+      authDomain: "azri-snack-db.firebaseapp.com",
+      projectId: "azri-snack-db",
+      storageBucket: "azri-snack-db.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
+    };
+
+    const WA_STORE_PHONE = "6285892022079";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let allProducts = [];
+    let cart = {};
+    let currentBoxCount = 2;
+    let boxSinglePrice = 0;
+
+    function getTodayDateWIB() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      return wibDate.toISOString().split("T")[0];
+    }
+
+    function getTomorrowDateWIB() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      wibDate.setDate(wibDate.getDate() + 1);
+      return wibDate.toISOString().split("T")[0];
+    }
+
+    // Default H-1 untuk Snack Box
+    document.getElementById("order-date").value = getTomorrowDateWIB();
+    document.getElementById("order-date").min = getTodayDateWIB();
+
+    // Helper WhatsApp
+    window.openUniversalWhatsApp = function(phone, message) {
+      const encodedMsg = encodeURIComponent(message);
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile) {
+        const appUrl = `whatsapp://send?phone=${phone}&text=${encodedMsg}`;
+        const webUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
+        const startTime = Date.now();
+        window.location.href = appUrl;
+        setTimeout(() => {
+          if (Date.now() - startTime < 1500) {
+            window.location.href = webUrl;
+          }
+        }, 800);
+      } else {
+        window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`, "_blank");
+      }
+    };
+
+    window.openDirectWhatsApp = function(msg) {
+      openUniversalWhatsApp(WA_STORE_PHONE, msg);
+    };
+
+    // 1. Sync Logo Toko
+    onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().logo_url) {
+        const logoImg = document.getElementById("store-logo-img");
+        const fallback = document.getElementById("store-logo-fallback");
+        logoImg.src = docSnap.data().logo_url;
+        logoImg.classList.remove("hidden");
+        fallback.classList.add("hidden");
+      }
+    });
+
+    // 2. Sync Realtime Produk untuk Pilihan Kue Snack Box
+    onSnapshot(collection(db, "products"), (snapshot) => {
+      allProducts = [];
+      snapshot.forEach(docSnap => {
+        allProducts.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      populateSnackBoxCakeDropdowns();
+    });
+
+    // Mengisi Dropdown Pilihan Kue Sesuai Data Produk
+    function populateSnackBoxCakeDropdowns() {
+      const sortedCakes = [...allProducts].sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+
+      for (let i = 1; i <= 4; i++) {
+        const select = document.getElementById(`box-select-cake-${i}`);
+        if (!select) continue;
+
+        const prevVal = select.value;
+        select.innerHTML = "";
+
+        if (sortedCakes.length === 0) {
+          select.innerHTML = `<option value="">Tidak ada menu kue</option>`;
+          continue;
+        }
+
+        sortedCakes.forEach((cake) => {
+          const opt = document.createElement("option");
+          opt.value = cake.id;
+          opt.innerText = `${cake.name} (Rp${Number(cake.price || 0).toLocaleString('id-ID')})`;
+          select.appendChild(opt);
+        });
+
+        if (prevVal) {
+          select.value = prevVal;
+        } else if (sortedCakes[i - 1]) {
+          select.value = sortedCakes[i - 1].id;
+        } else if (sortedCakes[0]) {
+          select.value = sortedCakes[0].id;
+        }
+      }
+
+      updateBoxPriceCalculation();
+    }
+
+    window.setBoxItemCount = function(count) {
+      currentBoxCount = count;
+      [2, 3, 4].forEach(n => {
+        const btn = document.getElementById(`btn-box-${n}`);
+        if (n === count) {
+          btn.className = "box-count-btn active py-2.5 px-3 rounded-2xl border-2 border-amber-500 bg-amber-50/50 text-gray-900 text-xs font-bold shadow-xs transition flex flex-col items-center justify-center";
+        } else {
+          btn.className = "box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-gray-50";
+        }
+      });
+
+      const wrap3 = document.getElementById("wrapper-cake-3");
+      const wrap4 = document.getElementById("wrapper-cake-4");
+
+      if (count >= 3) wrap3.classList.remove("hidden");
+      else wrap3.classList.add("hidden");
+
+      if (count >= 4) wrap4.classList.remove("hidden");
+      else wrap4.classList.add("hidden");
+
+      updateBoxPriceCalculation();
+    };
+
+    window.updateBoxPriceCalculation = function() {
+      let totalCakesPrice = 0;
+
+      for (let i = 1; i <= currentBoxCount; i++) {
+        const sel = document.getElementById(`box-select-cake-${i}`);
+        if (sel && sel.value) {
+          const prod = allProducts.find(p => p.id === sel.value);
+          if (prod) {
+            totalCakesPrice += Number(prod.price || 0);
+          }
+        }
+      }
+
+      // Rumus: Box + Air Mineral = +3.000, Box saja tanpa air mineral = +2.000
+      const drinkOpt = document.querySelector('input[name="box_drink_opt"]:checked');
+      const boxPackagingFee = (drinkOpt && drinkOpt.value === "with_drink") ? 3000 : 2000;
+
+      boxSinglePrice = totalCakesPrice + boxPackagingFee;
+
+      const qtyInput = document.getElementById("snackbox-qty-input");
+      let qty = parseInt(qtyInput.value) || 5;
+      if (qty < 1) qty = 1;
+
+      const grandTotalBox = boxSinglePrice * qty;
+
+      document.getElementById("box-single-price").innerText = "Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
+      document.getElementById("box-grand-total").innerText = "Rp" + grandTotalBox.toLocaleString("id-ID");
+    };
+
+    window.changeBoxQty = function(delta) {
+      const input = document.getElementById("snackbox-qty-input");
+      let currentVal = parseInt(input.value) || 5;
+      let nextVal = currentVal + delta;
+      if (nextVal < 5) nextVal = 5;
+      input.value = nextVal;
+      updateBoxPriceCalculation();
+    };
+
+    window.addCustomSnackBoxToCart = function() {
+      const drinkOpt = document.querySelector('input[name="box_drink_opt"]:checked');
+      const hasDrink = (drinkOpt && drinkOpt.value === "with_drink");
+      const drinkLabel = hasDrink ? "+ Air Mineral Gelas" : "Tanpa Air Mineral";
+
+      const selectedCakes = [];
+      for (let i = 1; i <= currentBoxCount; i++) {
+        const sel = document.getElementById(`box-select-cake-${i}`);
+        if (sel && sel.value) {
+          const prod = allProducts.find(p => p.id === sel.value);
+          if (prod) {
+            selectedCakes.push(prod.name);
+          }
+        }
+      }
+
+      if (selectedCakes.length < currentBoxCount) {
+        alert("Silakan lengkapi semua pilihan kue di dalam box!");
+        return;
+      }
+
+      const qtyInput = document.getElementById("snackbox-qty-input");
+      let qty = parseInt(qtyInput.value) || 5;
+      if (qty < 5) {
+        alert("Pemesanan Snack Box minimal 5 box!");
+        qty = 5;
+        qtyInput.value = 5;
+      }
+
+      const boxId = "SNACKBOX-" + currentBoxCount + "-" + Date.now();
+      const boxName = `Snack Box (Isi ${currentBoxCount} Kue • ${drinkLabel})`;
+      const boxDesc = `Kue: ${selectedCakes.join(", ")}`;
+
+      cart[boxId] = {
+        id: boxId,
+        name: boxName,
+        price: boxSinglePrice,
+        qty: qty,
+        description: boxDesc,
+        image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60",
+        is_snackbox: true
+      };
+
+      updateCartUI();
+      toggleCartModal(true);
+    };
+
+    window.updateQty = function(productId, delta) {
+      if (!cart[productId]) return;
+
+      const nextQty = cart[productId].qty + delta;
+      if (nextQty < 5 && delta < 0) {
+        delete cart[productId];
+      } else {
+        cart[productId].qty = nextQty;
+      }
+
+      updateCartUI();
+    };
+
+    window.setQtyManual = function(productId, rawValue) {
+      let qty = parseInt(rawValue);
+      if (isNaN(qty) || qty < 5) {
+        delete cart[productId];
+      } else {
+        if (cart[productId]) {
+          cart[productId].qty = qty;
+        }
+      }
+      updateCartUI();
+    };
+
+    window.removeItemFromCart = function(productId) {
+      if (cart[productId]) {
+        delete cart[productId];
+        updateCartUI();
+      }
+    };
+
+    function updateCartUI() {
+      const itemKeys = Object.keys(cart);
+      const totalJenis = itemKeys.length;
+      const totalBox = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+      const grandTotal = Object.values(cart).reduce((sum, item) => sum + (item.qty * item.price), 0);
+
+      const badge = document.getElementById("cart-badge");
+      const stickyBar = document.getElementById("sticky-cart");
+
+      if (totalJenis > 0) {
+        badge.innerText = totalJenis;
+        badge.classList.remove("hidden");
+        stickyBar.classList.remove("hidden");
+        
+        document.getElementById("cart-item-count").innerText = `${totalJenis} Paket`;
+        document.getElementById("cart-qty-total").innerText = totalBox;
+        document.getElementById("cart-price-total").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
+        document.getElementById("modal-subtotal").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
+      } else {
+        badge.classList.add("hidden");
+        stickyBar.classList.add("hidden");
+        toggleCartModal(false);
+      }
+
+      renderCartModalList();
+    }
+
+    function renderCartModalList() {
+      const container = document.getElementById("cart-items-container");
+      container.innerHTML = "";
+
+      const items = Object.values(cart);
+      if (items.length === 0) {
+        container.innerHTML = `<div class="text-center py-6 text-xs text-gray-400">Keranjang masih kosong.</div>`;
+        return;
+      }
+
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
+
+      items.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
+        row.innerHTML = `
+          <img src="${item.image_url || fallbackImg}" alt="${item.name}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200 shadow-2xs">
+
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
+            <p class="text-[10px] text-gray-500 line-clamp-1">${item.description || ''}</p>
+            <span class="text-[11px] text-amber-700 font-semibold">Rp${item.price.toLocaleString('id-ID')} / box</span>
+          </div>
+
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5 shadow-2xs">
+              <button type="button" onclick="updateQty('${item.id}', -5)" class="w-6 h-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
+              <input type="number" min="5" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-8 text-center font-bold text-gray-900 text-xs outline-none bg-transparent">
+              <button type="button" onclick="updateQty('${item.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
+            </div>
+
+            <span class="font-bold text-xs text-gray-900 text-right min-w-[55px]">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
+
+            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus paket ini" class="w-6 h-6 rounded-lg text-gray-300 hover:text-red-500 flex items-center justify-center transition">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    window.toggleCartModal = function(show) {
+      const modal = document.getElementById("cart-modal");
+      if (show) modal.classList.remove("hidden");
+      else modal.classList.add("hidden");
+    };
+
+    window.toggleAddressField = function() {
+      const type = document.getElementById("delivery-type").value;
+      const addrBox = document.getElementById("address-box");
+      const addrInput = document.getElementById("cust-address");
+      if (type === "Diantar / Delivery") {
+        addrBox.classList.remove("hidden");
+        addrInput.setAttribute("required", "true");
+      } else {
+        addrBox.classList.add("hidden");
+        addrInput.removeAttribute("required");
+      }
+    };
+
+    // 7. Submit Order Snack Box
+    window.submitOrder = async function() {
+      const name = document.getElementById("cust-name").value.trim();
+      const phone = document.getElementById("cust-phone").value.trim();
+      const date = document.getElementById("order-date").value;
+      const time = document.getElementById("order-time").value;
+      const deliveryType = document.getElementById("delivery-type").value;
+      const address = document.getElementById("cust-address") ? document.getElementById("cust-address").value.trim() : "";
+      const notes = document.getElementById("order-notes").value.trim();
+
+      const items = Object.values(cart).map(c => ({
+        product_id: c.id,
+        name: c.name,
+        price: c.price,
+        qty: c.qty,
+        subtotal: c.price * c.qty,
+        is_snackbox: true,
+        description: c.description || ""
+      }));
+
+      if (items.length === 0) {
+        alert("Keranjang Anda masih kosong. Silakan atur paket snack box terlebih dahulu!");
+        return;
+      }
+
+      const grandTotal = items.reduce((sum, i) => sum + i.subtotal, 0);
+      const invoiceNo = "AZRI-" + Math.floor(100000 + Math.random() * 900000);
+
+      const btn = document.getElementById("btn-submit-order");
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses Pesanan...`;
+      btn.disabled = true;
+
+      try {
+        await addDoc(collection(db, "orders"), {
+          invoice_no: invoiceNo,
+          customer_name: name,
+          customer_phone: phone,
+          event_date: date,
+          event_time: time,
+          delivery_type: deliveryType,
+          delivery_address: address || "-",
+          notes: notes || "-",
+          items: items,
+          total_price: grandTotal,
+          status: "PENDING",
+          payment_status: "UNPAID",
+          created_at: serverTimestamp()
+        });
+
+        let itemText = "";
+        items.forEach(i => {
+          itemText += `• ${i.name} (${i.qty} box) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+          if (i.description) {
+            itemText += `  _${i.description}_\n`;
+          }
+        });
+
+        let waMessage = `🍱 *PESANAN SNACK BOX - AZRI SNACK*\n`;
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*No. Invoice:* #${invoiceNo}\n`;
+        waMessage += `*Nama:* ${name}\n`;
+        waMessage += `*No. HP:* ${phone}\n`;
+        waMessage += `*Tgl Acara:* ${date} (Pukul ${time})\n`;
+        waMessage += `*Tipe Pesanan:* Paket Custom Snack Box\n`;
+        waMessage += `*Pengambilan:* ${deliveryType}\n`;
+        if (deliveryType === "Diantar / Delivery") {
+          waMessage += `*Alamat:* ${address}\n`;
+        }
+        if (notes) {
+          waMessage += `*Catatan:* ${notes}\n`;
+        }
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*Rincian Snack Box:*\n${itemText}`;
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*TOTAL SEMENTARA:* Rp${grandTotal.toLocaleString('id-ID')}\n\n`;
+        waMessage += `_Halo Admin AZRI SNACK, mohon konfirmasi ketersediaan pesanan snack box saya. Terima kasih!_`;
+
+        openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
+
+        cart = {};
+        updateCartUI();
+        document.getElementById("order-form").reset();
+        document.getElementById("order-date").value = getTomorrowDateWIB();
+        btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
+        btn.disabled = false;
+
+      } catch (err) {
+        console.error("Gagal simpan pesanan:", err);
+        let itemText = "";
+        items.forEach(i => {
+          itemText += `• ${i.name} (${i.qty} box) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+        });
+        let waMessage = `🍱 *PESANAN SNACK BOX - AZRI SNACK*\n*Nama:* ${name}\n*No. HP:* ${phone}\n*Tgl Acara:* ${date} (${time})\n*Menu:*\n${itemText}*Total:* Rp${grandTotal.toLocaleString('id-ID')}`;
+        
+        openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
+        
+        btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
+        btn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
