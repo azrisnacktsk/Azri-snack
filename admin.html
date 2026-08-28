@@ -108,6 +108,10 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <a href="snackbox.html" target="_blank" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-2 rounded-xl flex items-center gap-1.5 transition font-semibold">
+            <i class="fa-solid fa-box-open text-amber-600"></i>
+            <span class="hidden sm:inline">Web Snack Box</span>
+          </a>
           <a href="index.html" target="_blank" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl flex items-center gap-1.5 transition font-medium">
             <i class="fa-solid fa-globe text-amber-500"></i>
             <span class="hidden sm:inline">Lihat Web</span>
@@ -144,11 +148,11 @@
     <!-- Main Content Area -->
     <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-1">
 
-      <!-- ================= TAB 1: DATA PESANAN ================= -->
+      <!-- ================= TAB 1: DATA PESANAN (MENDUKUNG SATUAN & SNACK BOX) ================= -->
       <section id="view-orders" class="tab-view space-y-4">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 no-print">
           <div>
-            <h2 class="font-bold text-gray-900 text-base">Daftar Pesanan Masuk</h2>
+            <h2 class="font-bold text-gray-900 text-base">Daftar Pesanan Masuk (Kue Satuan & Snack Box)</h2>
             <p class="text-xs text-gray-400">Kelola status pesanan, pembayaran DP/Lunas, cetak nota struk resmi, atau rekap harian</p>
           </div>
           
@@ -376,7 +380,7 @@
     </main>
   </div>
 
-  <!-- ================= MODAL 1: CETAK STRUK / NOTA PESANAN RESMI ================= -->
+  <!-- ================= MODAL 1: CETAK STRUK / NOTA PESANAN RESMI (MENDUKUNG SNACK BOX) ================= -->
   <div id="receipt-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
       
@@ -458,7 +462,7 @@
             <table class="w-full text-left text-xs">
               <thead class="border-b border-gray-300 text-gray-700 font-bold">
                 <tr>
-                  <th class="py-1.5">Menu</th>
+                  <th class="py-1.5">Menu / Paket</th>
                   <th class="py-1.5 text-center">Harga</th>
                   <th class="py-1.5 text-center">Qty</th>
                   <th class="py-1.5 text-right">Subtotal</th>
@@ -518,7 +522,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL 2: RANGKUMAN PESANAN & BELANJA HARIAN ================= -->
+  <!-- ================= MODAL 2: RANGKUMAN PESANAN & BELANJA HARIAN (TERMASUK KUE SNACK BOX) ================= -->
   <div id="summary-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
       
@@ -529,7 +533,7 @@
           </div>
           <div>
             <h3 class="font-bold text-gray-900 text-sm">Rangkuman Pesanan & Belanja Harian</h3>
-            <p class="text-[11px] text-gray-400">Gunakan untuk daftar belanja bahan & produksi dapur</p>
+            <p class="text-[11px] text-gray-400">Total belanja bahan kue satuan, snack box, dan kemasan</p>
           </div>
         </div>
         <div class="flex items-center gap-1.5">
@@ -572,10 +576,11 @@
           </div>
         </div>
 
+        <!-- 1. TOTAL KUE YANG HARUS DIPRODUKSI/BELANJA (Akumulasi Satuan + Isi Snack Box) -->
         <div class="space-y-2">
           <h2 class="font-bold text-gray-900 text-sm flex items-center gap-1.5 text-amber-800">
             <i class="fa-solid fa-cart-shopping text-xs"></i>
-            <span>1. TOTAL KUE YANG HARUS DISIAPKAN / DIBELANJAKAN:</span>
+            <span>1. TOTAL KUE YANG HARUS DISIAPKAN (SATUAN + ISI SNACK BOX):</span>
           </h2>
           <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xs">
             <table class="w-full text-left">
@@ -592,6 +597,25 @@
           </div>
         </div>
 
+        <!-- REKAP KEMASAN SNACK BOX & AIR MINERAL -->
+        <div id="summary-packaging-box" class="hidden space-y-2 bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200">
+          <h3 class="font-bold text-xs text-amber-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-box-open text-amber-600"></i>
+            <span>KEBUTUHAN KEMASAN & MINUMAN SNACK BOX:</span>
+          </h3>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="bg-white p-2.5 rounded-xl border border-amber-200">
+              <span class="text-gray-500 block text-[11px]">Total Kardus Box Snack:</span>
+              <strong id="summary-total-boxes" class="text-sm text-amber-800">0 Box</strong>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-amber-200">
+              <span class="text-gray-500 block text-[11px]">Total Air Mineral Gelas:</span>
+              <strong id="summary-total-drinks" class="text-sm text-emerald-700">0 Cup</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. RINCIAN PESANAN PELANGGAN -->
         <div class="space-y-3 pt-2">
           <h2 class="font-bold text-gray-900 text-sm flex items-center gap-1.5 text-amber-800">
             <i class="fa-solid fa-users text-xs"></i>
@@ -731,12 +755,11 @@
       }
     });
 
-    // 2. Sinkronisasi Logo Global Real-time (Login, Navbar, Preview, Lembar Rekap, Watermark)
+    // 2. Sinkronisasi Logo Global Real-time
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists() && docSnap.data().logo_url) {
         currentStoreLogoUrl = docSnap.data().logo_url;
         
-        // Preview Tab Pengaturan
         const img = document.getElementById("logo-img-preview");
         const icon = document.getElementById("logo-icon-placeholder");
         if (img && icon) {
@@ -745,7 +768,6 @@
           icon.classList.add("hidden");
         }
 
-        // Top Navbar
         const navImg = document.getElementById("nav-logo-img");
         const navFallback = document.getElementById("nav-logo-fallback");
         if (navImg && navFallback) {
@@ -754,7 +776,6 @@
           navFallback.classList.add("hidden");
         }
 
-        // Layar Login
         const loginImg = document.getElementById("login-logo-img");
         const loginFallback = document.getElementById("login-logo-fallback");
         if (loginImg && loginFallback) {
@@ -763,7 +784,6 @@
           loginFallback.classList.add("hidden");
         }
 
-        // Lembar Rekap Belanja Harian
         const sumImg = document.getElementById("summary-logo-img");
         const sumFallback = document.getElementById("summary-logo-fallback");
         if (sumImg && sumFallback) {
@@ -772,7 +792,6 @@
           sumFallback.classList.add("hidden");
         }
 
-        // Watermark Nota
         const watermarkImg = document.getElementById("receipt-watermark-img");
         if (watermarkImg) watermarkImg.src = currentStoreLogoUrl;
       }
@@ -837,7 +856,7 @@
       });
     }
 
-    // 3. Render Orders
+    // 3. Render Orders (Mendukung Tampilan Snack Box & Satuan)
     window.renderOrders = function() {
       const filterStatus = document.getElementById("filter-order-status").value;
       const filterDate = document.getElementById("filter-order-date").value;
@@ -871,7 +890,21 @@
         const dateStr = o.event_date ? `${o.event_date} (${o.event_time || ''})` : "-";
         let itemsHtml = "";
         if (o.items && Array.isArray(o.items)) {
-          itemsHtml = o.items.map(i => `<span class="inline-block bg-gray-100 text-gray-700 text-[11px] px-2 py-0.5 rounded-md mr-1 mb-1 font-medium">${i.name} x${i.qty}</span>`).join("");
+          itemsHtml = o.items.map(i => {
+            if (i.is_snackbox) {
+              return `
+                <div class="bg-amber-50/80 border border-amber-200 text-amber-900 text-xs p-2 rounded-xl mb-1.5 font-medium">
+                  <div class="flex items-center justify-between font-bold">
+                    <span>🍱 ${i.name}</span>
+                    <span class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-md">${i.qty} Box</span>
+                  </div>
+                  ${i.description ? `<p class="text-[11px] text-amber-800 mt-0.5 italic">${i.description}</p>` : ''}
+                </div>
+              `;
+            } else {
+              return `<span class="inline-block bg-gray-100 text-gray-700 text-[11px] px-2.5 py-1 rounded-lg mr-1 mb-1 font-medium">${i.name} x${i.qty}</span>`;
+            }
+          }).join("");
         }
 
         const payStatus = o.payment_status || "UNPAID";
@@ -918,7 +951,7 @@
           </div>
 
           <div class="pt-1">
-            <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">Rincian Menu:</p>
+            <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">Rincian Menu & Paket:</p>
             <div>${itemsHtml}</div>
           </div>
         `;
@@ -1280,7 +1313,7 @@
       }
     };
 
-    // 6. FITUR NOTA STRUK PEMBELIAN (PDF & PNG)
+    // 6. FITUR NOTA STRUK PEMBELIAN (MENDUKUNG SATUAN & SNACK BOX)
     window.openReceiptModal = function(orderId) {
       const order = ordersList.find(o => o.id === orderId);
       if (!order) {
@@ -1313,10 +1346,15 @@
           const sub = (item.price || 0) * (item.qty || 1);
           grandTotal += sub;
           const tr = document.createElement("tr");
+
+          const qtyUnit = item.is_snackbox ? "box" : "pcs";
           tr.innerHTML = `
-            <td class="py-1.5 font-bold text-gray-800">${item.name}</td>
+            <td class="py-1.5 font-bold text-gray-800">
+              <span>${item.name}</span>
+              ${item.description ? `<p class="text-[10px] text-gray-500 font-normal italic leading-tight mt-0.5">${item.description}</p>` : ''}
+            </td>
             <td class="py-1.5 text-center text-gray-600">Rp${Number(item.price || 0).toLocaleString('id-ID')}</td>
-            <td class="py-1.5 text-center font-bold text-gray-900">${item.qty} pcs</td>
+            <td class="py-1.5 text-center font-bold text-gray-900">${item.qty} ${qtyUnit}</td>
             <td class="py-1.5 text-right font-bold text-gray-900">Rp${Number(sub).toLocaleString('id-ID')}</td>
           `;
           tbody.appendChild(tr);
@@ -1442,7 +1480,6 @@
       }
     }
 
-    // 1. Cetak / Simpan PDF Nota
     window.printReceiptNow = function() {
       const receiptArea = document.getElementById("receipt-print-area");
       const summaryArea = document.getElementById("summary-print-area");
@@ -1453,7 +1490,6 @@
       window.print();
     };
 
-    // 2. Simpan Gambar PNG Nota
     window.downloadReceiptAsPNG = function() {
       const receiptArea = document.getElementById("receipt-print-area");
       const invNo = activeReceiptOrder ? (activeReceiptOrder.invoice_no || activeReceiptOrder.id) : "Nota";
@@ -1466,7 +1502,7 @@
       });
     };
 
-    // 7. FITUR MODAL RANGKUMAN BELANJA & PESANAN HARIAN (PDF & PNG)
+    // 7. FITUR REKAPITULASI BELANJA HARIAN & DAPUR (AKUMULASI SATUAN + SNACK BOX)
     window.openDailySummaryModal = function() {
       let targetDate = document.getElementById("filter-order-date").value;
       if (!targetDate) {
@@ -1480,7 +1516,6 @@
       document.getElementById("summary-date-title").innerText = formattedDateString;
       document.getElementById("summary-generated-time").innerText = "Dicetak pada: " + new Date().toLocaleString('id-ID');
 
-      // Update Logo di Header Rangkuman
       const sumImg = document.getElementById("summary-logo-img");
       const sumFallback = document.getElementById("summary-logo-fallback");
       if (currentStoreLogoUrl) {
@@ -1492,13 +1527,31 @@
       const dailyOrders = ordersList.filter(o => o.event_date === targetDate && o.status !== 'CANCELLED');
 
       const aggregatedItems = {};
+      let totalSnackBoxes = 0;
+      let totalAirMineralCups = 0;
+
       dailyOrders.forEach(order => {
         if (order.items && Array.isArray(order.items)) {
           order.items.forEach(item => {
-            if (!aggregatedItems[item.name]) {
-              aggregatedItems[item.name] = 0;
+            const qty = Number(item.qty || 0);
+
+            if (item.is_snackbox) {
+              totalSnackBoxes += qty;
+              if (item.name && item.name.includes("Air Mineral")) {
+                totalAirMineralCups += qty;
+              }
+
+              // Parse kue di dalam deskripsi snack box
+              if (item.description) {
+                const cleanDesc = item.description.replace(/^(Isi Kue:|Kue:)\s*/i, "");
+                const cakeNames = cleanDesc.split(",").map(c => c.trim()).filter(Boolean);
+                cakeNames.forEach(cName => {
+                  aggregatedItems[cName] = (aggregatedItems[cName] || 0) + qty;
+                });
+              }
+            } else {
+              aggregatedItems[item.name] = (aggregatedItems[item.name] || 0) + qty;
             }
-            aggregatedItems[item.name] += Number(item.qty || 0);
           });
         }
       });
@@ -1538,6 +1591,16 @@
         itemsTableBody.appendChild(trTotal);
       }
 
+      // Tampilkan Rekap Kemasan Box & Air Mineral jika ada
+      const pkgBox = document.getElementById("summary-packaging-box");
+      if (totalSnackBoxes > 0) {
+        pkgBox.classList.remove("hidden");
+        document.getElementById("summary-total-boxes").innerText = `${totalSnackBoxes} Box Snack`;
+        document.getElementById("summary-total-drinks").innerText = `${totalAirMineralCups} Cup Air Mineral`;
+      } else {
+        pkgBox.classList.add("hidden");
+      }
+
       const ordersListContainer = document.getElementById("summary-orders-list");
       ordersListContainer.innerHTML = "";
 
@@ -1547,7 +1610,13 @@
         dailyOrders.forEach((o, index) => {
           let itemDetails = "";
           if (o.items && Array.isArray(o.items)) {
-            itemDetails = o.items.map(i => `<li class="font-medium text-gray-800">• <strong>${i.name}</strong> : ${i.qty} pcs (Rp${(i.subtotal || 0).toLocaleString('id-ID')})</li>`).join("");
+            itemDetails = o.items.map(i => {
+              if (i.is_snackbox) {
+                return `<li class="font-medium text-amber-900">• 🍱 <strong>${i.name}</strong> : ${i.qty} box (Rp${(i.subtotal || 0).toLocaleString('id-ID')})<br><span class="text-[11px] text-gray-500 italic pl-3">${i.description || ''}</span></li>`;
+              } else {
+                return `<li class="font-medium text-gray-800">• <strong>${i.name}</strong> : ${i.qty} pcs (Rp${(i.subtotal || 0).toLocaleString('id-ID')})</li>`;
+              }
+            }).join("");
           }
 
           const paySt = o.payment_status || "UNPAID";
@@ -1580,8 +1649,8 @@
             </div>
 
             <div class="bg-white p-2.5 rounded-lg border border-gray-200 mt-2">
-              <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Menu Pesanan:</p>
-              <ul class="space-y-0.5 text-xs">${itemDetails}</ul>
+              <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Rincian Menu & Paket:</p>
+              <ul class="space-y-1 text-xs">${itemDetails}</ul>
             </div>
           `;
           ordersListContainer.appendChild(box);
@@ -1595,7 +1664,6 @@
       document.getElementById("summary-modal").classList.add("hidden");
     };
 
-    // 1. Cetak / Simpan PDF Rangkuman
     window.printSummaryNow = function() {
       const receiptArea = document.getElementById("receipt-print-area");
       const summaryArea = document.getElementById("summary-print-area");
@@ -1606,7 +1674,6 @@
       window.print();
     };
 
-    // 2. Simpan Gambar PNG Rangkuman
     window.downloadSummaryAsPNG = function() {
       const summaryArea = document.getElementById("summary-print-area");
       const targetDate = document.getElementById("filter-order-date").value || "Harian";
