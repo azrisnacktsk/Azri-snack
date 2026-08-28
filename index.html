@@ -57,7 +57,6 @@
     input[type=number] { -moz-appearance: textfield; }
     html { scroll-behavior: smooth; }
 
-    /* Animasi Preload / Splash Screen */
     @keyframes pulseGlow {
       0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); }
       50% { transform: scale(1.04); box-shadow: 0 0 45px rgba(245, 158, 11, 0.6); }
@@ -79,8 +78,6 @@
   <!-- ================= PRELOAD / SPLASH SCREEN PEMBUKA ================= -->
   <div id="app-preload-screen" class="fixed inset-0 z-50 bg-[#faf8f5] flex flex-col items-center justify-center p-6 transition-all duration-700">
     <div class="flex flex-col items-center text-center max-w-xs w-full space-y-6">
-      
-      <!-- Wadah Logo Beranimasi Glow -->
       <div class="relative">
         <div class="absolute -inset-2 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-[32px] blur-md opacity-70 animate-pulse"></div>
         <div class="relative w-28 h-28 rounded-3xl bg-white p-1 shadow-2xl animate-pulse-glow flex items-center justify-center overflow-hidden border border-amber-200/80">
@@ -91,27 +88,21 @@
         </div>
       </div>
 
-      <!-- Teks Branding -->
       <div class="space-y-1">
         <h1 class="font-serif font-bold text-2xl text-gray-900 tracking-tight">AZRI SNACK</h1>
         <p class="text-xs text-amber-700 font-medium tracking-wide">Kue Tradisional & Snack Box</p>
       </div>
 
-      <!-- Indikator Loading Bar & Status -->
       <div class="w-full space-y-2.5 pt-2">
         <div class="w-48 h-2 bg-amber-100 rounded-full overflow-hidden mx-auto relative shadow-inner">
           <div id="preload-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full w-1/3 transition-all duration-500"></div>
           <div class="absolute inset-0 bg-white/40 w-1/2 animate-shimmer"></div>
         </div>
-        
         <p id="preload-status-text" class="text-[11px] text-gray-400 font-medium animate-pulse">
           <i class="fa-solid fa-cookie text-amber-500 mr-1"></i> Menyiapkan sajian fresh...
         </p>
       </div>
-
     </div>
-
-    <!-- Tagline Bawah -->
     <div class="absolute bottom-6 text-center text-[10px] text-gray-400 font-medium">
       Dibuat Fresh Setiap Hari • Sejak 2026
     </div>
@@ -171,16 +162,19 @@
     <div class="max-w-5xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
       <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-        
         <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-9 py-2.5 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/40 outline-none transition border border-gray-200/80 focus:border-amber-400">
-        
         <button type="button" id="btn-clear-search" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1">
           <i class="fa-solid fa-circle-xmark text-sm"></i>
         </button>
       </form>
 
+      <!-- Kategori Filter Lengkap dengan Tab Snack Box -->
       <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
         <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-900 text-white shadow-xs transition">Semua Menu</button>
+        <button onclick="scrollToSnackBoxBuilder()" class="cat-btn px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs hover:from-amber-600 hover:to-orange-600 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-box-open"></i>
+          <span>🍱 Custom Snack Box</span>
+        </button>
         <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Snack & Gorengan</button>
         <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Kue Basah</button>
       </div>
@@ -214,8 +208,158 @@
     </div>
   </section>
 
-  <!-- PEMBERITAHUAN STOK HARI INI & PINTASAN SCROLL KE PRODUK HABIS -->
-  <section class="max-w-5xl mx-auto px-4 mt-3">
+  <!-- ================= SECTION BARU: CUSTOM SNACK BOX BUILDER ================= -->
+  <section id="snackbox-builder-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
+    <div class="bg-gradient-to-br from-amber-50/90 via-orange-50/60 to-amber-100/70 border-2 border-amber-200/80 rounded-3xl p-4 sm:p-6 shadow-sm relative overflow-hidden">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/60 pb-3.5">
+        <div>
+          <div class="inline-flex items-center gap-1.5 bg-amber-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-1">
+            <i class="fa-solid fa-star"></i> Pilihan Favorit Acara
+          </div>
+          <h3 class="font-serif font-bold text-gray-900 text-base sm:text-xl flex items-center gap-2">
+            <span>🍱 Paket Custom Snack Box</span>
+          </h3>
+          <!-- Subjudul yang diminta -->
+          <p class="text-xs text-amber-900/80 font-medium mt-0.5">Praktis untuk meeting, kantor dan berbagai acara</p>
+        </div>
+
+        <span class="text-[11px] text-amber-800 bg-white/80 px-3 py-1.5 rounded-xl border border-amber-200 self-start sm:self-center font-medium">
+          📦 Kemasan Box Eksklusif & Higienis
+        </span>
+      </div>
+
+      <div class="mt-4 space-y-4">
+        <!-- 1. Pilihan Jumlah Isi Kue -->
+        <div>
+          <label class="block text-xs font-bold text-gray-800 mb-1.5">1. Pilih Jumlah Isi Kue dalam Box:</label>
+          <div class="grid grid-cols-3 gap-2 sm:gap-3">
+            <button type="button" onclick="setBoxItemCount(2)" id="btn-box-2" class="box-count-btn active py-2.5 px-3 rounded-2xl border-2 border-amber-500 bg-white text-gray-900 text-xs font-bold shadow-xs transition flex flex-col items-center justify-center">
+              <span>Isi 2 Kue</span>
+              <span class="text-[10px] text-gray-400 font-normal">Hemat & Ringkas</span>
+            </button>
+            <button type="button" onclick="setBoxItemCount(3)" id="btn-box-3" class="box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white/70 text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-white">
+              <span>Isi 3 Kue</span>
+              <span class="text-[10px] text-amber-600 font-semibold">Paling Populer</span>
+            </button>
+            <button type="button" onclick="setBoxItemCount(4)" id="btn-box-4" class="box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white/70 text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-white">
+              <span>Isi 4 Kue</span>
+              <span class="text-[10px] text-gray-400 font-normal">Paket Komplit</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Pilihan Minuman Gelas (Rumus Harga: +3.000 dengan air mineral, +2.000 tanpa air mineral) -->
+        <div>
+          <label class="block text-xs font-bold text-gray-800 mb-1.5">2. Tambahan Minuman Air Mineral Gelas:</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <label class="flex items-center justify-between p-3 rounded-2xl border border-amber-300 bg-white cursor-pointer shadow-2xs transition hover:border-amber-400">
+              <div class="flex items-center gap-2.5">
+                <input type="radio" name="box_drink_opt" value="with_drink" checked onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
+                <div>
+                  <p class="font-bold text-xs text-gray-900 flex items-center gap-1.5">
+                    <span>Plus Air Mineral Gelas</span>
+                    <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.2 rounded">+ Air Cup</span>
+                  </p>
+                  <p class="text-[11px] text-gray-500">Termasuk Kardus Box Snack + Air Mineral Gelas</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-amber-700">+Rp3.000</span>
+            </label>
+
+            <label class="flex items-center justify-between p-3 rounded-2xl border border-gray-200 bg-white/80 cursor-pointer shadow-2xs transition hover:border-amber-400">
+              <div class="flex items-center gap-2.5">
+                <input type="radio" name="box_drink_opt" value="no_drink" onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
+                <div>
+                  <p class="font-bold text-xs text-gray-900">Tanpa Air Mineral</p>
+                  <p class="text-[11px] text-gray-500">Hanya Kardus Box Snack Eksklusif</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-gray-600">+Rp2.000</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 3. Pilih Menu Kue Sesuai Data Produk (Kue 1, Kue 2, Kue 3, Kue 4) -->
+        <div>
+          <label class="block text-xs font-bold text-gray-800 mb-1.5">3. Tentukan Pilihan Kue dalam Box:</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="snackbox-cake-selectors">
+            <!-- Selector Kue 1 -->
+            <div class="bg-white p-2.5 rounded-2xl border border-gray-200 space-y-1">
+              <label class="text-[11px] font-bold text-amber-800 flex items-center gap-1">
+                <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">1</span>
+                <span>Pilih Kue Pertama:</span>
+              </label>
+              <select id="box-select-cake-1" onchange="updateBoxPriceCalculation()" class="w-full bg-gray-50 text-xs p-2 rounded-xl border border-gray-200 font-medium outline-none focus:ring-2 focus:ring-amber-500"></select>
+            </div>
+
+            <!-- Selector Kue 2 -->
+            <div class="bg-white p-2.5 rounded-2xl border border-gray-200 space-y-1">
+              <label class="text-[11px] font-bold text-amber-800 flex items-center gap-1">
+                <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">2</span>
+                <span>Pilih Kue Kedua:</span>
+              </label>
+              <select id="box-select-cake-2" onchange="updateBoxPriceCalculation()" class="w-full bg-gray-50 text-xs p-2 rounded-xl border border-gray-200 font-medium outline-none focus:ring-2 focus:ring-amber-500"></select>
+            </div>
+
+            <!-- Selector Kue 3 -->
+            <div id="wrapper-cake-3" class="bg-white p-2.5 rounded-2xl border border-gray-200 space-y-1 hidden">
+              <label class="text-[11px] font-bold text-amber-800 flex items-center gap-1">
+                <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">3</span>
+                <span>Pilih Kue Ketiga:</span>
+              </label>
+              <select id="box-select-cake-3" onchange="updateBoxPriceCalculation()" class="w-full bg-gray-50 text-xs p-2 rounded-xl border border-gray-200 font-medium outline-none focus:ring-2 focus:ring-amber-500"></select>
+            </div>
+
+            <!-- Selector Kue 4 -->
+            <div id="wrapper-cake-4" class="bg-white p-2.5 rounded-2xl border border-gray-200 space-y-1 hidden">
+              <label class="text-[11px] font-bold text-amber-800 flex items-center gap-1">
+                <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">4</span>
+                <span>Pilih Kue Keempat:</span>
+              </label>
+              <select id="box-select-cake-4" onchange="updateBoxPriceCalculation()" class="w-full bg-gray-50 text-xs p-2 rounded-xl border border-gray-200 font-medium outline-none focus:ring-2 focus:ring-amber-500"></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Rincian Perhitungan Harga & Tombol Masukkan Keranjang -->
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-amber-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">Harga per Box:</span>
+              <strong id="box-single-price" class="text-sm font-bold text-amber-600 font-serif">Rp0</strong>
+            </div>
+            
+            <div class="flex items-center gap-2 mt-1.5">
+              <span class="text-xs text-gray-700 font-semibold">Jumlah Box:</span>
+              <div class="flex items-center bg-gray-100 rounded-xl p-0.5 border border-gray-200">
+                <button type="button" onclick="changeBoxQty(-5)" class="w-6 h-6 rounded-lg bg-white font-bold text-xs text-gray-700 flex items-center justify-center shadow-2xs active:scale-90">-</button>
+                <input type="number" id="snackbox-qty-input" min="5" value="10" oninput="updateBoxPriceCalculation()" class="w-12 text-center text-xs font-bold text-gray-900 bg-transparent outline-none">
+                <button type="button" onclick="changeBoxQty(5)" class="w-6 h-6 rounded-lg bg-amber-500 font-bold text-xs text-white flex items-center justify-center shadow-2xs active:scale-90">+</button>
+              </div>
+              <span class="text-[10px] text-gray-400 italic">(Min. 5 box)</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:items-end gap-1.5">
+            <div class="text-left sm:text-right">
+              <span class="text-[10px] text-gray-400 block -mb-0.5">Total Harga Snack Box:</span>
+              <span id="box-grand-total" class="text-base sm:text-lg font-bold text-amber-600 font-serif">Rp0</span>
+            </div>
+
+            <button type="button" onclick="addCustomSnackBoxToCart()" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition">
+              <i class="fa-solid fa-cart-plus"></i>
+              <span>+ Masukkan Keranjang</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PEMBERITAHUAN STOK HARI INI & PINTASAN SCROLL -->
+  <section class="max-w-5xl mx-auto px-4 mt-4">
     <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
@@ -258,7 +402,7 @@
   <main id="catalog-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
-        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu Siap Saji</h3>
+        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Satuan Menu Siap Saji</h3>
         <span id="product-count-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
       </div>
       <span class="text-[11px] text-gray-400">Urut A-Z • Klik kartu untuk detail</span>
@@ -298,7 +442,7 @@
     <div class="bg-gray-950/95 text-white rounded-3xl p-3.5 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
       <div>
         <p class="text-[11px] text-gray-300 font-medium">
-          <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Pcs Kue
+          <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Pcs Kue/Box
         </p>
         <p id="cart-price-total" class="text-base font-bold text-amber-400">Rp0</p>
       </div>
@@ -314,7 +458,7 @@
     <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
   </button>
 
-  <!-- MODAL DETAIL PRODUK -->
+  <!-- MODAL DETAIL PRODUK SATUAN -->
   <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
@@ -370,7 +514,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHECKOUT & RINCIAN KERANJANG (DENGAN FOTO PRODUK) -->
+  <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
   <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
       
@@ -519,7 +663,10 @@
     let selectedModalProduct = null;
     let isInitialDataLoaded = false;
 
-    // Helper Animasi Preload Dismiss
+    // State Konfigurator Snack Box
+    let currentBoxCount = 2; // Default 2 kue
+    let boxSinglePrice = 0;
+
     function hidePreloadScreen() {
       const preload = document.getElementById("app-preload-screen");
       const pBar = document.getElementById("preload-progress-bar");
@@ -536,7 +683,6 @@
       }, 450);
     }
 
-    // Safety fallback: Preload otomatis tertutup maksimal 2.2 detik
     setTimeout(() => {
       if (!isInitialDataLoaded) {
         hidePreloadScreen();
@@ -561,7 +707,14 @@
     const todayWIBString = getTodayDateWIB();
     document.getElementById("order-date").value = todayWIBString;
 
-    // Handler Tombol Scroll ke Bagian Produk Habis
+    // Scroll ke Builder Snack Box
+    window.scrollToSnackBoxBuilder = function() {
+      const el = document.getElementById("snackbox-builder-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
     window.scrollToSoldOutProducts = function() {
       const el = document.getElementById("soldout-section");
       if (el) {
@@ -569,19 +722,13 @@
       }
     };
 
-    // Handler Tombol Enter Pencarian
     window.submitSearchOnEnter = function(e) {
       if (e) e.preventDefault();
       const input = document.getElementById("search-input");
-      if (input) {
-        input.blur();
-      }
+      if (input) input.blur();
       handleSearch();
-
       const catalog = document.getElementById("catalog-section");
-      if (catalog) {
-        catalog.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      if (catalog) catalog.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     window.clearSearchInput = function() {
@@ -599,7 +746,6 @@
       }
     });
 
-    // Helper Universal WhatsApp Opener
     window.openUniversalWhatsApp = function(phone, message) {
       const encodedMsg = encodeURIComponent(message);
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -625,19 +771,17 @@
       openUniversalWhatsApp(WA_STORE_PHONE, msg);
     };
 
-    // 1. Sync Logo Toko (Termasuk Logo Preload Screen)
+    // 1. Sync Logo Toko
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists() && docSnap.data().logo_url) {
         const logoUrl = docSnap.data().logo_url;
         
-        // Logo Header
         const logoImg = document.getElementById("store-logo-img");
         const fallback = document.getElementById("store-logo-fallback");
         logoImg.src = logoUrl;
         logoImg.classList.remove("hidden");
         fallback.classList.add("hidden");
 
-        // Logo Preload Splash Screen
         const preImg = document.getElementById("preload-logo-img");
         const preFallback = document.getElementById("preload-logo-fallback");
         if (preImg && preFallback) {
@@ -648,7 +792,7 @@
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
-    // 2. Sync Realtime Produk
+    // 2. Sync Realtime Produk & Isi Selector Snack Box
     onSnapshot(collection(db, "products"), (snapshot) => {
       allProducts = [];
       snapshot.forEach(docSnap => {
@@ -658,8 +802,8 @@
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
+      populateSnackBoxCakeDropdowns();
 
-      // Tutup Preload Splash Screen setelah data produk selesai dimuat
       if (!isInitialDataLoaded) {
         isInitialDataLoaded = true;
         hidePreloadScreen();
@@ -668,6 +812,149 @@
       console.warn("Firestore fallback aktif:", err);
       hidePreloadScreen();
     });
+
+    // ================= LOGIKA BUILDER SNACK BOX =================
+    function populateSnackBoxCakeDropdowns() {
+      const sortedCakes = [...allProducts].sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+
+      for (let i = 1; i <= 4; i++) {
+        const select = document.getElementById(`box-select-cake-${i}`);
+        if (!select) continue;
+
+        const prevVal = select.value;
+        select.innerHTML = "";
+
+        if (sortedCakes.length === 0) {
+          select.innerHTML = `<option value="">Tidak ada menu kue</option>`;
+          continue;
+        }
+
+        sortedCakes.forEach((cake, idx) => {
+          const opt = document.createElement("option");
+          opt.value = cake.id;
+          opt.innerText = `${cake.name} (Rp${Number(cake.price || 0).toLocaleString('id-ID')})`;
+          select.appendChild(opt);
+        });
+
+        if (prevVal) {
+          select.value = prevVal;
+        } else if (sortedCakes[i - 1]) {
+          select.value = sortedCakes[i - 1].id;
+        } else if (sortedCakes[0]) {
+          select.value = sortedCakes[0].id;
+        }
+      }
+
+      updateBoxPriceCalculation();
+    }
+
+    window.setBoxItemCount = function(count) {
+      currentBoxCount = count;
+      [2, 3, 4].forEach(n => {
+        const btn = document.getElementById(`btn-box-${n}`);
+        if (n === count) {
+          btn.className = "box-count-btn active py-2.5 px-3 rounded-2xl border-2 border-amber-500 bg-white text-gray-900 text-xs font-bold shadow-xs transition flex flex-col items-center justify-center";
+        } else {
+          btn.className = "box-count-btn py-2.5 px-3 rounded-2xl border border-gray-200 bg-white/70 text-gray-700 text-xs font-bold transition flex flex-col items-center justify-center hover:bg-white";
+        }
+      });
+
+      const wrap3 = document.getElementById("wrapper-cake-3");
+      const wrap4 = document.getElementById("wrapper-cake-4");
+
+      if (count >= 3) wrap3.classList.remove("hidden");
+      else wrap3.classList.add("hidden");
+
+      if (count >= 4) wrap4.classList.remove("hidden");
+      else wrap4.classList.add("hidden");
+
+      updateBoxPriceCalculation();
+    };
+
+    window.updateBoxPriceCalculation = function() {
+      let totalCakesPrice = 0;
+
+      for (let i = 1; i <= currentBoxCount; i++) {
+        const sel = document.getElementById(`box-select-cake-${i}`);
+        if (sel && sel.value) {
+          const prod = allProducts.find(p => p.id === sel.value);
+          if (prod) {
+            totalCakesPrice += Number(prod.price || 0);
+          }
+        }
+      }
+
+      // Rumus: Box + Air Mineral = +3.000, Box saja tanpa air mineral = +2.000
+      const drinkOpt = document.querySelector('input[name="box_drink_opt"]:checked');
+      const boxPackagingFee = (drinkOpt && drinkOpt.value === "with_drink") ? 3000 : 2000;
+
+      boxSinglePrice = totalCakesPrice + boxPackagingFee;
+
+      const qtyInput = document.getElementById("snackbox-qty-input");
+      let qty = parseInt(qtyInput.value) || 5;
+      if (qty < 1) qty = 1;
+
+      const grandTotalBox = boxSinglePrice * qty;
+
+      document.getElementById("box-single-price").innerText = "Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
+      document.getElementById("box-grand-total").innerText = "Rp" + grandTotalBox.toLocaleString("id-ID");
+    };
+
+    window.changeBoxQty = function(delta) {
+      const input = document.getElementById("snackbox-qty-input");
+      let currentVal = parseInt(input.value) || 5;
+      let nextVal = currentVal + delta;
+      if (nextVal < 5) nextVal = 5;
+      input.value = nextVal;
+      updateBoxPriceCalculation();
+    };
+
+    window.addCustomSnackBoxToCart = function() {
+      const drinkOpt = document.querySelector('input[name="box_drink_opt"]:checked');
+      const hasDrink = (drinkOpt && drinkOpt.value === "with_drink");
+      const drinkLabel = hasDrink ? "+ Air Mineral Gelas" : "Tanpa Air Mineral";
+
+      const selectedCakes = [];
+      for (let i = 1; i <= currentBoxCount; i++) {
+        const sel = document.getElementById(`box-select-cake-${i}`);
+        if (sel && sel.value) {
+          const prod = allProducts.find(p => p.id === sel.value);
+          if (prod) {
+            selectedCakes.push(prod.name);
+          }
+        }
+      }
+
+      if (selectedCakes.length < currentBoxCount) {
+        alert("Silakan lengkapi semua pilihan kue di dalam box!");
+        return;
+      }
+
+      const qtyInput = document.getElementById("snackbox-qty-input");
+      let qty = parseInt(qtyInput.value) || 5;
+      if (qty < 5) {
+        alert("Pemesanan Snack Box minimal 5 box!");
+        qty = 5;
+        qtyInput.value = 5;
+      }
+
+      const boxId = "SNACKBOX-" + currentBoxCount + "-" + Date.now();
+      const boxName = `Paket Snack Box (Isi ${currentBoxCount} Kue • ${drinkLabel})`;
+      const boxDesc = `Isi Kue: ${selectedCakes.join(", ")}`;
+
+      cart[boxId] = {
+        id: boxId,
+        name: boxName,
+        price: boxSinglePrice,
+        qty: qty,
+        description: boxDesc,
+        image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60",
+        is_snackbox: true
+      };
+
+      updateCartUI();
+      alert(`Berhasil menambahkan ${qty} Box "${boxName}" ke keranjang belanja!`);
+    };
 
     // 3. Render Katalog: Siap Saji di Atas & Habis di Bawah (Urut A-Z)
     function renderFilteredProducts() {
@@ -901,19 +1188,21 @@
       closeProductDetailModal();
     };
 
-    // 5. Keranjang
+    // 5. Keranjang Belanja
     window.updateQty = function(productId, delta) {
-      const prod = allProducts.find(p => p.id === productId);
-      if (!prod) return;
-
-      if (!cart[productId]) {
-        cart[productId] = { ...prod, qty: 0 };
-      }
+      if (!cart[productId]) return;
 
       const nextQty = cart[productId].qty + delta;
+      const minQty = cart[productId].is_snackbox ? 5 : 1;
 
-      if (nextQty <= 0) {
-        delete cart[productId];
+      if (nextQty <= 0 || (cart[productId].is_snackbox && nextQty < 5)) {
+        if (cart[productId].is_snackbox && nextQty < 5 && delta < 0) {
+          delete cart[productId];
+        } else if (!cart[productId].is_snackbox && nextQty <= 0) {
+          delete cart[productId];
+        } else {
+          cart[productId].qty = nextQty;
+        }
       } else {
         cart[productId].qty = nextQty;
       }
@@ -924,13 +1213,16 @@
 
     window.setQtyManual = function(productId, rawValue) {
       const prod = allProducts.find(p => p.id === productId);
-      if (!prod) return;
 
       let qty = parseInt(rawValue);
       if (isNaN(qty) || qty <= 0) {
         delete cart[productId];
       } else {
-        cart[productId] = { ...prod, qty: qty };
+        if (cart[productId]) {
+          cart[productId].qty = qty;
+        } else if (prod) {
+          cart[productId] = { ...prod, qty: qty };
+        }
       }
 
       updateCartUI();
@@ -956,10 +1248,12 @@
 
       let hasSoldOutTodayItem = false;
       Object.values(cart).forEach(item => {
-        const liveProd = allProducts.find(p => p.id === item.id);
-        const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
-        if (liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0)) {
-          hasSoldOutTodayItem = true;
+        if (!item.is_snackbox) {
+          const liveProd = allProducts.find(p => p.id === item.id);
+          const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
+          if (liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0)) {
+            hasSoldOutTodayItem = true;
+          }
         }
       });
 
@@ -1004,10 +1298,15 @@
       const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
 
       items.forEach(item => {
-        const liveProd = allProducts.find(p => p.id === item.id);
-        const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
-        const isSoldOutToday = liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0);
-        const imgUrl = (liveProd && liveProd.image_url) || item.image_url || fallbackImg;
+        let isSoldOutToday = false;
+        let imgUrl = item.image_url || fallbackImg;
+
+        if (!item.is_snackbox) {
+          const liveProd = allProducts.find(p => p.id === item.id);
+          const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
+          isSoldOutToday = liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0);
+          imgUrl = (liveProd && liveProd.image_url) || item.image_url || fallbackImg;
+        }
 
         const row = document.createElement("div");
         row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
@@ -1016,17 +1315,19 @@
 
           <div class="flex-1 min-w-0">
             <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
+            <p class="text-[10px] text-gray-500 line-clamp-1">${item.description || ''}</p>
             <div class="flex items-center gap-1.5 mt-0.5">
-              <span class="text-[11px] text-gray-400">Rp${item.price.toLocaleString('id-ID')}</span>
+              <span class="text-[11px] text-gray-400 font-semibold">Rp${item.price.toLocaleString('id-ID')}</span>
               ${isSoldOutToday ? '<span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded font-semibold whitespace-nowrap">Pre-Order Besok</span>' : ''}
+              ${item.is_snackbox ? '<span class="bg-amber-100 text-amber-800 text-[9px] px-1.5 py-0.2 rounded font-semibold whitespace-nowrap">Snack Box</span>' : ''}
             </div>
           </div>
 
           <div class="flex items-center gap-2 flex-shrink-0">
             <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5 shadow-2xs">
-              <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
-              <input type="number" min="1" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-8 text-center font-bold text-gray-900 text-xs outline-none bg-transparent">
-              <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
+              <button type="button" onclick="updateQty('${item.id}', ${item.is_snackbox ? -5 : -1})" class="w-6 h-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
+              <input type="number" min="${item.is_snackbox ? 5 : 1}" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-8 text-center font-bold text-gray-900 text-xs outline-none bg-transparent">
+              <button type="button" onclick="updateQty('${item.id}', ${item.is_snackbox ? 5 : 1})" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
             </div>
 
             <span class="font-bold text-xs text-gray-900 text-right min-w-[55px]">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
@@ -1097,11 +1398,13 @@
         name: c.name,
         price: c.price,
         qty: c.qty,
-        subtotal: c.price * c.qty
+        subtotal: c.price * c.qty,
+        is_snackbox: c.is_snackbox || false,
+        description: c.description || ""
       }));
 
       if (items.length === 0) {
-        alert("Keranjang Anda masih kosong. Silakan pilih kue terlebih dahulu!");
+        alert("Keranjang Anda masih kosong. Silakan pilih kue atau snack box terlebih dahulu!");
         return;
       }
 
@@ -1133,22 +1436,27 @@
 
         if (isOrderForToday) {
           for (const item of items) {
-            const productRef = doc(db, "products", item.product_id);
-            const pDoc = await getDoc(productRef);
-            if (pDoc.exists()) {
-              const currentStock = Number(pDoc.data().stock || 0);
-              const updatedStock = Math.max(0, currentStock - item.qty);
-              await updateDoc(productRef, {
-                stock: updatedStock,
-                status: updatedStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE"
-              });
+            if (!item.is_snackbox) {
+              const productRef = doc(db, "products", item.product_id);
+              const pDoc = await getDoc(productRef);
+              if (pDoc.exists()) {
+                const currentStock = Number(pDoc.data().stock || 0);
+                const updatedStock = Math.max(0, currentStock - item.qty);
+                await updateDoc(productRef, {
+                  stock: updatedStock,
+                  status: updatedStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE"
+                });
+              }
             }
           }
         }
 
         let itemText = "";
         items.forEach(i => {
-          itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+          itemText += `• ${i.name} (${i.qty} ${i.is_snackbox ? 'box' : 'pcs'}) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+          if (i.description) {
+            itemText += `  _${i.description}_\n`;
+          }
         });
 
         let waMessage = `🍰 *PESANAN BARU - AZRI SNACK*\n`;
