@@ -100,7 +100,7 @@
     </div>
   </header>
 
-  <!-- ================= 1. SECTION HERO (LANDING PAGE IKLAN) ================= -->
+  <!-- ================= 1. SECTION HERO ================= -->
   <section class="max-w-4xl mx-auto px-4 mt-3 sm:mt-4">
     <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-amber-500/15 relative overflow-hidden">
       <div class="absolute -right-6 -bottom-10 opacity-15 text-9xl pointer-events-none select-none">🍱</div>
@@ -253,7 +253,6 @@
         </label>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3.5">
-          <!-- Paket 2 Kue -->
           <div onclick="setBoxItemCount(2)" id="card-box-2" class="box-card active relative p-3.5 sm:p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/40 cursor-pointer transition shadow-2xs hover:shadow-xs">
             <h3 class="font-serif font-bold text-sm text-gray-900">Paket Hemat (2 Kue)</h3>
             <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Cocok untuk coffee break santai & acara singkat.</p>
@@ -263,7 +262,6 @@
             </div>
           </div>
 
-          <!-- Paket 3 Kue (PALING POPULER) -->
           <div onclick="setBoxItemCount(3)" id="card-box-3" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400">
             <span class="absolute -top-2.5 right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wider">
               ★ PALING POPULER
@@ -276,7 +274,6 @@
             </div>
           </div>
 
-          <!-- Paket 4 Kue -->
           <div onclick="setBoxItemCount(4)" id="card-box-4" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400">
             <h3 class="font-serif font-bold text-sm text-gray-900">Paket Komplit (4 Kue)</h3>
             <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Sajian mewah & kenyang untuk meeting VIP / hajatan.</p>
@@ -323,7 +320,7 @@
         </div>
       </div>
 
-      <!-- 6. PILIH MENU KUE (DROPDOWN REALTIME DARI DATABASE) -->
+      <!-- 6. PILIH MENU KUE -->
       <div class="space-y-2">
         <div>
           <label class="block text-xs font-bold text-gray-800 flex items-center gap-1.5">
@@ -639,11 +636,9 @@
       return wibDate.toISOString().split("T")[0];
     }
 
-    // Default tanggal acara
     document.getElementById("order-date").value = getTomorrowDateWIB();
     document.getElementById("order-date").min = getTodayDateWIB();
 
-    // Helper WhatsApp
     window.openUniversalWhatsApp = function(phone, message) {
       const encodedMsg = encodeURIComponent(message);
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -686,7 +681,6 @@
       populateSnackBoxCakeDropdowns();
     });
 
-    // Mengisi Dropdown Pilihan Kue Sesuai Data Produk Real
     function populateSnackBoxCakeDropdowns() {
       const sortedCakes = [...allProducts].sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
 
@@ -721,7 +715,6 @@
       updateBoxPriceCalculation();
     }
 
-    // Set Jumlah Isi Box (2, 3, 4 Kue)
     window.setBoxItemCount = function(count) {
       currentBoxCount = count;
       [2, 3, 4].forEach(n => {
@@ -745,7 +738,6 @@
       updateBoxPriceCalculation();
     };
 
-    // Kalkulasi Harga Otomatis Berdasarkan Pilihan
     window.updateBoxPriceCalculation = function() {
       let totalCakesPrice = 0;
 
@@ -895,7 +887,7 @@
       renderCartModalList();
     }
 
-    // Render Gambar Box Kemasan Resmi di Rincian Keranjang
+    // Render Gambar Box Kemasan Resmi Secara Presisi & Rapi
     function renderCartModalList() {
       const container = document.getElementById("cart-items-container");
       container.innerHTML = "";
@@ -910,9 +902,9 @@
         const row = document.createElement("div");
         row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
         row.innerHTML = `
-          <!-- Gambar Dus Kemasan Snack Box AZRI SNACK -->
-          <div class="w-13 h-13 rounded-xl bg-white p-0.5 border border-amber-200/80 shadow-2xs flex-shrink-0 flex items-center justify-center overflow-hidden">
-            <img src="${item.image_url || SNACKBOX_OFFICIAL_IMG}" alt="${item.name}" class="w-full h-full object-contain" onerror="this.src='./logo.png'">
+          <!-- Wadah Gambar Ukuran Terkunci 52px x 52px -->
+          <div style="width: 52px; height: 52px; flex-shrink: 0;" class="rounded-xl bg-white p-1 border border-amber-200 shadow-2xs flex items-center justify-center overflow-hidden">
+            <img src="${item.image_url || SNACKBOX_OFFICIAL_IMG}" alt="${item.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='./logo.png'">
           </div>
 
           <div class="flex-1 min-w-0">
