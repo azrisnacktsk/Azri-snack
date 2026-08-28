@@ -110,7 +110,6 @@
           <span>★</span> Custom Sesuai Kebutuhan Acara Anda
         </div>
         
-        <!-- H1 Utama Sesuai Instruksi -->
         <h1 class="font-serif text-xl sm:text-3xl font-bold leading-tight tracking-tight">
           SNACK BOX AZRI SNACK
         </h1>
@@ -119,7 +118,6 @@
           Fresh, praktis, dan cocok untuk berbagai acara. Bebas tentukan kombinasi kue basah gurih & manis kesukaan Anda!
         </p>
 
-        <!-- Informasi Harga & Minimal Order Realtime -->
         <div class="flex flex-wrap items-center gap-2 pt-1 pb-1">
           <div class="bg-black/25 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs border border-white/15">
             <span class="text-amber-200 font-medium">Mulai:</span> <strong id="hero-starting-price" class="font-serif">Rp8.000 / box</strong>
@@ -129,7 +127,6 @@
           </div>
         </div>
 
-        <!-- Tombol CTA Utama & Sekunder -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-2">
           <a href="#snackbox-builder" class="bg-white hover:bg-amber-50 text-amber-900 font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-lg transition text-center flex items-center justify-center gap-2 active:scale-98">
             <i class="fa-solid fa-box-open text-amber-600"></i>
@@ -144,7 +141,7 @@
     </div>
   </section>
 
-  <!-- ================= 2. SECTION KEUNGGULAN (TRUST BUILDER) ================= -->
+  <!-- ================= 2. SECTION KEUNGGULAN ================= -->
   <section class="max-w-4xl mx-auto px-4 mt-6">
     <div class="bg-white rounded-3xl p-5 sm:p-6 border border-amber-100 shadow-2xs space-y-3">
       <div class="text-center sm:text-left">
@@ -616,6 +613,9 @@
 
     const WA_STORE_PHONE = "6285892022079";
 
+    // URL Gambar Box Kemasan Resmi AZRI SNACK
+    const SNACKBOX_OFFICIAL_IMG = "./snackbox.png";
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -774,10 +774,8 @@
       document.getElementById("box-single-price").innerText = "Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
       document.getElementById("box-grand-total").innerText = "Rp" + grandTotalBox.toLocaleString("id-ID");
 
-      // Update harga awal di hero jika ada
       const heroPriceEl = document.getElementById("hero-starting-price");
       if (heroPriceEl && boxSinglePrice > 0) {
-        // Tampilkan harga estimasi riil terkecil
         heroPriceEl.innerText = "Mulai Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
       }
     };
@@ -830,7 +828,7 @@
         price: boxSinglePrice,
         qty: qty,
         description: boxDesc,
-        image_url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60",
+        image_url: SNACKBOX_OFFICIAL_IMG,
         is_snackbox: true
       };
 
@@ -897,6 +895,7 @@
       renderCartModalList();
     }
 
+    // Render Gambar Box Kemasan Resmi di Rincian Keranjang
     function renderCartModalList() {
       const container = document.getElementById("cart-items-container");
       container.innerHTML = "";
@@ -907,18 +906,19 @@
         return;
       }
 
-      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
-
       items.forEach(item => {
         const row = document.createElement("div");
         row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
         row.innerHTML = `
-          <img src="${item.image_url || fallbackImg}" alt="${item.name}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200 shadow-2xs">
+          <!-- Gambar Dus Kemasan Snack Box AZRI SNACK -->
+          <div class="w-13 h-13 rounded-xl bg-white p-0.5 border border-amber-200/80 shadow-2xs flex-shrink-0 flex items-center justify-center overflow-hidden">
+            <img src="${item.image_url || SNACKBOX_OFFICIAL_IMG}" alt="${item.name}" class="w-full h-full object-contain" onerror="this.src='./logo.png'">
+          </div>
 
           <div class="flex-1 min-w-0">
             <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
             <p class="text-[10px] text-gray-500 line-clamp-1">${item.description || ''}</p>
-            <span class="text-[11px] text-amber-700 font-semibold">Rp${item.price.toLocaleString('id-ID')} / box</span>
+            <span class="text-[11px] text-amber-700 font-semibold font-serif">Rp${item.price.toLocaleString('id-ID')} / box</span>
           </div>
 
           <div class="flex items-center gap-2 flex-shrink-0">
@@ -928,7 +928,7 @@
               <button type="button" onclick="updateQty('${item.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
             </div>
 
-            <span class="font-bold text-xs text-gray-900 text-right min-w-[55px]">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
+            <span class="font-bold text-xs text-gray-900 text-right min-w-[55px] font-serif">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
 
             <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus paket ini" class="w-6 h-6 rounded-lg text-gray-300 hover:text-red-500 flex items-center justify-center transition">
               <i class="fa-solid fa-trash-can text-xs"></i>
