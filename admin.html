@@ -135,7 +135,7 @@
     <!-- Konten Dashboard -->
     <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-1">
 
-      <!-- ================= TAB BARU: LAPORAN PENJUALAN HARIAN ================= -->
+      <!-- ================= TAB: LAPORAN PENJUALAN HARIAN ================= -->
       <section id="view-sales" class="tab-view space-y-6">
         
         <!-- Bar Kontrol Tanggal & Tombol Aksi Ekspor -->
@@ -166,13 +166,12 @@
                 <i class="fa-solid fa-plus"></i>
                 <span>+ Input Penjualan Produk</span>
               </button>
-              <button onclick="syncCakesFromCatalogToSales()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-2 rounded-xl border border-blue-200 flex items-center gap-1.5 transition" title="Masukkan seluruh kue dari katalog ke form input hari ini">
+              <button onclick="syncCakesFromCatalogToSales()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-2 rounded-xl border border-blue-200 flex items-center gap-1.5 transition" title="Masukkan seluruh kue dari katalog dan kuota harian ke form penjualan hari ini">
                 <i class="fa-solid fa-arrows-rotate"></i>
-                <span class="hidden sm:inline">Muat Semua Produk Katalog</span>
+                <span class="hidden sm:inline">Muat Semua Produk & Kuota Harian</span>
               </button>
             </div>
 
-            <!-- Tombol Ekspor Laporan & Format Khusus AI -->
             <div class="flex flex-wrap items-center gap-1.5">
               <button onclick="exportSalesToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition active:scale-95">
                 <i class="fa-solid fa-file-excel"></i>
@@ -186,7 +185,7 @@
                 <i class="fa-solid fa-print"></i>
                 <span>Cetak / PDF</span>
               </button>
-              <button onclick="exportForAIAnalysis()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition active:scale-95" title="Salin atau download data terstruktur JSON/CSV untuk dianalisis AI">
+              <button onclick="exportForAIAnalysis()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition active:scale-95" title="Salin atau download data terstruktur JSON untuk dianalisis AI">
                 <i class="fa-solid fa-robot"></i>
                 <span>🤖 EXPORT UNTUK ANALISIS AI</span>
               </button>
@@ -194,39 +193,33 @@
           </div>
         </div>
 
-        <!-- 5 & 6. KARTU RINGKASAN METRIK KEUANGAN & STOK -->
+        <!-- KARTU RINGKASAN METRIK KEUANGAN & STOK -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <!-- 1. Omzet -->
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">💰 Total Omzet</span>
             <h3 id="card-total-omzet" class="text-base sm:text-lg font-bold text-gray-900 mt-1 font-serif">Rp0</h3>
             <span class="text-[10px] text-gray-400">Total kotor terjual</span>
           </div>
-          <!-- 2. Modal Barang Terjual -->
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">📦 Modal Terjual</span>
             <h3 id="card-total-cogs" class="text-base sm:text-lg font-bold text-gray-800 mt-1 font-serif">Rp0</h3>
             <span class="text-[10px] text-gray-400">Harga pokok produk</span>
           </div>
-          <!-- 3. Biaya Operasional -->
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">💸 Biaya Operasional</span>
             <h3 id="card-total-costs" class="text-base sm:text-lg font-bold text-red-600 mt-1 font-serif">Rp0</h3>
             <span class="text-[10px] text-gray-400">Parkir, plastik, dll</span>
           </div>
-          <!-- 4. Kerugian Stok -->
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">🔴 Kerugian Stok</span>
             <h3 id="card-total-loss" class="text-base sm:text-lg font-bold text-red-700 mt-1 font-serif">Rp0</h3>
             <span class="text-[10px] text-gray-400">Sisa tak bisa dijual</span>
           </div>
-          <!-- 5. Laba Bersih -->
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">🟢 Laba Bersih</span>
             <h3 id="card-total-netprofit" class="text-base sm:text-lg font-bold text-emerald-600 mt-1 font-serif">Rp0</h3>
             <span id="badge-profit-status" class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-800">UNTUNG</span>
           </div>
-          <!-- 6. Nilai Stok Tersisa -->
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">📦 Nilai Stok Tersisa</span>
             <h3 id="card-total-remaining-asset" class="text-base sm:text-lg font-bold text-blue-700 mt-1 font-serif">Rp0</h3>
@@ -234,16 +227,15 @@
           </div>
         </div>
 
-        <!-- 13. TARGET HARIAN (OMZET & LABA) -->
+        <!-- TARGET HARIAN -->
         <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-3xl border border-amber-200/80 shadow-2xs">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <!-- Target Omzet -->
             <div class="flex-1 space-y-1.5">
               <div class="flex items-center justify-between text-xs">
                 <span class="font-bold text-gray-800 flex items-center gap-1.5">
                   <i class="fa-solid fa-bullseye text-amber-600"></i>
                   <span>Target Omzet:</span>
-                  <input type="number" id="target-omzet-input" onchange="saveDailyTargets()" placeholder="Contoh: 400000" class="w-24 bg-white border border-gray-300 rounded-lg px-2 py-0.5 text-xs font-bold text-gray-900 outline-none">
+                  <input type="number" id="target-omzet-input" onchange="saveDailyTargets()" placeholder="400000" class="w-24 bg-white border border-gray-300 rounded-lg px-2 py-0.5 text-xs font-bold text-gray-900 outline-none">
                 </span>
                 <span id="target-omzet-percent" class="font-bold text-amber-700">0%</span>
               </div>
@@ -252,13 +244,12 @@
               </div>
             </div>
 
-            <!-- Target Laba Bersih -->
             <div class="flex-1 space-y-1.5">
               <div class="flex items-center justify-between text-xs">
                 <span class="font-bold text-gray-800 flex items-center gap-1.5">
                   <i class="fa-solid fa-coins text-emerald-600"></i>
                   <span>Target Laba:</span>
-                  <input type="number" id="target-laba-input" onchange="saveDailyTargets()" placeholder="Contoh: 80000" class="w-24 bg-white border border-gray-300 rounded-lg px-2 py-0.5 text-xs font-bold text-gray-900 outline-none">
+                  <input type="number" id="target-laba-input" onchange="saveDailyTargets()" placeholder="80000" class="w-24 bg-white border border-gray-300 rounded-lg px-2 py-0.5 text-xs font-bold text-gray-900 outline-none">
                 </span>
                 <span id="target-laba-percent" class="font-bold text-emerald-700">0%</span>
               </div>
@@ -269,7 +260,7 @@
           </div>
         </div>
 
-        <!-- 1 & 2 & 9. TABEL INPUT & RINCIAN PENJUALAN HARIAN -->
+        <!-- TABEL RINCIAN PENJUALAN PRODUK -->
         <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-xs">
           <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
@@ -277,7 +268,7 @@
                 <span>Daftar Penjualan Produk Hari Ini</span>
                 <span id="sales-items-badge" class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">0 Produk</span>
               </h3>
-              <p class="text-[11px] text-gray-400">Otomatis menghitung omzet, modal terjual, kerugian sisa, dan sell-through rate.</p>
+              <p class="text-[11px] text-gray-400">Stok awal terintegrasi langsung dengan kuota harian dari katalog produk.</p>
             </div>
             <span class="text-[10px] text-gray-400 italic">Rumus Laba: Omzet − Modal Terjual − Kerugian Stok</span>
           </div>
@@ -287,7 +278,7 @@
               <thead class="bg-gray-50 border-b border-gray-200 text-gray-700 font-bold">
                 <tr>
                   <th class="p-3">Produk</th>
-                  <th class="p-3 text-center">Stok Awal</th>
+                  <th class="p-3 text-center">Stok Awal (Kuota)</th>
                   <th class="p-3 text-center">Pesanan</th>
                   <th class="p-3 text-center">Terjual</th>
                   <th class="p-3 text-center">Sisa</th>
@@ -302,16 +293,15 @@
               </thead>
               <tbody id="sales-items-table-body" class="divide-y divide-gray-100">
                 <tr>
-                  <td colspan="12" class="p-8 text-center text-gray-400">Belum ada input produk penjualan untuk tanggal ini.</td>
+                  <td colspan="12" class="p-8 text-center text-gray-400">Belum ada input produk penjualan untuk tanggal ini. Klik "+ Input Penjualan Produk".</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- 4 & 21. BIAYA OPERASIONAL & CATATAN HARIAN -->
+        <!-- BIAYA OPERASIONAL & CATATAN HARIAN -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Form & Daftar Biaya Operasional -->
           <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-xs space-y-3.5">
             <div class="flex items-center justify-between border-b border-gray-100 pb-2.5">
               <div>
@@ -324,10 +314,9 @@
               <span id="sales-total-expense-display" class="font-bold text-sm text-red-600 font-serif">Rp0</span>
             </div>
 
-            <!-- Input Biaya Cepat -->
             <form onsubmit="event.preventDefault(); addOperationalExpense();" class="grid grid-cols-3 gap-2">
               <div class="col-span-1">
-                <input type="text" id="cost-name" placeholder="Jenis Biaya (Plastik/Parkir)" required class="w-full text-xs p-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:ring-2 focus:ring-amber-500">
+                <input type="text" id="cost-name" placeholder="Jenis Biaya" required class="w-full text-xs p-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:ring-2 focus:ring-amber-500">
               </div>
               <div class="col-span-1">
                 <input type="number" id="cost-amount" placeholder="Nominal (Rp)" min="0" required class="w-full text-xs p-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:ring-2 focus:ring-amber-500">
@@ -342,7 +331,6 @@
             <div id="operational-costs-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
           </div>
 
-          <!-- Catatan Harian Pemilik -->
           <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-xs space-y-3">
             <div class="flex items-center justify-between border-b border-gray-100 pb-2.5">
               <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2">
@@ -353,14 +341,13 @@
                 Simpan Catatan
               </button>
             </div>
-            <textarea id="sales-daily-notes" rows="4" placeholder="Misal: Cuaca hujan lebat dari siang, pesanan kantor PT Maju 30 box, risol rogut habis cepat..." class="w-full text-xs p-3 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:ring-2 focus:ring-amber-500 leading-relaxed"></textarea>
+            <textarea id="sales-daily-notes" rows="4" placeholder="Kondisi cuaca, pesanan mendadak, kendala, dll..." class="w-full text-xs p-3 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:ring-2 focus:ring-amber-500 leading-relaxed"></textarea>
             <p class="text-[10px] text-gray-400">Catatan ini akan otomatis disertakan ke dalam laporan ekspor dan file analisis AI.</p>
           </div>
         </div>
 
-        <!-- 8 & 10. DASHBOARD KINERJA PRODUK & REKOMENDASI STOK BESOK -->
+        <!-- ANALISIS PRODUK & REKOMENDASI STOK BESOK -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Analisis Peringkat Produk -->
           <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-xs space-y-3">
             <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2.5">
               <i class="fa-solid fa-trophy text-amber-500"></i>
@@ -402,7 +389,6 @@
             </div>
           </div>
 
-          <!-- 10. Rekomendasi Stok Besok (Data 3 - 7 Hari) -->
           <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-xs space-y-3 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between border-b border-gray-100 pb-2.5">
@@ -428,7 +414,7 @@
           </div>
         </div>
 
-        <!-- 12. GRAFIK TREN PENJUALAN -->
+        <!-- GRAFIK TREN PENJUALAN -->
         <div class="bg-white p-4 sm:p-6 rounded-3xl border border-gray-200 shadow-xs space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
             <div>
@@ -443,7 +429,7 @@
 
       </section>
 
-      <!-- ================= TAB 2: DATA PESANAN (TETAP DIPERTAHANKAN 100%) ================= -->
+      <!-- ================= TAB: DATA PESANAN ================= -->
       <section id="view-orders" class="tab-view hidden space-y-4">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 no-print">
           <div>
@@ -479,7 +465,7 @@
         <div id="orders-container" class="space-y-3 no-print"></div>
       </section>
 
-      <!-- ================= TAB 3: KATALOG PRODUK & KUOTA STOK (TETAP DIPERTAHANKAN) ================= -->
+      <!-- ================= TAB: KATALOG PRODUK & KUOTA STOK ================= -->
       <section id="view-products" class="tab-view hidden space-y-6 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
@@ -498,7 +484,6 @@
           </div>
         </div>
 
-        <!-- Tabel Ready -->
         <div class="space-y-2">
           <div class="flex items-center justify-between px-1">
             <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
@@ -528,7 +513,6 @@
           </div>
         </div>
 
-        <!-- Tabel Habis -->
         <div class="space-y-2 pt-2">
           <div class="flex items-center justify-between px-1">
             <h3 class="text-xs font-bold text-red-700 uppercase tracking-wider flex items-center gap-1.5">
@@ -559,7 +543,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 4: KAS KEUANGAN (TETAP DIPERTAHANKAN) ================= -->
+      <!-- ================= TAB: KAS KEUANGAN ================= -->
       <section id="view-finance" class="tab-view hidden space-y-5 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
@@ -606,7 +590,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 5: PENGATURAN TOKO & PIN (TETAP DIPERTAHANKAN) ================= -->
+      <!-- ================= TAB: PENGATURAN TOKO & PIN ================= -->
       <section id="view-settings" class="tab-view hidden space-y-5 max-w-xl mx-auto no-print">
         <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
           <div>
@@ -657,7 +641,6 @@
       <form id="sales-record-form" onsubmit="event.preventDefault(); saveProductSaleRecord();" class="p-5 space-y-3.5 overflow-y-auto">
         <input type="hidden" id="sale-edit-index" value="-1">
 
-        <!-- Nama Produk (Terkoneksi ke Katalog) -->
         <div>
           <label class="block text-[11px] font-bold text-gray-700 mb-1">Pilih Produk Kue *</label>
           <select id="sale-product-select" onchange="onSelectProductChange(this.value)" class="w-full text-xs p-2.5 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-semibold bg-white" required>
@@ -665,11 +648,10 @@
           </select>
         </div>
 
-        <!-- Stok Awal, Pesanan & Sisa -->
         <div class="grid grid-cols-3 gap-2.5">
           <div>
-            <label class="block text-[10px] font-bold text-gray-700 mb-1">Stok Awal *</label>
-            <input type="number" id="sale-initial-stock" min="0" required oninput="calculateModalSalesPreview()" class="w-full text-xs p-2 border border-gray-200 rounded-xl outline-none font-bold text-center bg-gray-50 focus:bg-white">
+            <label class="block text-[10px] font-bold text-gray-700 mb-1">Stok Awal (Kuota) *</label>
+            <input type="number" id="sale-initial-stock" min="0" required oninput="calculateModalSalesPreview()" class="w-full text-xs p-2 border border-amber-300 rounded-xl outline-none font-bold text-center bg-amber-50/40 focus:bg-white text-amber-900">
           </div>
           <div>
             <label class="block text-[10px] font-bold text-blue-700 mb-1">Pesanan / PO</label>
@@ -681,13 +663,11 @@
           </div>
         </div>
 
-        <!-- Terjual Dihitung Otomatis -->
         <div class="bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/80 flex items-center justify-between text-xs">
           <span class="text-gray-600 font-medium">Jumlah Terjual (Stok Awal − Sisa):</span>
           <strong id="sale-computed-sold" class="text-amber-800 font-bold text-sm">0 pcs</strong>
         </div>
 
-        <!-- Status Sisa Produk -->
         <div>
           <label class="block text-[11px] font-bold text-gray-700 mb-1">Status Sisa Produk *</label>
           <div class="grid grid-cols-2 gap-2">
@@ -702,19 +682,17 @@
           </div>
         </div>
 
-        <!-- Harga Modal & Harga Jual -->
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-[10px] font-bold text-gray-700 mb-1">Harga Modal per pcs *</label>
-            <input type="number" id="sale-cost-price" min="0" required oninput="calculateModalSalesPreview()" placeholder="Contoh: 1800" class="w-full text-xs p-2 border border-gray-200 rounded-xl outline-none font-bold">
+            <input type="number" id="sale-cost-price" min="0" required oninput="calculateModalSalesPreview()" placeholder="1800" class="w-full text-xs p-2 border border-gray-200 rounded-xl outline-none font-bold">
           </div>
           <div>
             <label class="block text-[10px] font-bold text-gray-700 mb-1">Harga Jual per pcs *</label>
-            <input type="number" id="sale-selling-price" min="0" required oninput="calculateModalSalesPreview()" placeholder="Contoh: 2500" class="w-full text-xs p-2 border border-gray-200 rounded-xl outline-none font-bold text-amber-700">
+            <input type="number" id="sale-selling-price" min="0" required oninput="calculateModalSalesPreview()" placeholder="2500" class="w-full text-xs p-2 border border-gray-200 rounded-xl outline-none font-bold text-amber-700">
           </div>
         </div>
 
-        <!-- Rincian Preview Perhitungan -->
         <div class="p-3 bg-gray-50 rounded-2xl border border-gray-200 text-xs space-y-1">
           <div class="flex justify-between text-gray-600">
             <span>Estimasi Omzet:</span>
@@ -725,7 +703,7 @@
             <strong id="modal-preview-cogs">Rp0</strong>
           </div>
           <div class="flex justify-between text-red-600">
-            <span>Kerugian Stok (Jika rusak/expired):</span>
+            <span>Kerugian Stok:</span>
             <strong id="modal-preview-loss">Rp0</strong>
           </div>
           <div class="flex justify-between font-bold text-sm border-t border-gray-200 pt-1">
@@ -798,7 +776,7 @@
     </div>
   </div>
 
-  <!-- MODAL CETAK NOTA PESANAN (MENDUKUNG SATUAN & SNACK BOX) -->
+  <!-- MODAL CETAK NOTA PESANAN -->
   <div id="receipt-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
       <div class="px-5 py-3.5 border-b border-gray-100 flex flex-col gap-2.5 bg-gray-50 no-print">
@@ -980,7 +958,7 @@
     </div>
   </div>
 
-  <!-- MODAL TAMBAH PRODUK KATALOG (TETAP DIPERTAHANKAN) -->
+  <!-- MODAL TAMBAH PRODUK KATALOG -->
   <div id="product-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
@@ -1040,7 +1018,6 @@
     let currentStoreLogoUrl = "./logo.png";
     let activeReceiptOrder = null;
 
-    // State Laporan Penjualan Harian
     let selectedSalesDate = new Date().toISOString().split("T")[0];
     let currentDailySalesDoc = {
       items: [],
@@ -1063,7 +1040,7 @@
     document.getElementById("filter-order-date").value = selectedSalesDate;
     document.getElementById("exp-date").value = selectedSalesDate;
 
-    // 1. PIN Auth
+    // PIN Auth
     onSnapshot(doc(db, "settings", "admin_auth"), (snap) => {
       if (snap.exists()) currentAdminPin = snap.data().pin || "123456";
     });
@@ -1135,7 +1112,7 @@
         calculateFinance();
       });
 
-      // Sync Expenses (Kas Umum)
+      // Sync Expenses
       onSnapshot(collection(db, "expenses"), (snapshot) => {
         expenseList = [];
         snapshot.forEach(docSnap => expenseList.push({ id: docSnap.id, ...docSnap.data() }));
@@ -1147,7 +1124,7 @@
       loadSalesHistoryTrends();
     }
 
-    // ================= FITUR BARU: LAPORAN PENJUALAN HARIAN =================
+    // ================= LAPORAN PENJUALAN HARIAN =================
     window.setSalesDatePreset = function(preset) {
       const now = new Date();
       if (preset === 'yesterday') {
@@ -1208,26 +1185,27 @@
       sorted.forEach(p => {
         const opt = document.createElement("option");
         opt.value = p.id;
-        opt.innerText = `${p.name} (Jual: Rp${Number(p.price || 0).toLocaleString('id-ID')})`;
+        const quota = p.daily_quota !== undefined ? p.daily_quota : 50;
+        opt.innerText = `${p.name} (Kuota: ${quota} pcs • Jual: Rp${Number(p.price || 0).toLocaleString('id-ID')})`;
         select.appendChild(opt);
       });
       select.value = currentVal;
     }
 
+    // TERINTEGRASI OTOMATIS: Stok awal mengambil nilai kuota harian produk
     window.onSelectProductChange = function(productId) {
       const prod = productsList.find(p => p.id === productId);
       if (!prod) return;
 
       const sellingPrice = Number(prod.price || 0);
-      // Estimasi modal otomatis (jika ada cost_price pakai itu, jika tidak default 70% harga jual)
       const costPrice = prod.cost_price ? Number(prod.cost_price) : Math.round(sellingPrice * 0.7);
 
       document.getElementById("sale-selling-price").value = sellingPrice;
       document.getElementById("sale-cost-price").value = costPrice;
 
-      // Isi stok awal default dari kuota atau sisa stok katalog
-      const initialQuota = prod.daily_quota !== undefined ? prod.daily_quota : (prod.stock || 30);
-      document.getElementById("sale-initial-stock").value = initialQuota;
+      // Otomatis terintegrasi dengan kuota harian katalog
+      const dailyQuota = prod.daily_quota !== undefined ? Number(prod.daily_quota) : (prod.stock || 50);
+      document.getElementById("sale-initial-stock").value = dailyQuota;
       document.getElementById("sale-remaining-stock").value = 0;
 
       calculateModalSalesPreview();
@@ -1254,10 +1232,10 @@
       
       const profitEl = document.getElementById("modal-preview-profit");
       if (profit < 0) {
-        profitEl.className = "text-red-600";
+        profitEl.className = "text-red-600 font-bold";
         profitEl.innerText = "-Rp" + Math.abs(profit).toLocaleString("id-ID") + " (RUGI)";
       } else {
-        profitEl.className = "text-emerald-600";
+        profitEl.className = "text-emerald-600 font-bold";
         profitEl.innerText = "Rp" + profit.toLocaleString("id-ID") + " (UNTUNG)";
       }
     };
@@ -1279,6 +1257,8 @@
       } else {
         document.getElementById("sales-record-form").reset();
         document.getElementById("sale-edit-index").value = "-1";
+        document.getElementById("sale-order-qty").value = 0;
+        document.getElementById("sale-remaining-stock").value = 0;
       }
       calculateModalSalesPreview();
       document.getElementById("sales-input-modal").classList.remove("hidden");
@@ -1288,35 +1268,36 @@
       document.getElementById("sales-input-modal").classList.add("hidden");
     };
 
-    // Sinkronisasi Semua Produk Katalog Sekaligus
+    // TERINTEGRASI: Muat semua produk katalog dengan stok awal otomatis = kuota harian
     window.syncCakesFromCatalogToSales = async function() {
       if (productsList.length === 0) {
         alert("Katalog produk masih kosong!");
         return;
       }
 
-      if (confirm(`Masukkan seluruh ${productsList.length} produk katalog ke laporan penjualan tanggal ${selectedSalesDate}?`)) {
+      if (confirm(`Muat seluruh ${productsList.length} produk katalog dengan stok awal sesuai kuota harian ke laporan tanggal ${selectedSalesDate}?`)) {
         productsList.forEach(p => {
           const exists = currentDailySalesDoc.items.find(i => i.product_id === p.id);
-          if (!exists) {
-            const sellP = Number(p.price || 0);
-            const costP = p.cost_price ? Number(p.cost_price) : Math.round(sellP * 0.7);
-            const initStock = p.daily_quota !== undefined ? Number(p.daily_quota) : 30;
+          // Mengambil nilai kuota harian dari katalog produk
+          const initialQuota = p.daily_quota !== undefined ? Number(p.daily_quota) : (p.stock || 50);
+          const sellP = Number(p.price || 0);
+          const costP = p.cost_price ? Number(p.cost_price) : Math.round(sellP * 0.7);
 
+          if (!exists) {
             currentDailySalesDoc.items.push({
               product_id: p.id,
               product_name: p.name,
-              initial_stock: initStock,
+              initial_stock: initialQuota, // Otomatis terintegrasi kuota harian
               order_qty: 0,
-              sold_qty: initStock,
+              sold_qty: initialQuota,
               remaining_stock: 0,
               remaining_status: "resellable",
               cost_price: costP,
               selling_price: sellP,
-              omzet: initStock * sellP,
-              cogs: initStock * costP,
+              omzet: initialQuota * sellP,
+              cogs: initialQuota * costP,
               loss: 0,
-              net_profit: (initStock * sellP) - (initStock * costP),
+              net_profit: (initialQuota * sellP) - (initialQuota * costP),
               remaining_asset_value: 0,
               sell_through_rate: 100,
               note: ""
@@ -1328,7 +1309,6 @@
       }
     };
 
-    // Simpan Input Produk Penjualan dengan Validasi Ketat
     window.saveProductSaleRecord = async function() {
       const editIndex = parseInt(document.getElementById("sale-edit-index").value);
       const prodId = document.getElementById("sale-product-select").value;
@@ -1347,7 +1327,6 @@
       const statusRem = document.querySelector('input[name="sale_remaining_status"]:checked')?.value || "resellable";
       const note = document.getElementById("sale-item-note").value.trim();
 
-      // VALIDASI MATEMATIS OTOMATIS
       if (remStock > initStock) {
         alert("Validasi Gagal: Jumlah sisa tidak boleh lebih besar dari stok awal!");
         return;
@@ -1403,7 +1382,6 @@
       }
     };
 
-    // Biaya Operasional Harian
     window.addOperationalExpense = async function() {
       const name = document.getElementById("cost-name").value.trim();
       const amount = parseInt(document.getElementById("cost-amount").value) || 0;
@@ -1442,13 +1420,11 @@
       await saveDailySalesDocToFirestore();
     };
 
-    // Sinkronkan ke Firestore
     async function saveDailySalesDocToFirestore() {
       try {
         currentDailySalesDoc.date = selectedSalesDate;
         currentDailySalesDoc.updated_at = serverTimestamp();
 
-        // Hitung total ringkasan
         const totalOmzet = currentDailySalesDoc.items.reduce((s, i) => s + (i.omzet || 0), 0);
         const totalCogs = currentDailySalesDoc.items.reduce((s, i) => s + (i.cogs || 0), 0);
         const totalLoss = currentDailySalesDoc.items.reduce((s, i) => s + (i.loss || 0), 0);
@@ -1476,7 +1452,6 @@
       }
     }
 
-    // Render Tabel Produk Penjualan & Biaya Operasional
     function renderDailySalesTables() {
       const tbody = document.getElementById("sales-items-table-body");
       tbody.innerHTML = "";
@@ -1485,7 +1460,7 @@
       document.getElementById("sales-items-badge").innerText = `${items.length} Produk`;
 
       if (items.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="12" class="p-8 text-center text-gray-400">Belum ada input produk penjualan untuk tanggal ini. Klik "+ Input Penjualan Produk".</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="12" class="p-8 text-center text-gray-400">Belum ada input produk penjualan untuk tanggal ini. Klik "+ Input Penjualan Produk" atau "Muat Semua Produk & Kuota Harian".</td></tr>`;
       } else {
         items.forEach((it, idx) => {
           const isLoss = it.net_profit < 0;
@@ -1496,11 +1471,11 @@
               <span>${it.product_name}</span>
               ${it.note ? `<span class="block text-[10px] text-gray-400 font-normal italic">${it.note}</span>` : ''}
             </td>
-            <td class="p-3 text-center font-bold text-gray-700">${it.initial_stock}</td>
+            <td class="p-3 text-center font-bold text-amber-900 bg-amber-50/30">${it.initial_stock}</td>
             <td class="p-3 text-center text-blue-700 font-semibold bg-blue-50/30">
               ${it.order_qty > 0 ? `${it.order_qty} pcs` : '-'}
             </td>
-            <td class="p-3 text-center font-bold text-amber-900">${it.sold_qty}</td>
+            <td class="p-3 text-center font-bold text-gray-900">${it.sold_qty}</td>
             <td class="p-3 text-center font-bold ${it.remaining_stock > 0 ? 'text-orange-600' : 'text-gray-400'}">${it.remaining_stock}</td>
             <td class="p-3 text-center">
               <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${it.remaining_status === 'unusable' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">
@@ -1552,7 +1527,6 @@
       }
     }
 
-    // Hitung Ringkasan & Update Kartu Metrik
     function calculateDailySalesSummary() {
       const items = currentDailySalesDoc.items || [];
       const costs = currentDailySalesDoc.operational_costs || [];
@@ -1585,7 +1559,6 @@
         profitBadge.innerText = "UNTUNG BERSIH";
       }
 
-      // Update Progress Target
       const targetOmzet = currentDailySalesDoc.target_omzet || 400000;
       const targetLaba = currentDailySalesDoc.target_laba || 80000;
 
@@ -1597,7 +1570,6 @@
       document.getElementById("target-laba-percent").innerText = `${pLaba}% tercapai`;
       document.getElementById("target-laba-bar").style.width = `${pLaba}%`;
 
-      // Update Peringkat Analisis Produk Hari Ini
       if (items.length > 0) {
         const sortedBySold = [...items].sort((a, b) => b.sold_qty - a.sold_qty);
         const sortedByProfit = [...items].sort((a, b) => b.net_profit - a.net_profit);
@@ -1618,7 +1590,6 @@
       }
     }
 
-    // 10. REKOMENDASI STOK BESOK (DATA HISTORIS 3 - 7 HARI)
     async function generateStockRecommendations() {
       const container = document.getElementById("rekomendasi-container");
       container.innerHTML = "";
@@ -1642,7 +1613,6 @@
           return;
         }
 
-        // Agregasi historis per nama kue
         const cakeStats = {};
         historyDocs.forEach(docDay => {
           if (docDay.items && Array.isArray(docDay.items)) {
@@ -1667,7 +1637,6 @@
           const st = cakeStats[name];
           const avgSold = Math.round(st.totalSold / st.daysAppeared);
           const avgRem = Math.round(st.totalRem / st.daysAppeared);
-          // Rekomendasi stok: Rata-rata terjual + buffer aman 15% jika sisa sering sedikit
           const minStock = Math.max(10, Math.round(avgSold * 1.05));
           const maxStock = Math.max(minStock + 5, Math.round(avgSold * 1.2));
 
@@ -1692,7 +1661,6 @@
       }
     }
 
-    // 12. GRAFIK TREN PENJUALAN (CHART.JS)
     async function loadSalesHistoryTrends() {
       try {
         const qSales = query(collection(db, "daily_sales"), orderBy("date", "desc"), limit(7));
@@ -1760,7 +1728,6 @@
       });
     }
 
-    // 14. EKSPOR EXCEL (XLSX)
     window.exportSalesToExcel = function() {
       const items = currentDailySalesDoc.items || [];
       const costs = currentDailySalesDoc.operational_costs || [];
@@ -1775,7 +1742,6 @@
       rows.push(["Tanggal:", selectedSalesDate]);
       rows.push([]);
 
-      // Ringkasan Finansial
       rows.push(["RINGKASAN FINANSIAL"]);
       rows.push(["Total Omzet", currentDailySalesDoc.summary?.total_omzet || 0]);
       rows.push(["Total Modal Barang Terjual", currentDailySalesDoc.summary?.total_cogs || 0]);
@@ -1785,9 +1751,8 @@
       rows.push(["Laba Bersih", currentDailySalesDoc.summary?.net_profit || 0]);
       rows.push([]);
 
-      // Tabel Produk
       rows.push(["TABEL RINCIAN PENJUALAN PRODUK"]);
-      rows.push(["Produk", "Stok Awal", "Pesanan PO", "Terjual", "Sisa", "Status Sisa", "Modal Satuan", "Harga Jual", "Omzet", "Sell-Through (%)", "Laba Bersih Produk", "Catatan"]);
+      rows.push(["Produk", "Stok Awal (Kuota)", "Pesanan PO", "Terjual", "Sisa", "Status Sisa", "Modal Satuan", "Harga Jual", "Omzet", "Sell-Through (%)", "Laba Bersih Produk", "Catatan"]);
       items.forEach(i => {
         rows.push([
           i.product_name,
@@ -1806,7 +1771,6 @@
       });
       rows.push([]);
 
-      // Biaya Operasional
       rows.push(["BIAYA OPERASIONAL"]);
       rows.push(["Keterangan Biaya", "Nominal (Rp)"]);
       costs.forEach(c => rows.push([c.name, c.amount]));
@@ -1817,7 +1781,6 @@
       XLSX.writeFile(wb, `Laporan-Penjualan-AzriSnack-${selectedSalesDate}.xlsx`);
     };
 
-    // 14. EKSPOR CSV
     window.exportSalesToCSV = function() {
       const items = currentDailySalesDoc.items || [];
       if (items.length === 0) {
@@ -1837,12 +1800,10 @@
       link.click();
     };
 
-    // 14. CETAK / PDF LAPORAN
     window.exportSalesToPDF = function() {
       window.print();
     };
 
-    // 15. FORMAT DATA KHUSUS ANALISIS AI (CHATGPT / CLAUDE PROMPT-READY)
     window.exportForAIAnalysis = function() {
       const items = currentDailySalesDoc.items || [];
       const costs = currentDailySalesDoc.operational_costs || [];
@@ -1870,7 +1831,7 @@
         operational_expenses: costs.map(c => ({ item: c.name, amount: c.amount })),
         products_performance: items.map(i => ({
           nama_produk: i.product_name,
-          stok_awal: i.initial_stock,
+          stok_awal_kuota: i.initial_stock,
           jumlah_pesanan_po: i.order_qty,
           jumlah_terjual: i.sold_qty,
           jumlah_sisa: i.remaining_stock,
@@ -1913,7 +1874,7 @@
       link.click();
     };
 
-    // ================= FUNGSI LAMA PESANAN, KATALOG, KAS (DIPERTAHANKAN 100%) =================
+    // ================= DATA PESANAN & KATALOG TETAP UTUH =================
     window.renderOrders = function() {
       const filterStatus = document.getElementById("filter-order-status").value;
       const filterDate = document.getElementById("filter-order-date").value;
@@ -2022,7 +1983,7 @@
         <td class="p-3.5 font-bold text-gray-900">${p.name}</td>
         <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px]">${p.category || 'Kue'}</span></td>
         <td class="p-3.5 font-bold text-amber-600">Rp${Number(p.price || 0).toLocaleString('id-ID')}</td>
-        <td class="p-3.5 text-center">${p.daily_quota || 50} pcs</td>
+        <td class="p-3.5 text-center font-bold text-amber-800 bg-amber-50/30">${p.daily_quota || 50} pcs</td>
         <td class="p-3.5 text-center font-bold">${p.stock !== undefined ? p.stock : 50} pcs</td>
         <td class="p-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${isOut ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${isOut ? 'Habis' : 'Ready'}</span></td>
         <td class="p-3.5 text-center">
@@ -2105,7 +2066,6 @@
       }
     };
 
-    // Struk Nota & Rekap Pesanan
     window.openReceiptModal = function(id) {
       const o = ordersList.find(x => x.id === id);
       if (!o) return;
@@ -2206,7 +2166,6 @@
       });
     };
 
-    // Kas Keuangan Umum
     window.calculateFinance = function() {
       const fDate = document.getElementById("filter-finance-date").value;
       let fOrders = ordersList.filter(o => o.status === "COMPLETED");
@@ -2249,7 +2208,6 @@
       });
     }
 
-    // Logo & PIN
     window.handleLogoUpload = function(e) {
       const file = e.target.files[0];
       if (!file) return;
