@@ -173,7 +173,7 @@
         <div id="orders-container" class="space-y-3 no-print"></div>
       </section>
 
-      <!-- ================= TAB 2: LAPORAN PENJUALAN HARIAN ================= -->
+      <!-- ================= TAB 2: LAPORAN PENJUALAN HARIAN (DENGAN TERJUAL BISA DIEDIT MANUAL) ================= -->
       <section id="view-sales" class="tab-view hidden space-y-6">
         <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-xs space-y-4">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-3">
@@ -256,7 +256,7 @@
           </div>
         </div>
 
-        <!-- Tabel Rincian Penjualan Harian -->
+        <!-- Tabel Rincian Penjualan Harian (Dua Arah: Bisa Edit Terjual & Sisa) -->
         <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-xs">
           <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
@@ -264,9 +264,9 @@
                 <span>Daftar Penjualan Produk Hari Ini</span>
                 <span id="sales-items-badge" class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">0 Produk</span>
               </h3>
-              <p class="text-[11px] text-gray-400">Stok Awal otomatis mengambil data riil Siap Saji dari Katalog & Kuota Stok.</p>
+              <p class="text-[11px] text-gray-400">Stok Awal diambil dari Siap Saji. Anda bisa mengetik langsung angka <strong>Terjual</strong> atau <strong>Sisa</strong>.</p>
             </div>
-            <span class="text-[10px] text-gray-400 italic">Ketik sisa untuk menghitung omzet & laba</span>
+            <span class="text-[10px] text-gray-400 italic">Otomatis sinkron antara Terjual & Sisa</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -276,8 +276,8 @@
                   <th class="p-3">Produk</th>
                   <th class="p-3 text-center">Stok Awal (Siap Saji)</th>
                   <th class="p-3 text-center">Pesanan PO Web</th>
-                  <th class="p-3 text-center">Terjual</th>
-                  <th class="p-3 text-center">Sisa Sore</th>
+                  <th class="p-3 text-center bg-amber-50/60 text-amber-950 font-bold">Terjual (Bisa Edit)</th>
+                  <th class="p-3 text-center bg-orange-50/60 text-orange-950 font-bold">Sisa Sore</th>
                   <th class="p-3 text-center">Status Sisa</th>
                   <th class="p-3 text-right">Modal</th>
                   <th class="p-3 text-right">Harga Jual</th>
@@ -323,7 +323,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 3: KATALOG & KUOTA STOK (DILENGKAPI HARGA BELI & KEUNTUNGAN) ================= -->
+      <!-- ================= TAB 3: KATALOG & KUOTA STOK ================= -->
       <section id="view-products" class="tab-view hidden space-y-6 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
@@ -340,7 +340,7 @@
           </div>
         </div>
 
-        <!-- 1. Menu Siap Saji / Ready -->
+        <!-- Menu Siap Saji / Ready -->
         <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
           <div class="p-3 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center text-xs font-bold text-emerald-900">
             <span class="flex items-center gap-1.5">
@@ -369,7 +369,7 @@
           </div>
         </div>
 
-        <!-- 2. Menu Habis -->
+        <!-- Menu Habis -->
         <div class="bg-white rounded-2xl border border-red-200 overflow-hidden shadow-xs">
           <div class="p-3 bg-red-50 border-b border-red-100 flex justify-between items-center text-xs font-bold text-red-900">
             <span class="flex items-center gap-1.5">
@@ -476,35 +476,35 @@
           </select>
         </div>
 
-        <div class="grid grid-cols-3 gap-2.5">
+        <div class="grid grid-cols-4 gap-2">
           <div>
-            <label class="block text-[10px] font-bold text-gray-700 mb-1">Stok Awal (Siap Saji) *</label>
-            <input type="number" id="sale-initial-stock" min="0" required oninput="calculateModalSalesPreview()" class="w-full text-xs p-2 border border-amber-300 rounded-xl outline-none font-bold text-center bg-amber-50/40 text-amber-900">
+            <label class="block text-[10px] font-bold text-gray-700 mb-1">Stok Awal</label>
+            <input type="number" id="sale-initial-stock" min="0" required oninput="calculateModalSalesPreview('init')" class="w-full text-xs p-2 border border-amber-300 rounded-xl outline-none font-bold text-center bg-amber-50/40 text-amber-900">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-blue-700 mb-1">Pesanan PO Web</label>
-            <input type="number" id="sale-order-qty" min="0" value="0" oninput="calculateModalSalesPreview()" class="w-full text-xs p-2 border border-blue-200 rounded-xl outline-none font-bold text-center bg-blue-50/50">
+            <label class="block text-[10px] font-bold text-blue-700 mb-1">PO Web</label>
+            <input type="number" id="sale-order-qty" min="0" value="0" class="w-full text-xs p-2 border border-blue-200 rounded-xl outline-none font-bold text-center bg-blue-50/50">
+          </div>
+          <!-- Terjual Bisa Diketik Manual di Modal -->
+          <div>
+            <label class="block text-[10px] font-bold text-emerald-700 mb-1">Terjual *</label>
+            <input type="number" id="sale-sold-input" min="0" required oninput="calculateModalSalesPreview('sold')" class="w-full text-xs p-2 border border-emerald-300 bg-emerald-50/40 rounded-xl outline-none font-bold text-center text-emerald-900">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-gray-700 mb-1">Jumlah Sisa Sore *</label>
-            <input type="number" id="sale-remaining-stock" min="0" required oninput="calculateModalSalesPreview()" class="w-full text-xs p-2 border border-gray-200 rounded-xl outline-none font-bold text-center bg-gray-50">
+            <label class="block text-[10px] font-bold text-gray-700 mb-1">Sisa Sore *</label>
+            <input type="number" id="sale-remaining-stock" min="0" required oninput="calculateModalSalesPreview('rem')" class="w-full text-xs p-2 border border-gray-200 rounded-xl outline-none font-bold text-center bg-gray-50">
           </div>
-        </div>
-
-        <div class="bg-amber-50/70 p-2.5 rounded-xl border border-amber-200 flex items-center justify-between text-xs">
-          <span class="text-gray-600 font-medium">Jumlah Terjual (Awal − Sisa):</span>
-          <strong id="sale-computed-sold" class="text-amber-800 font-bold text-sm">0 pcs</strong>
         </div>
 
         <div>
           <label class="block text-[11px] font-bold text-gray-700 mb-1">Status Sisa Produk *</label>
           <div class="grid grid-cols-2 gap-2 text-xs">
             <label class="flex items-center gap-2 p-2 rounded-xl border bg-white cursor-pointer">
-              <input type="radio" name="sale_remaining_status" value="resellable" checked onchange="calculateModalSalesPreview()">
+              <input type="radio" name="sale_remaining_status" value="resellable" checked onchange="calculateModalSalesPreview('status')">
               <span>Bisa dijual kembali</span>
             </label>
             <label class="flex items-center gap-2 p-2 rounded-xl border bg-white cursor-pointer">
-              <input type="radio" name="sale_remaining_status" value="unusable" onchange="calculateModalSalesPreview()">
+              <input type="radio" name="sale_remaining_status" value="unusable" onchange="calculateModalSalesPreview('status')">
               <span class="text-red-600 font-medium">Rugi (Rusak / Basi)</span>
             </label>
           </div>
@@ -513,11 +513,11 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-[10px] font-bold text-gray-700 mb-1">Harga Beli / Modal (Rp) *</label>
-            <input type="number" id="sale-cost-price" min="0" required oninput="calculateModalSalesPreview()" class="w-full text-xs p-2 border rounded-xl outline-none font-bold">
+            <input type="number" id="sale-cost-price" min="0" required oninput="calculateModalSalesPreview('price')" class="w-full text-xs p-2 border rounded-xl outline-none font-bold">
           </div>
           <div>
             <label class="block text-[10px] font-bold text-gray-700 mb-1">Harga Jual (Rp) *</label>
-            <input type="number" id="sale-selling-price" min="0" required oninput="calculateModalSalesPreview()" class="w-full text-xs p-2 border rounded-xl outline-none font-bold text-amber-700">
+            <input type="number" id="sale-selling-price" min="0" required oninput="calculateModalSalesPreview('price')" class="w-full text-xs p-2 border rounded-xl outline-none font-bold text-amber-700">
           </div>
         </div>
 
@@ -572,9 +572,7 @@
         </div>
       </div>
 
-      <!-- AREA NOTA RESMI -->
       <div id="receipt-print-area" class="p-6 overflow-y-auto relative bg-white text-gray-800 text-xs">
-        <!-- Watermark Logo Toko -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
           <img id="receipt-watermark-img" src="./logo.png" alt="Watermark" class="w-72 h-72 object-contain opacity-[0.16]" onerror="this.src='./logo.png'">
         </div>
@@ -705,39 +703,6 @@
     </div>
   </div>
 
-  <!-- ================= MODAL EDIT PRODUK KATALOG ================= -->
-  <div id="product-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
-      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-        <h3 id="product-modal-title" class="font-bold text-gray-900 text-sm">Edit Menu & Kuota Harian</h3>
-        <button onclick="closeProductModal()" class="w-8 h-8 rounded-full bg-gray-100"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form onsubmit="event.preventDefault(); saveProduct();" class="p-5 space-y-3.5">
-        <input type="hidden" id="prod-edit-id">
-        <input type="text" id="prod-name" required placeholder="Nama Kue" class="w-full text-xs p-2.5 border rounded-xl outline-none font-bold">
-        <div class="grid grid-cols-2 gap-3">
-          <select id="prod-category" class="w-full text-xs p-2.5 border rounded-xl outline-none bg-white">
-            <option value="Snack">Snack & Gorengan</option>
-            <option value="Kue Basah">Kue Basah</option>
-          </select>
-          <input type="number" id="prod-price" required placeholder="Harga Jual (Rp)" class="w-full text-xs p-2.5 border rounded-xl outline-none font-bold text-amber-700">
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[10px] font-bold text-gray-700 mb-1">Harga Beli / Modal (Rp) *</label>
-            <input type="number" id="prod-cost-price" placeholder="Harga Beli" class="w-full text-xs p-2.5 border rounded-xl outline-none font-bold">
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold text-amber-900 mb-1">Kuota Harian (Pcs) *</label>
-            <input type="number" id="prod-daily-quota" min="0" required placeholder="Kuota Harian" class="w-full text-xs p-2.5 border border-amber-300 bg-amber-50/40 rounded-xl outline-none font-bold text-amber-900">
-          </div>
-        </div>
-        <input type="number" id="prod-current-stock" min="0" required placeholder="Sisa Stok Sekarang" class="w-full text-xs p-2.5 border rounded-xl outline-none font-bold">
-        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs">Simpan Menu & Kuota</button>
-      </form>
-    </div>
-  </div>
-
   <!-- ================= LOGIKA UTAMA SINKRONISASI ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -823,7 +788,7 @@
       onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
         if (docSnap.exists() && docSnap.data().logo_url) {
           currentStoreLogoUrl = docSnap.data().logo_url;
-          ['nav-logo-img', 'login-logo-img'].forEach(id => {
+          ['nav-logo-img', 'login-logo-img', 'summary-logo-img'].forEach(id => {
             const el = document.getElementById(id);
             if (el) { el.src = currentStoreLogoUrl; el.classList.remove('hidden'); }
           });
@@ -1076,7 +1041,7 @@
       return orderCountMap;
     }
 
-    // DISESUAIKAN: Stok Awal mengambil data riil dari SISA SIAP SAJI (stock) di katalog
+    // Stok Awal mengambil Sisa Siap Saji (stock)
     window.syncCakesFromCatalogToSales = async function() {
       if (productsList.length === 0) {
         alert("Katalog produk kosong!");
@@ -1089,7 +1054,7 @@
         const pNameClean = (p.name || "").trim().toLowerCase();
         const poWebQty = webOrdersMap[pNameClean] || 0;
         
-        // PENGAMBILAN DARI SISA SIAP SAJI (stock)
+        // Ambil dari Siap Saji riil di katalog
         const currentReadyStock = p.stock !== undefined ? Number(p.stock) : (p.daily_quota || 50);
         const sellP = Number(p.price || 0);
         const costP = p.cost_price !== undefined ? Number(p.cost_price) : Math.round(sellP * 0.7);
@@ -1098,14 +1063,14 @@
 
         if (existingIndex >= 0) {
           currentDailySalesDoc.items[existingIndex].order_qty = poWebQty;
-          currentDailySalesDoc.items[existingIndex].initial_stock = currentReadyStock; // Mengambil Siap Saji
+          currentDailySalesDoc.items[existingIndex].initial_stock = currentReadyStock;
           currentDailySalesDoc.items[existingIndex].selling_price = sellP;
           currentDailySalesDoc.items[existingIndex].cost_price = costP;
         } else {
           currentDailySalesDoc.items.push({
             product_id: p.id,
             product_name: p.name,
-            initial_stock: currentReadyStock, // Mengambil Siap Saji
+            initial_stock: currentReadyStock,
             order_qty: poWebQty,
             sold_qty: currentReadyStock,
             remaining_stock: 0,
@@ -1165,6 +1130,7 @@
       }
     };
 
+    // Render Tabel Penjualan: Input Manual Terjual & Sisa Sore
     function renderDailySalesTables() {
       const tbody = document.getElementById("sales-items-table-body");
       tbody.innerHTML = "";
@@ -1184,10 +1150,17 @@
             <td class="p-3 text-center text-blue-700 font-bold bg-blue-50/40">
               ${it.order_qty > 0 ? `${it.order_qty} pcs` : '-'}
             </td>
-            <td class="p-3 text-center font-bold text-gray-900">${it.sold_qty}</td>
-            <td class="p-3 text-center">
-              <input type="number" min="0" value="${it.remaining_stock}" onchange="quickUpdateSaleRemaining(${idx}, this.value)" class="w-12 text-center p-1 bg-white border border-gray-300 rounded font-bold text-orange-600 outline-none">
+
+            <!-- INPUT MANUAL KOLOM TERJUAL -->
+            <td class="p-3 text-center bg-amber-50/30">
+              <input type="number" min="0" max="${it.initial_stock}" value="${it.sold_qty}" onchange="quickUpdateSaleSold(${idx}, this.value)" class="w-14 text-center p-1 bg-white border border-amber-300 rounded font-bold text-gray-900 outline-none focus:ring-1 focus:ring-amber-500 shadow-2xs">
             </td>
+
+            <!-- INPUT MANUAL KOLOM SISA -->
+            <td class="p-3 text-center bg-orange-50/30">
+              <input type="number" min="0" max="${it.initial_stock}" value="${it.remaining_stock}" onchange="quickUpdateSaleRemaining(${idx}, this.value)" class="w-14 text-center p-1 bg-white border border-orange-300 rounded font-bold text-orange-600 outline-none focus:ring-1 focus:ring-orange-500 shadow-2xs">
+            </td>
+
             <td class="p-3 text-center">
               <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${it.remaining_status === 'unusable' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">
                 ${it.remaining_status === 'unusable' ? 'Rugi' : 'Bisa Dijual'}
@@ -1201,8 +1174,8 @@
               ${isLoss ? '-Rp' + Math.abs(it.net_profit).toLocaleString('id-ID') : 'Rp' + it.net_profit.toLocaleString('id-ID')}
             </td>
             <td class="p-3 text-center">
-              <button onclick="openAddSalesModal(${idx})" class="text-blue-600 p-1"><i class="fa-solid fa-pen text-xs"></i></button>
-              <button onclick="deleteSaleItem(${idx})" class="text-red-400 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+              <button onclick="openAddSalesModal(${idx})" class="text-blue-600 p-1" title="Edit Lengkap"><i class="fa-solid fa-pen text-xs"></i></button>
+              <button onclick="deleteSaleItem(${idx})" class="text-red-400 p-1" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
             </td>
           `;
           tbody.appendChild(tr);
@@ -1229,6 +1202,25 @@
       });
     }
 
+    // UPDATE DUA ARAH: Edit Terjual ➔ Sisa Otomatis Menyesuaikan
+    window.quickUpdateSaleSold = async function(idx, newSoldVal) {
+      const it = currentDailySalesDoc.items[idx];
+      if (!it) return;
+
+      const sold = Math.max(0, parseInt(newSoldVal) || 0);
+      if (sold > it.initial_stock) {
+        alert("Jumlah terjual tidak boleh melebihi stok awal!");
+        renderDailySalesTables();
+        return;
+      }
+
+      it.sold_qty = sold;
+      it.remaining_stock = Math.max(0, it.initial_stock - sold); // Sisa otomatis terhitung
+      recalculateSaleItemValues(it);
+      await saveDailySalesDocToFirestore();
+    };
+
+    // UPDATE DUA ARAH: Edit Sisa ➔ Terjual Otomatis Menyesuaikan
     window.quickUpdateSaleRemaining = async function(idx, newRemVal) {
       const it = currentDailySalesDoc.items[idx];
       if (!it) return;
@@ -1241,16 +1233,19 @@
       }
 
       it.remaining_stock = rem;
-      it.sold_qty = it.initial_stock - rem;
-      it.omzet = it.sold_qty * it.selling_price;
-      it.cogs = it.sold_qty * it.cost_price;
-      it.loss = (it.remaining_status === "unusable") ? (rem * it.cost_price) : 0;
-      it.remaining_asset_value = (it.remaining_status === "resellable") ? (rem * it.cost_price) : 0;
-      it.net_profit = (it.omzet - it.cogs) - it.loss;
-      it.sell_through_rate = it.initial_stock > 0 ? Number(((it.sold_qty / it.initial_stock) * 100).toFixed(1)) : 0;
-
+      it.sold_qty = Math.max(0, it.initial_stock - rem); // Terjual otomatis terhitung
+      recalculateSaleItemValues(it);
       await saveDailySalesDocToFirestore();
     };
+
+    function recalculateSaleItemValues(it) {
+      it.omzet = it.sold_qty * it.selling_price;
+      it.cogs = it.sold_qty * it.cost_price;
+      it.loss = (it.remaining_status === "unusable") ? (it.remaining_stock * it.cost_price) : 0;
+      it.remaining_asset_value = (it.remaining_status === "resellable") ? (it.remaining_stock * it.cost_price) : 0;
+      it.net_profit = (it.omzet - it.cogs) - it.loss;
+      it.sell_through_rate = it.initial_stock > 0 ? Number(((it.sold_qty / it.initial_stock) * 100).toFixed(1)) : 0;
+    }
 
     function calculateDailySalesSummary() {
       const items = currentDailySalesDoc.items || [];
@@ -1358,15 +1353,13 @@
       });
     }
 
-    // TERINTEGRASI: Memilih produk langsung mengisi Stok Awal sesuai Sisa Siap Saji (stock)
+    // Modal Input Penjualan Manual
     window.onSelectProductChange = function(productId) {
       const prod = productsList.find(p => p.id === productId);
       if (!prod) return;
 
       const sellingPrice = Number(prod.price || 0);
       const costPrice = prod.cost_price !== undefined ? Number(prod.cost_price) : Math.round(sellingPrice * 0.7);
-      
-      // Ambil Sisa Siap Saji (stock)
       const currentReadyStock = prod.stock !== undefined ? Number(prod.stock) : (prod.daily_quota || 50);
 
       const webOrdersMap = getAggregatedWebOrdersForDate(selectedSalesDate);
@@ -1374,21 +1367,28 @@
 
       document.getElementById("sale-selling-price").value = sellingPrice;
       document.getElementById("sale-cost-price").value = costPrice;
-      document.getElementById("sale-initial-stock").value = currentReadyStock; // Dari Siap Saji
+      document.getElementById("sale-initial-stock").value = currentReadyStock;
       document.getElementById("sale-order-qty").value = poQty;
+      document.getElementById("sale-sold-input").value = currentReadyStock;
       document.getElementById("sale-remaining-stock").value = 0;
-      calculateModalSalesPreview();
+      calculateModalSalesPreview('init');
     };
 
-    window.calculateModalSalesPreview = function() {
+    window.calculateModalSalesPreview = function(source = 'init') {
       const initStock = parseInt(document.getElementById("sale-initial-stock").value) || 0;
-      const remStock = parseInt(document.getElementById("sale-remaining-stock").value) || 0;
+      let sold = parseInt(document.getElementById("sale-sold-input").value) || 0;
+      let remStock = parseInt(document.getElementById("sale-remaining-stock").value) || 0;
       const costPrice = parseInt(document.getElementById("sale-cost-price").value) || 0;
       const sellPrice = parseInt(document.getElementById("sale-selling-price").value) || 0;
       const statusRem = document.querySelector('input[name="sale_remaining_status"]:checked')?.value || "resellable";
 
-      const sold = Math.max(0, initStock - remStock);
-      document.getElementById("sale-computed-sold").innerText = `${sold} pcs`;
+      if (source === 'sold') {
+        remStock = Math.max(0, initStock - sold);
+        document.getElementById("sale-remaining-stock").value = remStock;
+      } else if (source === 'rem') {
+        sold = Math.max(0, initStock - remStock);
+        document.getElementById("sale-sold-input").value = sold;
+      }
 
       const omzet = sold * sellPrice;
       const cogs = sold * costPrice;
@@ -1410,6 +1410,7 @@
         document.getElementById("sale-product-select").value = it.product_id || "";
         document.getElementById("sale-initial-stock").value = it.initial_stock;
         document.getElementById("sale-order-qty").value = it.order_qty || 0;
+        document.getElementById("sale-sold-input").value = it.sold_qty;
         document.getElementById("sale-remaining-stock").value = it.remaining_stock;
         document.getElementById("sale-cost-price").value = it.cost_price;
         document.getElementById("sale-selling-price").value = it.selling_price;
@@ -1417,7 +1418,7 @@
         document.getElementById("sales-record-form").reset();
         document.getElementById("sale-edit-index").value = "-1";
       }
-      calculateModalSalesPreview();
+      calculateModalSalesPreview('init');
       document.getElementById("sales-input-modal").classList.remove("hidden");
     };
 
@@ -1431,17 +1432,17 @@
 
       const initStock = parseInt(document.getElementById("sale-initial-stock").value) || 0;
       const orderQty = parseInt(document.getElementById("sale-order-qty").value) || 0;
+      const soldQty = parseInt(document.getElementById("sale-sold-input").value) || 0;
       const remStock = parseInt(document.getElementById("sale-remaining-stock").value) || 0;
       const costPrice = parseInt(document.getElementById("sale-cost-price").value) || 0;
       const sellPrice = parseInt(document.getElementById("sale-selling-price").value) || 0;
       const statusRem = document.querySelector('input[name="sale_remaining_status"]:checked')?.value || "resellable";
 
-      if (remStock > initStock) {
-        alert("Jumlah sisa tidak boleh melebihi stok awal!");
+      if (soldQty > initStock || remStock > initStock) {
+        alert("Jumlah terjual atau sisa tidak boleh melebihi stok awal!");
         return;
       }
 
-      const soldQty = initStock - remStock;
       const omzet = soldQty * sellPrice;
       const cogs = soldQty * costPrice;
       const loss = (statusRem === "unusable") ? (remStock * costPrice) : 0;
