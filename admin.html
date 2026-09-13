@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Library Cetak & Ekspor: html2canvas, SheetJS (XLSX), Chart.js -->
+  <!-- Library Cetak, Unduh & Grafik -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
@@ -111,7 +111,11 @@
 
       <!-- Tab Navigasi Utama -->
       <div class="max-w-6xl mx-auto px-4 flex gap-2 overflow-x-auto hide-scrollbar border-t border-gray-100 pt-2 pb-2">
-        <button onclick="switchTab('orders')" id="tab-btn-orders" class="tab-btn active px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-amber-500 text-white shadow-sm flex items-center gap-2 transition">
+        <button onclick="switchTab('products')" id="tab-btn-products" class="tab-btn active px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-amber-500 text-white shadow-sm flex items-center gap-2 transition">
+          <i class="fa-solid fa-cake-candles"></i>
+          <span>Katalog & Kuota Stok</span>
+        </button>
+        <button onclick="switchTab('orders')" id="tab-btn-orders" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2 transition">
           <i class="fa-solid fa-list-check"></i>
           <span>Data Pesanan Web</span>
           <span id="badge-pending-orders" class="bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full hidden">0</span>
@@ -119,10 +123,6 @@
         <button onclick="switchTab('sales')" id="tab-btn-sales" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2 transition">
           <i class="fa-solid fa-chart-line"></i>
           <span>Laporan Penjualan Harian</span>
-        </button>
-        <button onclick="switchTab('products')" id="tab-btn-products" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2 transition">
-          <i class="fa-solid fa-cake-candles"></i>
-          <span>Katalog & Kuota Stok</span>
         </button>
         <button onclick="switchTab('finance')" id="tab-btn-finance" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2 transition">
           <i class="fa-solid fa-wallet"></i>
@@ -137,8 +137,84 @@
 
     <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-1">
 
-      <!-- ================= TAB 1: DATA PESANAN MASUK (FUNGSI PENUH) ================= -->
-      <section id="view-orders" class="tab-view space-y-4">
+      <!-- ================= TAB: KATALOG & KUOTA STOK ================= -->
+      <section id="view-products" class="tab-view space-y-6 no-print">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
+          <div>
+            <h2 class="font-bold text-gray-900 text-base">Katalog Menu & Kuota Harian (Pukul 05.00 WIB)</h2>
+            <p class="text-xs text-gray-400">Atur harga beli/modal langsung di tabel untuk memantau keuntungan per pcs kue secara otomatis.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="resetAllDailyStockNow()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3.5 py-2 rounded-xl border border-blue-200 transition">
+              <i class="fa-solid fa-arrows-rotate mr-1"></i>Refill Semua Stok
+            </button>
+            <button onclick="openProductModal()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xs transition active:scale-95">
+              <i class="fa-solid fa-plus mr-1"></i>Tambah Kue Baru
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Menu Siap Saji / Ready -->
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
+          <div class="p-3 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center text-xs font-bold text-emerald-900">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span>MENU SIAP SAJI / READY (URUT A-Z)</span>
+            </span>
+            <span id="admin-ready-count-badge" class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-md font-bold">0 Ready</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-gray-600">
+              <thead class="bg-gray-50 border-b border-gray-200 text-gray-700 font-semibold">
+                <tr>
+                  <th class="p-3.5">Foto & Nama Kue</th>
+                  <th class="p-3.5">Kategori</th>
+                  <th class="p-3.5">Harga Jual</th>
+                  <th class="p-3.5 text-center">Harga Beli / Modal</th>
+                  <th class="p-3.5 text-center">Keuntungan / Pcs</th>
+                  <th class="p-3.5 text-center">Kuota Harian</th>
+                  <th class="p-3.5 text-center">Sisa Siap Saji</th>
+                  <th class="p-3.5 text-center">Status</th>
+                  <th class="p-3.5 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="products-ready-table-body" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2. Menu Habis -->
+        <div class="bg-white rounded-2xl border border-red-200 overflow-hidden shadow-xs">
+          <div class="p-3 bg-red-50 border-b border-red-100 flex justify-between items-center text-xs font-bold text-red-900">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+              <span>MENU HABIS / KOSONG (URUT A-Z)</span>
+            </span>
+            <span id="admin-soldout-count-badge" class="bg-red-100 text-red-800 px-2.5 py-0.5 rounded-md font-bold">0 Habis</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-gray-600">
+              <thead class="bg-red-50/50 border-b border-red-100 text-red-900 font-semibold">
+                <tr>
+                  <th class="p-3.5">Foto & Nama Kue</th>
+                  <th class="p-3.5">Kategori</th>
+                  <th class="p-3.5">Harga Jual</th>
+                  <th class="p-3.5 text-center">Harga Beli / Modal</th>
+                  <th class="p-3.5 text-center">Keuntungan / Pcs</th>
+                  <th class="p-3.5 text-center">Kuota Harian</th>
+                  <th class="p-3.5 text-center">Sisa Stok</th>
+                  <th class="p-3.5 text-center">Status</th>
+                  <th class="p-3.5 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="products-soldout-table-body" class="divide-y divide-red-50"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB: DATA PESANAN MASUK ================= -->
+      <section id="view-orders" class="tab-view hidden space-y-4">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 no-print">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Daftar Pesanan Masuk (Kue Satuan & Snack Box)</h2>
@@ -173,7 +249,7 @@
         <div id="orders-container" class="space-y-3 no-print"></div>
       </section>
 
-      <!-- ================= TAB 2: LAPORAN PENJUALAN HARIAN ================= -->
+      <!-- ================= TAB: LAPORAN PENJUALAN HARIAN ================= -->
       <section id="view-sales" class="tab-view hidden space-y-6">
         <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-xs space-y-4">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-3">
@@ -242,7 +318,7 @@
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">🔴 Kerugian Stok</span>
             <h3 id="card-total-loss" class="text-base sm:text-lg font-bold text-red-700 mt-1 font-serif">Rp0</h3>
-            <span class="text-[10px] text-gray-400">Sisa tak bisa dijual</span>
+            <span class="text-[10px] text-gray-400">Sisa rusak / basi</span>
           </div>
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">🟢 Laba Bersih</span>
@@ -274,11 +350,11 @@
               <thead class="bg-gray-50 border-b border-gray-200 text-gray-700 font-bold">
                 <tr>
                   <th class="p-3">Produk</th>
-                  <th class="p-3 text-center">Stok Awal</th>
+                  <th class="p-3 text-center">Stok Awal (Siap Saji)</th>
                   <th class="p-3 text-center">Pesanan PO Web</th>
                   <th class="p-3 text-center bg-amber-50/60 text-amber-900">Terjual</th>
                   <th class="p-3 text-center">Sisa Sore</th>
-                  <th class="p-3 text-center">Status Sisa</th>
+                  <th class="p-3 text-center">Status Sisa Produk</th>
                   <th class="p-3 text-right">Modal</th>
                   <th class="p-3 text-right">Harga Jual</th>
                   <th class="p-3 text-right">Omzet</th>
@@ -305,7 +381,7 @@
             <form onsubmit="event.preventDefault(); addOperationalExpense();" class="grid grid-cols-3 gap-2">
               <input type="text" id="cost-name" placeholder="Jenis Biaya" required class="w-full text-xs p-2.5 bg-gray-50 border rounded-xl outline-none">
               <input type="number" id="cost-amount" placeholder="Nominal (Rp)" min="0" required class="w-full text-xs p-2.5 bg-gray-50 border rounded-xl outline-none">
-              <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-xl transition shadow-xs">+ Tambah</button>
+              <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-xl transition shadow-xs">+ Tambah</button>
             </form>
             <div id="operational-costs-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
           </div>
@@ -323,83 +399,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 3: KATALOG & KUOTA STOK ================= -->
-      <section id="view-products" class="tab-view hidden space-y-6 no-print">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
-          <div>
-            <h2 class="font-bold text-gray-900 text-base">Katalog Menu & Kuota Harian (Pukul 05.00 WIB)</h2>
-            <p class="text-xs text-gray-400">Atur harga beli/modal langsung di tabel untuk memantau keuntungan per pcs kue secara otomatis.</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button onclick="resetAllDailyStockNow()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3.5 py-2 rounded-xl border border-blue-200">
-              <i class="fa-solid fa-arrows-rotate mr-1"></i>Refill Semua Stok
-            </button>
-            <button onclick="openProductModal()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xs">
-              <i class="fa-solid fa-plus mr-1"></i>Tambah Kue Baru
-            </button>
-          </div>
-        </div>
-
-        <!-- 1. Menu Siap Saji / Ready -->
-        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
-          <div class="p-3 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center text-xs font-bold text-emerald-900">
-            <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-              <span>MENU SIAP SAJI / READY (URUT A-Z)</span>
-            </span>
-            <span id="admin-ready-count-badge" class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-bold">0 Ready</span>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-gray-600">
-              <thead class="bg-gray-50 border-b border-gray-200 text-gray-700 font-semibold">
-                <tr>
-                  <th class="p-3.5">Foto & Nama Kue</th>
-                  <th class="p-3.5">Kategori</th>
-                  <th class="p-3.5">Harga Jual</th>
-                  <th class="p-3.5 text-center">Harga Beli / Modal</th>
-                  <th class="p-3.5 text-center">Keuntungan / Pcs</th>
-                  <th class="p-3.5 text-center">Kuota Harian</th>
-                  <th class="p-3.5 text-center">Sisa Siap Saji</th>
-                  <th class="p-3.5 text-center">Status</th>
-                  <th class="p-3.5 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="products-ready-table-body" class="divide-y divide-gray-100"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 2. Menu Habis -->
-        <div class="bg-white rounded-2xl border border-red-200 overflow-hidden shadow-xs">
-          <div class="p-3 bg-red-50 border-b border-red-100 flex justify-between items-center text-xs font-bold text-red-900">
-            <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-              <span>MENU HABIS / KOSONG (URUT A-Z)</span>
-            </span>
-            <span id="admin-soldout-count-badge" class="bg-red-100 text-red-800 px-2 py-0.5 rounded-md font-bold">0 Habis</span>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-gray-600">
-              <thead class="bg-gray-50 border-b border-gray-200 text-gray-700 font-semibold">
-                <tr>
-                  <th class="p-3.5">Foto & Nama Kue</th>
-                  <th class="p-3.5">Kategori</th>
-                  <th class="p-3.5">Harga Jual</th>
-                  <th class="p-3.5 text-center">Harga Beli / Modal</th>
-                  <th class="p-3.5 text-center">Keuntungan / Pcs</th>
-                  <th class="p-3.5 text-center">Kuota Harian</th>
-                  <th class="p-3.5 text-center">Sisa Stok</th>
-                  <th class="p-3.5 text-center">Status</th>
-                  <th class="p-3.5 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="products-soldout-table-body" class="divide-y divide-red-50"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB 4: KAS KEUANGAN ================= -->
+      <!-- ================= TAB: KAS KEUANGAN ================= -->
       <section id="view-finance" class="tab-view hidden space-y-5 no-print">
         <div class="bg-white p-4 rounded-2xl border border-gray-200 flex justify-between items-center">
           <div>
@@ -444,7 +444,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 5: PENGATURAN TOKO ================= -->
+      <!-- ================= TAB: PENGATURAN TOKO ================= -->
       <section id="view-settings" class="tab-view hidden space-y-5 max-w-xl mx-auto no-print">
         <div class="bg-white p-5 rounded-2xl border border-gray-200 space-y-4">
           <h3 class="font-bold text-gray-900 text-sm">Ganti PIN Masuk Admin</h3>
@@ -486,7 +486,7 @@
             <input type="number" id="sale-order-qty" min="0" value="0" class="w-full text-xs p-2 border border-blue-200 rounded-xl outline-none font-bold text-center bg-blue-50/50">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-emerald-700 mb-1">Terjual (Bisa Edit) *</label>
+            <label class="block text-[10px] font-bold text-emerald-700 mb-1">Terjual *</label>
             <input type="number" id="sale-sold-input" min="0" required oninput="onModalSoldInputChange()" class="w-full text-xs p-2 border-2 border-emerald-400 bg-emerald-50/30 rounded-xl outline-none font-bold text-center text-emerald-900">
           </div>
           <div>
@@ -497,16 +497,10 @@
 
         <div>
           <label class="block text-[11px] font-bold text-gray-700 mb-1">Status Sisa Produk *</label>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <label class="flex items-center gap-2 p-2 rounded-xl border bg-white cursor-pointer">
-              <input type="radio" name="sale_remaining_status" value="resellable" checked onchange="calculateModalSalesPreview()">
-              <span>Bisa dijual kembali</span>
-            </label>
-            <label class="flex items-center gap-2 p-2 rounded-xl border bg-white cursor-pointer">
-              <input type="radio" name="sale_remaining_status" value="unusable" onchange="calculateModalSalesPreview()">
-              <span class="text-red-600 font-medium">Rugi (Rusak / Basi)</span>
-            </label>
-          </div>
+          <select id="modal-sale-remaining-status" onchange="calculateModalSalesPreview()" class="w-full text-xs p-2.5 border rounded-xl font-bold bg-white outline-none">
+            <option value="resellable">🟢 Bisa dijual kembali</option>
+            <option value="unusable">🔴 Tidak bisa dijual (Rugi)</option>
+          </select>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -571,9 +565,7 @@
         </div>
       </div>
 
-      <!-- AREA NOTA RESMI -->
       <div id="receipt-print-area" class="p-6 overflow-y-auto relative bg-white text-gray-800 text-xs">
-        <!-- Watermark Logo Toko -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
           <img id="receipt-watermark-img" src="./logo.png" alt="Watermark" class="w-72 h-72 object-contain opacity-[0.16]" onerror="this.src='./logo.png'">
         </div>
@@ -744,6 +736,7 @@
       getFirestore, collection, onSnapshot, doc, setDoc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // KUNCI FIREBASE RESMI TOKO (Disamakan dengan index.html)
     const firebaseConfig = {
       apiKey: "AIzaSyAzriSnackPlaceholderKey",
       authDomain: "azri-snack-db.firebaseapp.com",
@@ -779,6 +772,19 @@
     document.getElementById("filter-order-date").value = selectedSalesDate;
     document.getElementById("sales-selected-date").value = selectedSalesDate;
     document.getElementById("filter-finance-date").value = selectedSalesDate;
+
+    function normalizeDateString(dStr) {
+      if (!dStr) return "";
+      const s = String(dStr).trim();
+      if (s.includes("/")) {
+        const parts = s.split("/");
+        if (parts.length === 3) {
+          if (parts[0].length === 4) return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+          return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+        }
+      }
+      return s.split("T")[0];
+    }
 
     // PIN Auth
     onSnapshot(doc(db, "settings", "admin_auth"), (snap) => {
@@ -831,394 +837,237 @@
         }
       });
 
-      // 1. Sync Katalog Produk
+      // 1. SINKRONISASI KATALOG PRODUK KE TABEL
       onSnapshot(collection(db, "products"), (snapshot) => {
         productsList = [];
         snapshot.forEach(docSnap => productsList.push({ id: docSnap.id, ...docSnap.data() }));
         renderProductsTable();
         populateProductDropdown();
-      });
+      }, (err) => console.error("Error sync products:", err));
 
-      // 2. Sync Orders Realtime
+      // 2. SINKRONISASI PESANAN WEB KE TABEL
       onSnapshot(collection(db, "orders"), (snapshot) => {
         ordersList = [];
         snapshot.forEach(docSnap => ordersList.push({ id: docSnap.id, ...docSnap.data() }));
         renderOrders();
         calculateFinance();
-      });
+      }, (err) => console.error("Error sync orders:", err));
 
-      // 3. Sync Expenses
+      // 3. SINKRONISASI PENGELUARAN KAS
       onSnapshot(collection(db, "expenses"), (snapshot) => {
         expenseList = [];
         snapshot.forEach(docSnap => expenseList.push({ id: docSnap.id, ...docSnap.data() }));
         renderExpenses();
         calculateFinance();
-      });
+      }, (err) => console.error("Error sync expenses:", err));
 
       loadSalesDataForDate(selectedSalesDate);
     }
 
-    // ================= FUNGSI DATA PESANAN =================
-    window.renderOrders = function() {
-      const filterStatus = document.getElementById("filter-order-status").value;
-      const filterDate = document.getElementById("filter-order-date").value;
-      const container = document.getElementById("orders-container");
-      container.innerHTML = "";
+    // ================= FUNGSI KATALOG & KUOTA STOK =================
+    window.renderProductsTable = function() {
+      const readyTbody = document.getElementById("products-ready-table-body");
+      const soldOutTbody = document.getElementById("products-soldout-table-body");
+      if (!readyTbody || !soldOutTbody) return;
+      readyTbody.innerHTML = "";
+      soldOutTbody.innerHTML = "";
 
-      let filtered = [...ordersList];
-      if (filterDate) filtered = filtered.filter(o => o.event_date === filterDate);
-      if (filterStatus !== "ALL") filtered = filtered.filter(o => o.status === filterStatus);
+      const ready = [];
+      const soldOut = [];
+      productsList.forEach(p => {
+        const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
+        const stock = p.stock !== undefined ? Number(p.stock) : quota;
+        if (p.status === "OUT_OF_STOCK" || stock <= 0) soldOut.push(p);
+        else ready.push(p);
+      });
 
-      const pendingCount = ordersList.filter(o => o.status === "PENDING").length;
-      const badge = document.getElementById("badge-pending-orders");
-      if (pendingCount > 0) {
-        badge.innerText = pendingCount;
-        badge.classList.remove("hidden");
+      ready.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOut.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+
+      document.getElementById("admin-ready-count-badge").innerText = `${ready.length} Ready`;
+      document.getElementById("admin-soldout-count-badge").innerText = `${soldOut.length} Habis`;
+
+      if (ready.length === 0) {
+        readyTbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Tidak ada produk siap saji.</td></tr>`;
       } else {
-        badge.classList.add("hidden");
+        ready.forEach(p => readyTbody.appendChild(createProductRow(p, false)));
       }
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-xs text-gray-400 border border-gray-200">Tidak ada data pesanan ${filterDate ? `pada tanggal ${filterDate}` : ''}.</div>`;
-        return;
+      if (soldOut.length === 0) {
+        soldOutTbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Tidak ada produk yang habis.</td></tr>`;
+      } else {
+        soldOut.forEach(p => soldOutTbody.appendChild(createProductRow(p, true)));
       }
+    };
 
-      filtered.forEach(o => {
-        let itemsHtml = "";
-        if (o.items && Array.isArray(o.items)) {
-          itemsHtml = o.items.map(i => {
-            if (i.is_snackbox) {
-              return `<div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-2 rounded-xl mb-1.5 font-medium">🍱 <strong>${i.name}</strong> (${i.qty} Box)<br><span class="text-[10px] text-gray-500 italic">${i.description || ''}</span></div>`;
-            } else {
-              return `<span class="inline-block bg-gray-100 text-gray-700 text-[11px] px-2.5 py-1 rounded-lg mr-1 mb-1 font-medium">${i.name} x${i.qty}</span>`;
-            }
-          }).join("");
-        }
+    function createProductRow(p, isOut) {
+      const sellingPrice = Number(p.price || 0);
+      const costPrice = p.cost_price !== undefined ? Number(p.cost_price) : Math.round(sellingPrice * 0.7);
+      const profitPerPcs = sellingPrice - costPrice;
+      const marginPercent = sellingPrice > 0 ? Math.round((profitPerPcs / sellingPrice) * 100) : 0;
 
-        const dateStr = o.event_date ? `${o.event_date} (${o.event_time || ''})` : "-";
-        const payStatus = o.payment_status || "UNPAID";
-        const dpAmount = Number(o.dp_amount || 0);
+      const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
+      const stock = p.stock !== undefined ? Number(p.stock) : quota;
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+      const imgSrc = p.image_url || fallbackImg;
 
-        const card = document.createElement("div");
-        card.className = "bg-white p-4 rounded-2xl border border-gray-200 shadow-xs space-y-3";
-        card.innerHTML = `
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-2.5">
-            <div>
-              <span class="text-xs font-bold text-amber-600">#${o.invoice_no || o.id}</span>
-              <h3 class="font-bold text-sm text-gray-900">${o.customer_name || 'Pelanggan'} <span class="text-xs font-normal text-gray-400">(${o.customer_phone || '-'})</span></h3>
-            </div>
-            
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <!-- TOMBOL CETAK NOTA RESMI -->
-              <button onclick="openReceiptModal('${o.id}')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition active:scale-95">
-                <i class="fa-solid fa-print text-amber-600"></i>
-                <span>Cetak Nota</span>
-              </button>
-
-              <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-gray-200 outline-none ${getStatusColorClass(o.status)}">
-                <option value="PENDING" ${o.status === 'PENDING' ? 'selected' : ''}>Menunggu (Pending)</option>
-                <option value="PROCESSING" ${o.status === 'PROCESSING' ? 'selected' : ''}>Diproses</option>
-                <option value="READY" ${o.status === 'READY' ? 'selected' : ''}>Siap</option>
-                <option value="COMPLETED" ${o.status === 'COMPLETED' ? 'selected' : ''}>Selesai (Masuk Kas)</option>
-                <option value="CANCELLED" ${o.status === 'CANCELLED' ? 'selected' : ''}>Batal</option>
-              </select>
-
-              <a href="https://wa.me/${formatWaNumber(o.customer_phone)}" target="_blank" class="w-8 h-8 rounded-xl bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center text-sm transition" title="Chat WhatsApp">
-                <i class="fa-brands fa-whatsapp"></i>
-              </a>
-            </div>
+      const tr = document.createElement("tr");
+      tr.className = isOut ? "hover:bg-red-50/30 transition" : "hover:bg-gray-50/80 transition";
+      tr.innerHTML = `
+        <td class="p-3.5 flex items-center gap-3">
+          <img src="${imgSrc}" class="w-10 h-10 rounded-xl object-cover border border-gray-200 flex-shrink-0" onerror="this.src='${fallbackImg}'">
+          <div>
+            <p class="font-bold text-gray-900">${p.name}</p>
+            <p class="text-[10px] text-gray-400 line-clamp-1">${p.description || '-'}</p>
           </div>
+        </td>
 
-          <div class="text-xs text-gray-600 grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div><p>Jadwal: <strong>${dateStr}</strong></p><p>Pengambilan: ${o.delivery_type || 'Ambil Sendiri'}</p></div>
-            <div><p>Status Bayar: <strong>${payStatus}</strong></p><p>Total Tagihan: <strong class="text-amber-600 text-sm">Rp${Number(o.total_price || 0).toLocaleString('id-ID')}</strong></p></div>
+        <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-semibold">${p.category || 'Kue'}</span></td>
+        <td class="p-3.5 font-bold text-amber-600">Rp${sellingPrice.toLocaleString('id-ID')}</td>
+        
+        <td class="p-3.5 text-center">
+          <div class="inline-flex items-center justify-center bg-gray-50 border border-gray-300 rounded-xl px-2 py-1 shadow-2xs">
+            <span class="text-[10px] text-gray-400 mr-0.5">Rp</span>
+            <input type="number" min="0" value="${costPrice}" onchange="updateProductCostPriceDirect('${p.id}', this.value)" class="w-14 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
           </div>
-          <div>${itemsHtml}</div>
-        `;
-        container.appendChild(card);
+        </td>
+
+        <td class="p-3.5 text-center">
+          <span class="font-bold text-xs ${profitPerPcs >= 0 ? 'text-emerald-600' : 'text-red-600'}">
+            ${profitPerPcs >= 0 ? '+Rp' + profitPerPcs.toLocaleString('id-ID') : '-Rp' + Math.abs(profitPerPcs).toLocaleString('id-ID')}
+          </span>
+          <span class="block text-[10px] text-gray-400 font-medium">(${marginPercent}%)</span>
+        </td>
+
+        <td class="p-3.5 text-center">
+          <div class="inline-flex items-center justify-center bg-amber-50 border border-amber-300 rounded-xl px-2 py-1 shadow-2xs">
+            <input type="number" min="0" value="${quota}" onchange="updateProductDailyQuotaDirect('${p.id}', this.value)" class="w-12 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+            <span class="text-[10px] text-amber-800 font-semibold ml-0.5">pcs</span>
+          </div>
+        </td>
+
+        <td class="p-3.5 text-center">
+          <div class="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
+            <button onclick="quickChangeStock('${p.id}', -5)" class="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs">-5</button>
+            <input type="number" min="0" value="${stock}" onchange="updateProductCurrentStock('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
+            <button onclick="quickChangeStock('${p.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs">+5</button>
+          </div>
+        </td>
+
+        <td class="p-3.5 text-center">
+          <button onclick="toggleProductStockStatus('${p.id}', '${p.status || 'AVAILABLE'}')" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border transition ${isOut ? 'bg-red-50 text-red-600 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}">
+            ${isOut ? 'Habis' : 'Ready'}
+          </button>
+        </td>
+
+        <td class="p-3.5 text-center">
+          <button onclick="editProduct('${p.id}')" class="text-blue-600 p-1" title="Edit Lengkap"><i class="fa-solid fa-pen text-xs"></i></button>
+          <button onclick="deleteProduct('${p.id}', '${p.name}')" class="text-red-500 p-1" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
+        </td>
+      `;
+      return tr;
+    }
+
+    window.updateProductCostPriceDirect = async function(prodId, newCostVal) {
+      const cNum = Math.max(0, parseInt(newCostVal) || 0);
+      await updateDoc(doc(db, "products", prodId), { cost_price: cNum });
+    };
+
+    window.updateProductDailyQuotaDirect = async function(prodId, newQuotaVal) {
+      const qNum = Math.max(0, parseInt(newQuotaVal) || 0);
+      await updateDoc(doc(db, "products", prodId), { daily_quota: qNum });
+    };
+
+    window.updateProductCurrentStock = async function(prodId, newStockVal) {
+      const sNum = Math.max(0, parseInt(newStockVal) || 0);
+      await updateDoc(doc(db, "products", prodId), { stock: sNum, status: sNum <= 0 ? "OUT_OF_STOCK" : "AVAILABLE" });
+    };
+
+    window.quickChangeStock = async function(prodId, delta) {
+      const p = productsList.find(x => x.id === prodId);
+      if (!p) return;
+      const cur = p.stock !== undefined ? Number(p.stock) : 50;
+      updateProductCurrentStock(prodId, Math.max(0, cur + delta));
+    };
+
+    window.toggleProductStockStatus = async function(prodId, curSt) {
+      const isOut = curSt === "OUT_OF_STOCK";
+      const p = productsList.find(x => x.id === prodId);
+      const quota = p?.daily_quota || 50;
+      await updateDoc(doc(db, "products", prodId), { 
+        status: isOut ? "AVAILABLE" : "OUT_OF_STOCK",
+        stock: isOut ? (p?.stock > 0 ? p.stock : quota) : 0
       });
     };
 
-    function getStatusColorClass(st) {
-      if (st === 'COMPLETED') return 'bg-green-50 text-green-700 border-green-200';
-      if (st === 'PROCESSING' || st === 'READY') return 'bg-blue-50 text-blue-700 border-blue-200';
-      if (st === 'CANCELLED') return 'bg-red-50 text-red-700 border-red-200';
-      return 'bg-amber-50 text-amber-700 border-amber-200';
-    }
-
-    function getPaymentColorClass(payStatus) {
-      if (payStatus === 'PAID') return 'text-green-600';
-      if (payStatus === 'DP') return 'text-amber-600';
-      return 'text-red-500';
-    }
-
-    function getPaymentLabel(payStatus, dp) {
-      if (payStatus === 'PAID') return 'Lunas';
-      if (payStatus === 'DP') return `DP Rp${dp.toLocaleString('id-ID')}`;
-      return 'Belum Lunas';
-    }
-
-    function formatWaNumber(phone) {
-      if (!phone) return "";
-      let clean = phone.replace(/\D/g, "");
-      if (clean.startsWith("0")) clean = "62" + clean.substring(1);
-      return clean;
-    }
-
-    window.resetOrderDateFilter = function() {
-      document.getElementById("filter-order-date").value = "";
-      renderOrders();
+    window.openProductModal = function() {
+      document.getElementById("prod-edit-id").value = "";
+      document.getElementById("prod-name").value = "";
+      document.getElementById("prod-price").value = "";
+      document.getElementById("prod-cost-price").value = "";
+      document.getElementById("prod-daily-quota").value = "50";
+      document.getElementById("prod-current-stock").value = "50";
+      document.getElementById("product-modal").classList.remove("hidden");
     };
 
-    window.updateOrderStatus = async function(id, st) {
-      await updateDoc(doc(db, "orders", id), { status: st });
-      calculateFinance();
+    window.closeProductModal = () => document.getElementById("product-modal").classList.add("hidden");
+
+    window.saveProduct = async function() {
+      const id = document.getElementById("prod-edit-id").value;
+      const name = document.getElementById("prod-name").value.trim();
+      const price = Number(document.getElementById("prod-price").value) || 0;
+      const costPrice = Number(document.getElementById("prod-cost-price").value) || Math.round(price * 0.7);
+      const quota = Number(document.getElementById("prod-daily-quota").value) || 50;
+      const stock = Number(document.getElementById("prod-current-stock").value) || 0;
+
+      const payload = {
+        name, price, cost_price: costPrice, daily_quota: quota, stock,
+        category: document.getElementById("prod-category").value,
+        status: stock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE",
+        updated_at: serverTimestamp()
+      };
+
+      if (id) await updateDoc(doc(db, "products", id), payload);
+      else {
+        payload.created_at = serverTimestamp();
+        payload.image_url = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+        await addDoc(collection(db, "products"), payload);
+      }
+      closeProductModal();
     };
 
-    // ================= FUNGSI BUKA & CETAK NOTA =================
-    window.openReceiptModal = function(orderId) {
-      const order = ordersList.find(o => o.id === orderId);
-      if (!order) {
-        alert("Data pesanan tidak ditemukan!");
-        return;
-      }
+    window.editProduct = function(id) {
+      const p = productsList.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById("prod-edit-id").value = p.id;
+      document.getElementById("prod-name").value = p.name;
+      document.getElementById("prod-category").value = p.category || "Snack";
+      document.getElementById("prod-price").value = p.price;
+      document.getElementById("prod-cost-price").value = p.cost_price !== undefined ? p.cost_price : Math.round((p.price || 0) * 0.7);
+      document.getElementById("prod-daily-quota").value = p.daily_quota !== undefined ? p.daily_quota : 50;
+      document.getElementById("prod-current-stock").value = p.stock !== undefined ? p.stock : 50;
+      document.getElementById("product-modal").classList.remove("hidden");
+    };
 
-      activeReceiptOrder = order;
+    window.deleteProduct = async function(id, name) {
+      if (confirm(`Hapus produk "${name}"?`)) await deleteDoc(doc(db, "products", id));
+    };
 
-      document.getElementById("receipt-inv").innerText = "#" + (order.invoice_no || order.id);
-      document.getElementById("receipt-customer").innerText = order.customer_name || "Pelanggan";
-      document.getElementById("receipt-phone").innerText = order.customer_phone || "-";
-      document.getElementById("receipt-date").innerText = order.event_date || "-";
-      document.getElementById("receipt-time").innerText = order.event_time || "Bebas";
-      document.getElementById("receipt-delivery").innerText = order.delivery_type || "Ambil Sendiri";
-      
-      let noteFull = order.notes && order.notes !== '-' ? order.notes : '-';
-      if (order.delivery_address && order.delivery_address !== '-') {
-        noteFull = `Alamat: ${order.delivery_address} | Catatan: ${noteFull}`;
-      }
-      document.getElementById("receipt-notes").innerText = noteFull;
-      document.getElementById("receipt-sign-customer").innerText = `( ${order.customer_name || 'Pelanggan'} )`;
-
-      const tbody = document.getElementById("receipt-items-body");
-      tbody.innerHTML = "";
-
-      let grandTotal = 0;
-      if (order.items && Array.isArray(order.items)) {
-        order.items.forEach(item => {
-          const sub = (item.price || 0) * (item.qty || 1);
-          grandTotal += sub;
-          const tr = document.createElement("tr");
-
-          const qtyUnit = item.is_snackbox ? "box" : "pcs";
-          tr.innerHTML = `
-            <td class="py-1.5 font-bold text-gray-800">
-              <span>${item.name}</span>
-              ${item.description ? `<p class="text-[10px] text-gray-500 font-normal italic leading-tight mt-0.5">${item.description}</p>` : ''}
-            </td>
-            <td class="py-1.5 text-center text-gray-600">Rp${Number(item.price || 0).toLocaleString('id-ID')}</td>
-            <td class="py-1.5 text-center font-bold text-gray-900">${item.qty} ${qtyUnit}</td>
-            <td class="py-1.5 text-right font-bold text-gray-900">Rp${Number(sub).toLocaleString('id-ID')}</td>
-          `;
-          tbody.appendChild(tr);
+    window.resetAllDailyStockNow = async function() {
+      if (confirm("Reset seluruh stok kue ke kuota harian awal?")) {
+        const promises = productsList.map(p => {
+          const q = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
+          return updateDoc(doc(db, "products", p.id), { stock: q, status: q > 0 ? "AVAILABLE" : "OUT_OF_STOCK" });
         });
+        await Promise.all(promises);
+        alert("Semua stok telah di-refill sesuai kuota!");
       }
-
-      const totalVal = order.total_price ? Number(order.total_price) : grandTotal;
-      document.getElementById("receipt-gross-total").innerText = "Rp" + totalVal.toLocaleString('id-ID');
-
-      const paymentStatus = order.payment_status || "UNPAID";
-      const dpAmount = Number(order.dp_amount || 0);
-
-      document.getElementById("modal-payment-status").value = paymentStatus;
-      document.getElementById("modal-dp-amount").value = dpAmount > 0 ? dpAmount : "";
-
-      const dpBox = document.getElementById("modal-dp-box");
-      if (paymentStatus === "DP") {
-        dpBox.classList.remove("hidden");
-      } else {
-        dpBox.classList.add("hidden");
-      }
-
-      updateReceiptPaymentDisplay(totalVal, paymentStatus, dpAmount);
-
-      const watermark = document.getElementById("receipt-watermark-img");
-      if (watermark && currentStoreLogoUrl) watermark.src = currentStoreLogoUrl;
-
-      document.getElementById("receipt-modal").classList.remove("hidden");
-    };
-
-    window.closeReceiptModal = function() {
-      document.getElementById("receipt-modal").classList.add("hidden");
-      activeReceiptOrder = null;
-    };
-
-    window.onModalPaymentStatusChange = async function() {
-      if (!activeReceiptOrder) return;
-      const status = document.getElementById("modal-payment-status").value;
-      const dpBox = document.getElementById("modal-dp-box");
-      const dpInput = document.getElementById("modal-dp-amount");
-
-      if (status === "DP") {
-        dpBox.classList.remove("hidden");
-      } else {
-        dpBox.classList.add("hidden");
-        if (status === "PAID" || status === "UNPAID") {
-          dpInput.value = "";
-        }
-      }
-
-      const totalVal = Number(activeReceiptOrder.total_price || 0);
-      const dpAmount = status === "DP" ? Number(dpInput.value || 0) : 0;
-
-      updateReceiptPaymentDisplay(totalVal, status, dpAmount);
-
-      try {
-        await updateDoc(doc(db, "orders", activeReceiptOrder.id), {
-          payment_status: status,
-          dp_amount: dpAmount
-        });
-        activeReceiptOrder.payment_status = status;
-        activeReceiptOrder.dp_amount = dpAmount;
-        calculateFinance();
-      } catch (e) {
-        console.warn("Gagal auto-update status pembayaran:", e);
-      }
-    };
-
-    window.onModalDpAmountInput = async function() {
-      if (!activeReceiptOrder) return;
-      const status = document.getElementById("modal-payment-status").value;
-      const dpInput = document.getElementById("modal-dp-amount");
-      const dpAmount = Number(dpInput.value || 0);
-      const totalVal = Number(activeReceiptOrder.total_price || 0);
-
-      updateReceiptPaymentDisplay(totalVal, status, dpAmount);
-
-      try {
-        await updateDoc(doc(db, "orders", activeReceiptOrder.id), {
-          payment_status: "DP",
-          dp_amount: dpAmount
-        });
-        activeReceiptOrder.payment_status = "DP";
-        activeReceiptOrder.dp_amount = dpAmount;
-      } catch (e) {
-        console.warn("Gagal simpan nominal DP:", e);
-      }
-    };
-
-    function updateReceiptPaymentDisplay(total, status, dp) {
-      const dpRow = document.getElementById("receipt-dp-row");
-      const dpPaidEl = document.getElementById("receipt-dp-paid");
-      const balanceLabel = document.getElementById("receipt-balance-label");
-      const balanceAmount = document.getElementById("receipt-balance-amount");
-      const stamp = document.getElementById("receipt-stamp");
-      const payGuide = document.getElementById("receipt-payment-guide");
-
-      if (status === "PAID") {
-        dpRow.classList.add("hidden");
-        balanceLabel.innerText = "TOTAL TELAH DIBAYAR:";
-        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
-        stamp.classList.remove("hidden");
-        stamp.innerText = "LUNAS / VALID";
-        payGuide.classList.add("hidden");
-      } else if (status === "DP") {
-        dpRow.classList.remove("hidden");
-        dpPaidEl.innerText = "-Rp" + dp.toLocaleString('id-ID');
-        const remaining = Math.max(0, total - dp);
-        balanceLabel.innerText = "SISA YANG HARUS DIBAYAR:";
-        balanceAmount.innerText = "Rp" + remaining.toLocaleString('id-ID');
-        stamp.classList.add("hidden");
-        payGuide.classList.remove("hidden");
-      } else {
-        dpRow.classList.add("hidden");
-        balanceLabel.innerText = "SISA YANG HARUS DIBAYAR:";
-        balanceAmount.innerText = "Rp" + total.toLocaleString('id-ID');
-        stamp.classList.add("hidden");
-        payGuide.classList.remove("hidden");
-      }
-    }
-
-    window.printReceiptNow = function() {
-      const receiptArea = document.getElementById("receipt-print-area");
-      const summaryArea = document.getElementById("summary-print-area");
-      summaryArea.classList.remove("printable-active");
-      receiptArea.classList.add("printable-active");
-      window.print();
-    };
-
-    window.downloadReceiptAsPNG = function() {
-      const receiptArea = document.getElementById("receipt-print-area");
-      const invNo = activeReceiptOrder ? (activeReceiptOrder.invoice_no || activeReceiptOrder.id) : "Nota";
-      html2canvas(receiptArea, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
-        const link = document.createElement("a");
-        link.download = `Nota-${invNo}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      });
-    };
-
-    // ================= FUNGSI REKAP DAPUR =================
-    window.openDailySummaryModal = function() {
-      let tDate = document.getElementById("filter-order-date").value || getTodayDateWIB();
-      const dailyOrders = ordersList.filter(o => o.event_date === tDate && o.status !== 'CANCELLED');
-      const cakeCount = {};
-      let totalBoxes = 0;
-      let totalDrinks = 0;
-
-      dailyOrders.forEach(o => {
-        if (o.items) {
-          o.items.forEach(i => {
-            if (i.is_snackbox) {
-              totalBoxes += i.qty;
-              if (i.name && i.name.includes("Air Mineral")) totalDrinks += i.qty;
-              if (i.description) {
-                const cNames = i.description.replace(/^(Isi Kue:|Kue:)\s*/i, "").split(",").map(x => x.trim()).filter(Boolean);
-                cNames.forEach(cn => cakeCount[cn] = (cakeCount[cn] || 0) + i.qty);
-              }
-            } else {
-              cakeCount[i.name] = (cakeCount[i.name] || 0) + i.qty;
-            }
-          });
-        }
-      });
-
-      const tbody = document.getElementById("summary-items-table");
-      tbody.innerHTML = "";
-      Object.keys(cakeCount).forEach((k, idx) => {
-        tbody.innerHTML += `<tr><td class="p-2.5">${idx + 1}</td><td class="p-2.5 font-bold">${k}</td><td class="p-2.5 text-center font-bold text-amber-700">${cakeCount[k]} pcs</td><td class="p-2.5 text-right text-gray-400 font-mono">[ ] Siap</td></tr>`;
-      });
-
-      const pkgBox = document.getElementById("summary-packaging-box");
-      if (totalBoxes > 0) {
-        pkgBox.classList.remove("hidden");
-        document.getElementById("summary-total-boxes").innerText = `${totalBoxes} Box`;
-        document.getElementById("summary-total-drinks").innerText = `${totalDrinks} Cup`;
-      } else {
-        pkgBox.classList.add("hidden");
-      }
-      document.getElementById("summary-modal").classList.remove("hidden");
-    };
-
-    window.closeDailySummaryModal = () => document.getElementById("summary-modal").classList.add("hidden");
-    window.printSummaryNow = function() {
-      const receiptArea = document.getElementById("receipt-print-area");
-      const summaryArea = document.getElementById("summary-print-area");
-      receiptArea.classList.remove("printable-active");
-      summaryArea.classList.add("printable-active");
-      window.print();
-    };
-    window.downloadSummaryAsPNG = function() {
-      html2canvas(document.getElementById("summary-print-area")).then(c => {
-        const link = document.createElement("a");
-        link.download = `Rekap-Dapur-${selectedSalesDate}.png`;
-        link.href = c.toDataURL("image/png");
-        link.click();
-      });
     };
 
     // ================= INTEGRASI PESANAN ➔ LAPORAN =================
     function getAggregatedWebOrdersForDate(dateStr) {
-      const activeOrders = ordersList.filter(o => o.event_date === dateStr && o.status !== 'CANCELLED');
+      const targetDate = normalizeDateString(dateStr);
+      const activeOrders = ordersList.filter(o => normalizeDateString(o.event_date) === targetDate && o.status !== 'CANCELLED');
       const orderCountMap = {};
 
       activeOrders.forEach(o => {
@@ -1286,13 +1135,13 @@
       });
 
       await saveDailySalesDocToFirestore();
-      alert(`Berhasil mensinkronkan ${productsList.length} produk katalog dan data pesanan web tanggal ${selectedSalesDate}!`);
+      alert(`Berhasil mensinkronkan ${productsList.length} produk katalog dan pesanan web tanggal ${selectedSalesDate}!`);
     };
 
     // ================= PEMBUKUAN PENJUALAN HARIAN =================
     window.loadSalesDataForDate = async function(dateStr) {
-      selectedSalesDate = dateStr;
-      const dObj = new Date(dateStr);
+      selectedSalesDate = normalizeDateString(dateStr);
+      const dObj = new Date(selectedSalesDate);
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       document.getElementById("sales-current-date-display").innerHTML = `
         <i class="fa-solid fa-calendar-check text-amber-500"></i>
@@ -1300,24 +1149,25 @@
       `;
 
       try {
-        const docSnap = await getDoc(doc(db, "daily_sales", dateStr));
+        const docSnap = await getDoc(doc(db, "daily_sales", selectedSalesDate));
         if (docSnap.exists()) {
           currentDailySalesDoc = docSnap.data();
           if (!currentDailySalesDoc.items) currentDailySalesDoc.items = [];
           if (!currentDailySalesDoc.operational_costs) currentDailySalesDoc.operational_costs = [];
         } else {
           currentDailySalesDoc = {
-            date: dateStr, items: [], operational_costs: [], daily_notes: "",
+            date: selectedSalesDate, items: [], operational_costs: [], daily_notes: "",
             target_omzet: 400000, target_laba: 80000
           };
         }
 
-        const webOrdersMap = getAggregatedWebOrdersForDate(dateStr);
+        const webOrdersMap = getAggregatedWebOrdersForDate(selectedSalesDate);
         currentDailySalesDoc.items.forEach(it => {
           const clean = (it.product_name || "").trim().toLowerCase();
           if (webOrdersMap[clean] !== undefined) {
             it.order_qty = webOrdersMap[clean];
           }
+          if (!it.remaining_status) it.remaining_status = "resellable";
         });
 
         document.getElementById("sales-daily-notes").value = currentDailySalesDoc.daily_notes || "";
@@ -1348,23 +1198,28 @@
               ${it.order_qty > 0 ? `${it.order_qty} pcs` : '-'}
             </td>
 
+            <!-- KOLOM TERJUAL (BISA DIEDIT LANGSUNG) -->
             <td class="p-3 text-center bg-amber-50/30">
               <div class="inline-flex items-center justify-center bg-white border-2 border-amber-400 rounded-xl px-1.5 py-0.5 shadow-2xs">
                 <input type="number" min="0" value="${it.sold_qty}" onchange="quickUpdateSaleSold(${idx}, this.value)" class="w-14 text-center text-xs font-bold text-gray-900 bg-transparent outline-none">
               </div>
             </td>
 
+            <!-- KOLOM SISA (BISA DIEDIT LANGSUNG) -->
             <td class="p-3 text-center">
               <div class="inline-flex items-center justify-center bg-white border border-gray-300 rounded-xl px-1.5 py-0.5 shadow-2xs">
                 <input type="number" min="0" value="${it.remaining_stock}" onchange="quickUpdateSaleRemaining(${idx}, this.value)" class="w-14 text-center text-xs font-bold text-orange-600 bg-transparent outline-none">
               </div>
             </td>
 
+            <!-- DROPDOWN STATUS SISA PRODUK -->
             <td class="p-3 text-center">
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${it.remaining_status === 'unusable' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">
-                ${it.remaining_status === 'unusable' ? 'Rugi' : 'Bisa Dijual'}
-              </span>
+              <select onchange="quickUpdateSaleRemainingStatus(${idx}, this.value)" class="text-[11px] font-bold px-2 py-1 rounded-xl border outline-none cursor-pointer transition shadow-2xs ${it.remaining_status === 'unusable' ? 'bg-red-50 text-red-700 border-red-300' : 'bg-green-50 text-green-700 border-green-300'}">
+                <option value="resellable" ${it.remaining_status === 'resellable' ? 'selected' : ''}>🟢 Bisa dijual kembali</option>
+                <option value="unusable" ${it.remaining_status === 'unusable' ? 'selected' : ''}>🔴 Tidak bisa dijual (Rugi)</option>
+              </select>
             </td>
+
             <td class="p-3 text-right text-gray-500">Rp${Number(it.cost_price || 0).toLocaleString('id-ID')}</td>
             <td class="p-3 text-right font-semibold text-gray-800">Rp${Number(it.selling_price || 0).toLocaleString('id-ID')}</td>
             <td class="p-3 text-right font-bold text-gray-900">Rp${Number(it.omzet || 0).toLocaleString('id-ID')}</td>
@@ -1381,6 +1236,7 @@
         });
       }
 
+      // Biaya Operasional List
       const costListEl = document.getElementById("operational-costs-list");
       costListEl.innerHTML = "";
       const costs = currentDailySalesDoc.operational_costs || [];
@@ -1399,6 +1255,18 @@
         `;
       });
     }
+
+    window.quickUpdateSaleRemainingStatus = async function(idx, newStatus) {
+      const it = currentDailySalesDoc.items[idx];
+      if (!it) return;
+
+      it.remaining_status = newStatus;
+      it.loss = (newStatus === "unusable") ? (it.remaining_stock * it.cost_price) : 0;
+      it.remaining_asset_value = (newStatus === "resellable") ? (it.remaining_stock * it.cost_price) : 0;
+      it.net_profit = (it.omzet - it.cogs) - it.loss;
+
+      await saveDailySalesDocToFirestore();
+    };
 
     window.quickUpdateSaleSold = async function(idx, newSoldVal) {
       const it = currentDailySalesDoc.items[idx];
@@ -1508,11 +1376,12 @@
 
     // ================= KAS KEUANGAN =================
     window.calculateFinance = function() {
-      const fDate = document.getElementById("filter-finance-date").value;
+      const rawDate = document.getElementById("filter-finance-date").value;
+      const fDate = normalizeDateString(rawDate);
 
       let fOrders = ordersList.filter(o => o.status === "COMPLETED" || o.payment_status === "PAID");
       if (fDate) {
-        fOrders = fOrders.filter(o => o.event_date === fDate);
+        fOrders = fOrders.filter(o => normalizeDateString(o.event_date) === fDate);
       }
       const webIncome = fOrders.reduce((s, o) => s + (Number(o.total_price) || 0), 0);
 
@@ -1525,7 +1394,7 @@
 
       let fExpenses = [...expenseList];
       if (fDate) {
-        fExpenses = fExpenses.filter(e => e.date === fDate);
+        fExpenses = fExpenses.filter(e => normalizeDateString(e.date) === fDate);
       }
       const generalExpenses = fExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
 
@@ -1601,7 +1470,7 @@
       const remStock = parseInt(document.getElementById("sale-remaining-stock").value) || 0;
       const costPrice = parseInt(document.getElementById("sale-cost-price").value) || 0;
       const sellPrice = parseInt(document.getElementById("sale-selling-price").value) || 0;
-      const statusRem = document.querySelector('input[name="sale_remaining_status"]:checked')?.value || "resellable";
+      const statusRem = document.getElementById("modal-sale-remaining-status").value;
 
       const omzet = sold * sellPrice;
       const cogs = sold * costPrice;
@@ -1627,6 +1496,7 @@
         document.getElementById("sale-remaining-stock").value = it.remaining_stock;
         document.getElementById("sale-cost-price").value = it.cost_price;
         document.getElementById("sale-selling-price").value = it.selling_price;
+        document.getElementById("modal-sale-remaining-status").value = it.remaining_status || "resellable";
       } else {
         document.getElementById("sales-record-form").reset();
         document.getElementById("sale-edit-index").value = "-1";
@@ -1649,7 +1519,7 @@
       const remStock = parseInt(document.getElementById("sale-remaining-stock").value) || 0;
       const costPrice = parseInt(document.getElementById("sale-cost-price").value) || 0;
       const sellPrice = parseInt(document.getElementById("sale-selling-price").value) || 0;
-      const statusRem = document.querySelector('input[name="sale_remaining_status"]:checked')?.value || "resellable";
+      const statusRem = document.getElementById("modal-sale-remaining-status").value;
 
       if (soldQty > initStock || remStock > initStock) {
         alert("Jumlah terjual atau sisa tidak boleh melebihi stok awal!");
@@ -1715,27 +1585,6 @@
       alert("Catatan disimpan!");
     };
 
-    window.addExpense = async function() {
-      const desc = document.getElementById("exp-desc").value.trim();
-      const amount = Number(document.getElementById("exp-amount").value);
-      const date = document.getElementById("exp-date").value;
-      if (!desc || amount <= 0) return;
-
-      await addDoc(collection(db, "expenses"), {
-        date, description: desc, amount, created_at: serverTimestamp()
-      });
-      document.getElementById("exp-desc").value = "";
-      document.getElementById("exp-amount").value = "";
-    };
-
-    function renderExpenses() {
-      const list = document.getElementById("expense-list");
-      list.innerHTML = "";
-      expenseList.forEach(e => {
-        list.innerHTML += `<div class="flex justify-between p-2 bg-gray-50 rounded-xl text-xs"><span>${e.description} (${e.date})</span><strong class="text-red-600">-Rp${Number(e.amount).toLocaleString('id-ID')}</strong></div>`;
-      });
-    }
-
     window.handleUpdatePin = async function() {
       const np = document.getElementById("new-pin").value;
       const cp = document.getElementById("confirm-pin").value;
@@ -1744,7 +1593,7 @@
       alert("PIN diubah!");
     };
 
-    // ================= FUNGSI EKSPOR & REKOMENDASI =================
+    // ================= FUNGSI EKSPOR =================
     window.setSalesDatePreset = function(preset) {
       const now = new Date();
       if (preset === 'yesterday') now.setDate(now.getDate() - 1);
@@ -1755,7 +1604,6 @@
 
     window.exportSalesToExcel = function() {
       const items = currentDailySalesDoc.items || [];
-      const costs = currentDailySalesDoc.operational_costs || [];
       const rows = [
         ["LAPORAN PENJUALAN AZRI SNACK"],
         ["Tanggal:", selectedSalesDate],
@@ -1764,7 +1612,7 @@
       ];
 
       items.forEach(i => {
-        rows.push([i.product_name, i.initial_stock, i.order_qty, i.sold_qty, i.remaining_stock, i.remaining_status, i.cost_price, i.selling_price, i.omzet, i.sell_through_rate, i.net_profit]);
+        rows.push([i.product_name, i.initial_stock, i.order_qty, i.sold_qty, i.remaining_stock, i.remaining_status === 'unusable' ? 'Rugi' : 'Bisa Dijual Lagi', i.cost_price, i.selling_price, i.omzet, i.sell_through_rate, i.net_profit]);
       });
 
       const ws = XLSX.utils.aoa_to_sheet(rows);
@@ -1799,120 +1647,11 @@
         operational_expenses: costs,
         products_performance: items
       };
-      document.getElementById("ai-structured-output").value = JSON.stringify(aiPayload, null, 2);
-      document.getElementById("ai-export-modal").classList.remove("hidden");
-    };
-
-    window.closeAIExportModal = () => document.getElementById("ai-export-modal").classList.add("hidden");
-    window.copyAITextToClipboard = function() {
-      const txt = document.getElementById("ai-structured-output");
-      txt.select();
-      navigator.clipboard.writeText(txt.value).then(() => alert("Data AI disalin ke clipboard!"));
-    };
-
-    window.downloadAIJSONFile = function() {
-      const blob = new Blob([document.getElementById("ai-structured-output").value], { type: "application/json" });
+      const blob = new Blob([JSON.stringify(aiPayload, null, 2)], { type: "application/json" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = `AI-AZRI-SNACK-${selectedSalesDate}.json`;
       link.click();
-    };
-
-    // ================= KATALOG & KUOTA STOK SINKRONISASI =================
-    window.updateProductCostPriceDirect = async function(prodId, newCostVal) {
-      const cNum = Math.max(0, parseInt(newCostVal) || 0);
-      await updateDoc(doc(db, "products", prodId), { cost_price: cNum });
-    };
-
-    window.updateProductDailyQuotaDirect = async function(prodId, newQuotaVal) {
-      const qNum = Math.max(0, parseInt(newQuotaVal) || 0);
-      await updateDoc(doc(db, "products", prodId), { daily_quota: qNum });
-    };
-
-    window.updateProductCurrentStock = async function(prodId, newStockVal) {
-      const sNum = Math.max(0, parseInt(newStockVal) || 0);
-      await updateDoc(doc(db, "products", prodId), { stock: sNum, status: sNum <= 0 ? "OUT_OF_STOCK" : "AVAILABLE" });
-    };
-
-    window.quickChangeStock = async function(prodId, delta) {
-      const p = productsList.find(x => x.id === prodId);
-      if (!p) return;
-      const cur = p.stock !== undefined ? Number(p.stock) : 50;
-      updateProductCurrentStock(prodId, Math.max(0, cur + delta));
-    };
-
-    window.toggleProductStockStatus = async function(prodId, curSt) {
-      const isOut = curSt === "OUT_OF_STOCK";
-      const p = productsList.find(x => x.id === prodId);
-      const quota = p?.daily_quota || 50;
-      await updateDoc(doc(db, "products", prodId), { 
-        status: isOut ? "AVAILABLE" : "OUT_OF_STOCK",
-        stock: isOut ? (p?.stock > 0 ? p.stock : quota) : 0
-      });
-    };
-
-    window.openProductModal = function() {
-      document.getElementById("prod-edit-id").value = "";
-      document.getElementById("prod-name").value = "";
-      document.getElementById("prod-price").value = "";
-      document.getElementById("prod-cost-price").value = "";
-      document.getElementById("prod-daily-quota").value = "50";
-      document.getElementById("prod-current-stock").value = "50";
-      document.getElementById("product-modal").classList.remove("hidden");
-    };
-
-    window.closeProductModal = () => document.getElementById("product-modal").classList.add("hidden");
-
-    window.saveProduct = async function() {
-      const id = document.getElementById("prod-edit-id").value;
-      const name = document.getElementById("prod-name").value.trim();
-      const price = Number(document.getElementById("prod-price").value) || 0;
-      const costPrice = Number(document.getElementById("prod-cost-price").value) || Math.round(price * 0.7);
-      const quota = Number(document.getElementById("prod-daily-quota").value) || 50;
-      const stock = Number(document.getElementById("prod-current-stock").value) || 0;
-
-      const payload = {
-        name, price, cost_price: costPrice, daily_quota: quota, stock,
-        category: document.getElementById("prod-category").value,
-        status: stock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE",
-        updated_at: serverTimestamp()
-      };
-
-      if (id) await updateDoc(doc(db, "products", id), payload);
-      else {
-        payload.created_at = serverTimestamp();
-        payload.image_url = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
-        await addDoc(collection(db, "products"), payload);
-      }
-      closeProductModal();
-    };
-
-    window.editProduct = function(id) {
-      const p = productsList.find(x => x.id === id);
-      if (!p) return;
-      document.getElementById("prod-edit-id").value = p.id;
-      document.getElementById("prod-name").value = p.name;
-      document.getElementById("prod-category").value = p.category || "Snack";
-      document.getElementById("prod-price").value = p.price;
-      document.getElementById("prod-cost-price").value = p.cost_price !== undefined ? p.cost_price : Math.round((p.price || 0) * 0.7);
-      document.getElementById("prod-daily-quota").value = p.daily_quota !== undefined ? p.daily_quota : 50;
-      document.getElementById("prod-current-stock").value = p.stock !== undefined ? p.stock : 50;
-      document.getElementById("product-modal").classList.remove("hidden");
-    };
-
-    window.deleteProduct = async function(id, name) {
-      if (confirm(`Hapus produk "${name}"?`)) await deleteDoc(doc(db, "products", id));
-    };
-
-    window.resetAllDailyStockNow = async function() {
-      if (confirm("Reset seluruh stok kue ke kuota harian awal?")) {
-        const promises = productsList.map(p => {
-          const q = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
-          return updateDoc(doc(db, "products", p.id), { stock: q, status: q > 0 ? "AVAILABLE" : "OUT_OF_STOCK" });
-        });
-        await Promise.all(promises);
-        alert("Semua stok telah di-refill sesuai kuota!");
-      }
     };
   </script>
 </body>
