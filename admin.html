@@ -142,7 +142,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 no-print">
           <div>
             <h2 class="font-bold text-gray-900 text-base">Daftar Pesanan Masuk (Kue Satuan & Snack Box)</h2>
-            <p class="text-xs text-gray-400">Menampilkan pesanan masuk dari website & formulir snack box.</p>
+            <p class="text-xs text-gray-400">Kelola pesanan pelanggan, cetak nota struk resmi, dan pantau status pembayaran.</p>
           </div>
           
           <div class="flex flex-wrap items-center gap-2">
@@ -177,7 +177,7 @@
         <div id="orders-container" class="space-y-3 no-print"></div>
       </section>
 
-      <!-- ================= TAB 2: LAPORAN PENJUALAN HARIAN ================= -->
+      <!-- ================= TAB 2: LAPORAN PENJUALAN HARIAN (DIPERBAIKI SECARA AKURAT) ================= -->
       <section id="view-sales" class="tab-view hidden space-y-6">
         <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-xs space-y-4">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-3">
@@ -194,6 +194,9 @@
               </div>
               <button onclick="setSalesDatePreset('today')" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition">Hari Ini</button>
               <button onclick="setSalesDatePreset('yesterday')" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition">Kemarin</button>
+              <button onclick="resetSalesDayData()" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold rounded-xl transition" title="Hapus seluruh baris laporan pada tanggal ini dan buat ulang secara bersih">
+                <i class="fa-solid fa-trash-can mr-1"></i>Reset Hari Ini
+              </button>
             </div>
           </div>
 
@@ -226,17 +229,17 @@
           </div>
         </div>
 
-        <!-- Kartu Ringkasan Finansial Harian -->
+        <!-- Kartu Ringkasan Finansial Harian (Bebas dari Kerugian Palsu) -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">💰 Total Omzet</span>
             <h3 id="card-total-omzet" class="text-base sm:text-lg font-bold text-gray-900 mt-1 font-serif">Rp0</h3>
-            <span class="text-[10px] text-gray-400">Total kotor terjual</span>
+            <span class="text-[10px] text-gray-400">Total terjual × harga</span>
           </div>
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">📦 Modal Terjual</span>
             <h3 id="card-total-cogs" class="text-base sm:text-lg font-bold text-gray-800 mt-1 font-serif">Rp0</h3>
-            <span class="text-[10px] text-gray-400">Harga pokok produk</span>
+            <span class="text-[10px] text-gray-400">Total terjual × modal</span>
           </div>
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">💸 Biaya Operasional</span>
@@ -244,9 +247,9 @@
             <span class="text-[10px] text-gray-400">Parkir, plastik, dll</span>
           </div>
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
-            <span class="text-[11px] text-gray-500 font-medium block">🔴 Kerugian Stok</span>
+            <span class="text-[11px] text-gray-500 font-medium block">🔴 Kerugian Stok Rusak</span>
             <h3 id="card-total-loss" class="text-base sm:text-lg font-bold text-red-700 mt-1 font-serif">Rp0</h3>
-            <span class="text-[10px] text-gray-400">Sisa rusak / basi</span>
+            <span class="text-[10px] text-gray-400">Hanya jika status 'Rugi'</span>
           </div>
           <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-2xs">
             <span class="text-[11px] text-gray-500 font-medium block">🟢 Laba Bersih</span>
@@ -268,9 +271,9 @@
                 <span>Daftar Penjualan Produk Hari Ini</span>
                 <span id="sales-items-badge" class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">0 Produk</span>
               </h3>
-              <p class="text-[11px] text-gray-400">Kolom <strong>Terjual</strong> dan <strong>Sisa Sore</strong> dapat diedit langsung di tabel.</p>
+              <p class="text-[11px] text-gray-400">Ketik jumlah terjual atau sisa sore langsung pada kotak input.</p>
             </div>
-            <span class="text-[10px] text-gray-400 italic">Terjual dan sisa saling menghitung otomatis</span>
+            <span class="text-[10px] text-gray-400 italic">Terjual + Sisa selalu menyatu dengan Stok Awal</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -280,8 +283,8 @@
                   <th class="p-3">Produk</th>
                   <th class="p-3 text-center">Stok Awal (Siap Saji)</th>
                   <th class="p-3 text-center">Pesanan PO Web</th>
-                  <th class="p-3 text-center bg-amber-50/60 text-amber-900">Terjual</th>
-                  <th class="p-3 text-center">Sisa Sore</th>
+                  <th class="p-3 text-center bg-amber-50/70 text-amber-900">Terjual (Bisa Diketik)</th>
+                  <th class="p-3 text-center bg-gray-50">Sisa Sore (Bisa Diketik)</th>
                   <th class="p-3 text-center">Status Sisa Produk</th>
                   <th class="p-3 text-right">Modal</th>
                   <th class="p-3 text-right">Harga Jual</th>
@@ -322,12 +325,12 @@
               </h3>
               <button onclick="saveDailyNote()" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-1 rounded-xl font-semibold transition">Simpan</button>
             </div>
-            <textarea id="sales-daily-notes" rows="4" placeholder="Kondisi cuaca, pesanan mendadak, dll..." class="w-full text-xs p-3 bg-gray-50 border rounded-2xl outline-none"></textarea>
+            <textarea id="sales-daily-notes" rows="4" placeholder="Kondisi cuaca, pesanan mendadak, kendala jualan hari ini..." class="w-full text-xs p-3 bg-gray-50 border rounded-2xl outline-none"></textarea>
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB 3: KATALOG & KUOTA STOK (TERJAGA PENUH) ================= -->
+      <!-- ================= TAB 3: KATALOG & KUOTA STOK (TERPERTAHANKAN 100%) ================= -->
       <section id="view-products" class="tab-view hidden space-y-6 no-print">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200">
           <div>
@@ -344,7 +347,6 @@
           </div>
         </div>
 
-        <!-- 1. Menu Siap Saji / Ready -->
         <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
           <div class="p-3 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center text-xs font-bold text-emerald-900">
             <span class="flex items-center gap-1.5">
@@ -373,7 +375,6 @@
           </div>
         </div>
 
-        <!-- 2. Menu Habis -->
         <div class="bg-white rounded-2xl border border-red-200 overflow-hidden shadow-xs">
           <div class="p-3 bg-red-50 border-b border-red-100 flex justify-between items-center text-xs font-bold text-red-900">
             <span class="flex items-center gap-1.5">
@@ -384,6 +385,19 @@
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-gray-600">
+              <thead class="bg-red-50/50 border-b border-red-100 text-red-900 font-semibold">
+                <tr>
+                  <th class="p-3.5">Foto & Nama Kue</th>
+                  <th class="p-3.5">Kategori</th>
+                  <th class="p-3.5">Harga Jual</th>
+                  <th class="p-3.5 text-center">Harga Beli / Modal</th>
+                  <th class="p-3.5 text-center">Keuntungan / Pcs</th>
+                  <th class="p-3.5 text-center">Kuota Harian</th>
+                  <th class="p-3.5 text-center">Sisa Stok</th>
+                  <th class="p-3.5 text-center">Status</th>
+                  <th class="p-3.5 text-center">Aksi</th>
+                </tr>
+              </thead>
               <tbody id="products-soldout-table-body" class="divide-y divide-red-50"></tbody>
             </table>
           </div>
@@ -728,7 +742,6 @@
       getFirestore, collection, onSnapshot, doc, setDoc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Konfigurasi Firebase Toko
     const firebaseConfig = {
       apiKey: "AIzaSyAzriSnackPlaceholderKey",
       authDomain: "azri-snack-db.firebaseapp.com",
@@ -763,7 +776,7 @@
     selectedSalesDate = getTodayDateWIB();
     document.getElementById("sales-selected-date").value = selectedSalesDate;
     document.getElementById("filter-finance-date").value = selectedSalesDate;
-    // Default filter pesanan dikosongkan agar semua pesanan tampil
+    // Kosongkan filter tanggal pesanan agar semua pesanan tampil secara default
     document.getElementById("filter-order-date").value = "";
 
     function normalizeDateString(dStr) {
@@ -830,7 +843,7 @@
         }
       });
 
-      // 1. Sync Katalog Produk Realtime
+      // 1. SINKRONISASI KATALOG PRODUK KE TABEL
       onSnapshot(collection(db, "products"), (snapshot) => {
         productsList = [];
         snapshot.forEach(docSnap => productsList.push({ id: docSnap.id, ...docSnap.data() }));
@@ -838,7 +851,7 @@
         populateProductDropdown();
       }, (err) => console.error("Error sync products:", err));
 
-      // 2. Sync Orders Realtime
+      // 2. SINKRONISASI PESANAN WEB KE TABEL
       onSnapshot(collection(db, "orders"), (snapshot) => {
         ordersList = [];
         snapshot.forEach(docSnap => ordersList.push({ id: docSnap.id, ...docSnap.data() }));
@@ -846,7 +859,7 @@
         calculateFinance();
       }, (err) => console.error("Error sync orders:", err));
 
-      // 3. Sync Expenses
+      // 3. SINKRONISASI PENGELUARAN KAS
       onSnapshot(collection(db, "expenses"), (snapshot) => {
         expenseList = [];
         snapshot.forEach(docSnap => expenseList.push({ id: docSnap.id, ...docSnap.data() }));
@@ -857,7 +870,7 @@
       loadSalesDataForDate(selectedSalesDate);
     }
 
-    // ================= DATA PESANAN WEB (DIPULIHKAN 100%) =================
+    // ================= DATA PESANAN WEB (DIPULIHKAN PENUH) =================
     window.renderOrders = function() {
       const filterStatus = document.getElementById("filter-order-status").value;
       const rawFilterDate = document.getElementById("filter-order-date").value;
@@ -942,7 +955,7 @@
           `;
           container.appendChild(card);
         } catch (e) {
-          console.error("Error rendering single order card:", e, o);
+          console.error("Error rendering order card:", e, o);
         }
       });
     };
@@ -1225,207 +1238,34 @@
       });
     };
 
-    // ================= KATALOG & KUOTA STOK (DIPERTAHANKAN) =================
-    window.renderProductsTable = function() {
-      const readyTbody = document.getElementById("products-ready-table-body");
-      const soldOutTbody = document.getElementById("products-soldout-table-body");
-      if (!readyTbody || !soldOutTbody) return;
-      readyTbody.innerHTML = "";
-      soldOutTbody.innerHTML = "";
+    // ================= INTEGRASI PESANAN ➔ LAPORAN =================
+    function getAggregatedWebOrdersForDate(dateStr) {
+      const targetDate = normalizeDateString(dateStr);
+      const activeOrders = ordersList.filter(o => normalizeDateString(o.event_date) === targetDate && o.status !== 'CANCELLED');
+      const orderCountMap = {};
 
-      const ready = [];
-      const soldOut = [];
-      productsList.forEach(p => {
-        const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
-        const stock = p.stock !== undefined ? Number(p.stock) : quota;
-        if (p.status === "OUT_OF_STOCK" || stock <= 0) soldOut.push(p);
-        else ready.push(p);
+      activeOrders.forEach(o => {
+        if (o.items && Array.isArray(o.items)) {
+          o.items.forEach(i => {
+            const qty = Number(i.qty || 0);
+            if (i.is_snackbox) {
+              if (i.description) {
+                const cNames = i.description.replace(/^(Isi Kue:|Kue:)\s*/i, "").split(",").map(x => x.trim()).filter(Boolean);
+                cNames.forEach(cn => {
+                  orderCountMap[cn.toLowerCase()] = (orderCountMap[cn.toLowerCase()] || 0) + qty;
+                });
+              }
+            } else {
+              const nameClean = (i.name || "").trim().toLowerCase();
+              orderCountMap[nameClean] = (orderCountMap[nameClean] || 0) + qty;
+            }
+          });
+        }
       });
-
-      ready.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
-      soldOut.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
-
-      document.getElementById("admin-ready-count-badge").innerText = `${ready.length} Ready`;
-      document.getElementById("admin-soldout-count-badge").innerText = `${soldOut.length} Habis`;
-
-      if (ready.length === 0) {
-        readyTbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Tidak ada produk siap saji.</td></tr>`;
-      } else {
-        ready.forEach(p => readyTbody.appendChild(createProductRow(p, false)));
-      }
-
-      if (soldOut.length === 0) {
-        soldOutTbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Tidak ada produk yang habis.</td></tr>`;
-      } else {
-        soldOut.forEach(p => soldOutTbody.appendChild(createProductRow(p, true)));
-      }
-    };
-
-    function createProductRow(p, isOut) {
-      const sellingPrice = Number(p.price || 0);
-      const costPrice = p.cost_price !== undefined ? Number(p.cost_price) : Math.round(sellingPrice * 0.7);
-      const profitPerPcs = sellingPrice - costPrice;
-      const marginPercent = sellingPrice > 0 ? Math.round((profitPerPcs / sellingPrice) * 100) : 0;
-
-      const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
-      const stock = p.stock !== undefined ? Number(p.stock) : quota;
-      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
-      const imgSrc = p.image_url || fallbackImg;
-
-      const tr = document.createElement("tr");
-      tr.className = isOut ? "hover:bg-red-50/30 transition" : "hover:bg-gray-50/80 transition";
-      tr.innerHTML = `
-        <td class="p-3.5 flex items-center gap-3">
-          <img src="${imgSrc}" class="w-10 h-10 rounded-xl object-cover border border-gray-200 flex-shrink-0" onerror="this.src='${fallbackImg}'">
-          <div>
-            <p class="font-bold text-gray-900">${p.name}</p>
-            <p class="text-[10px] text-gray-400 line-clamp-1">${p.description || '-'}</p>
-          </div>
-        </td>
-
-        <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-semibold">${p.category || 'Kue'}</span></td>
-        <td class="p-3.5 font-bold text-amber-600">Rp${sellingPrice.toLocaleString('id-ID')}</td>
-        
-        <td class="p-3.5 text-center">
-          <div class="inline-flex items-center justify-center bg-gray-50 border border-gray-300 rounded-xl px-2 py-1 shadow-2xs">
-            <span class="text-[10px] text-gray-400 mr-0.5">Rp</span>
-            <input type="number" min="0" value="${costPrice}" onchange="updateProductCostPriceDirect('${p.id}', this.value)" class="w-14 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
-          </div>
-        </td>
-
-        <td class="p-3.5 text-center">
-          <span class="font-bold text-xs ${profitPerPcs >= 0 ? 'text-emerald-600' : 'text-red-600'}">
-            ${profitPerPcs >= 0 ? '+Rp' + profitPerPcs.toLocaleString('id-ID') : '-Rp' + Math.abs(profitPerPcs).toLocaleString('id-ID')}
-          </span>
-          <span class="block text-[10px] text-gray-400 font-medium">(${marginPercent}%)</span>
-        </td>
-
-        <td class="p-3.5 text-center">
-          <div class="inline-flex items-center justify-center bg-amber-50 border border-amber-300 rounded-xl px-2 py-1 shadow-2xs">
-            <input type="number" min="0" value="${quota}" onchange="updateProductDailyQuotaDirect('${p.id}', this.value)" class="w-12 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
-            <span class="text-[10px] text-amber-800 font-semibold ml-0.5">pcs</span>
-          </div>
-        </td>
-
-        <td class="p-3.5 text-center">
-          <div class="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
-            <button onclick="quickChangeStock('${p.id}', -5)" class="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs">-5</button>
-            <input type="number" min="0" value="${stock}" onchange="updateProductCurrentStock('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
-            <button onclick="quickChangeStock('${p.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs">+5</button>
-          </div>
-        </td>
-
-        <td class="p-3.5 text-center">
-          <button onclick="toggleProductStockStatus('${p.id}', '${p.status || 'AVAILABLE'}')" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border transition ${isOut ? 'bg-red-50 text-red-600 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}">
-            ${isOut ? 'Habis' : 'Ready'}
-          </button>
-        </td>
-
-        <td class="p-3.5 text-center">
-          <button onclick="editProduct('${p.id}')" class="text-blue-600 p-1" title="Edit Lengkap"><i class="fa-solid fa-pen text-xs"></i></button>
-          <button onclick="deleteProduct('${p.id}', '${p.name}')" class="text-red-500 p-1" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
-        </td>
-      `;
-      return tr;
+      return orderCountMap;
     }
 
-    window.updateProductCostPriceDirect = async function(prodId, newCostVal) {
-      const cNum = Math.max(0, parseInt(newCostVal) || 0);
-      await updateDoc(doc(db, "products", prodId), { cost_price: cNum });
-    };
-
-    window.updateProductDailyQuotaDirect = async function(prodId, newQuotaVal) {
-      const qNum = Math.max(0, parseInt(newQuotaVal) || 0);
-      await updateDoc(doc(db, "products", prodId), { daily_quota: qNum });
-    };
-
-    window.updateProductCurrentStock = async function(prodId, newStockVal) {
-      const sNum = Math.max(0, parseInt(newStockVal) || 0);
-      await updateDoc(doc(db, "products", prodId), { stock: sNum, status: sNum <= 0 ? "OUT_OF_STOCK" : "AVAILABLE" });
-    };
-
-    window.quickChangeStock = async function(prodId, delta) {
-      const p = productsList.find(x => x.id === prodId);
-      if (!p) return;
-      const cur = p.stock !== undefined ? Number(p.stock) : 50;
-      updateProductCurrentStock(prodId, Math.max(0, cur + delta));
-    };
-
-    window.toggleProductStockStatus = async function(prodId, curSt) {
-      const isOut = curSt === "OUT_OF_STOCK";
-      const p = productsList.find(x => x.id === prodId);
-      const quota = p?.daily_quota || 50;
-      await updateDoc(doc(db, "products", prodId), { 
-        status: isOut ? "AVAILABLE" : "OUT_OF_STOCK",
-        stock: isOut ? (p?.stock > 0 ? p.stock : quota) : 0
-      });
-    };
-
-    window.openProductModal = function() {
-      document.getElementById("prod-edit-id").value = "";
-      document.getElementById("prod-name").value = "";
-      document.getElementById("prod-price").value = "";
-      document.getElementById("prod-cost-price").value = "";
-      document.getElementById("prod-daily-quota").value = "50";
-      document.getElementById("prod-current-stock").value = "50";
-      document.getElementById("product-modal").classList.remove("hidden");
-    };
-
-    window.closeProductModal = () => document.getElementById("product-modal").classList.add("hidden");
-
-    window.saveProduct = async function() {
-      const id = document.getElementById("prod-edit-id").value;
-      const name = document.getElementById("prod-name").value.trim();
-      const price = Number(document.getElementById("prod-price").value) || 0;
-      const costPrice = Number(document.getElementById("prod-cost-price").value) || Math.round(price * 0.7);
-      const quota = Number(document.getElementById("prod-daily-quota").value) || 50;
-      const stock = Number(document.getElementById("prod-current-stock").value) || 0;
-
-      const payload = {
-        name, price, cost_price: costPrice, daily_quota: quota, stock,
-        category: document.getElementById("prod-category").value,
-        status: stock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE",
-        updated_at: serverTimestamp()
-      };
-
-      if (id) await updateDoc(doc(db, "products", id), payload);
-      else {
-        payload.created_at = serverTimestamp();
-        payload.image_url = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
-        await addDoc(collection(db, "products"), payload);
-      }
-      closeProductModal();
-    };
-
-    window.editProduct = function(id) {
-      const p = productsList.find(x => x.id === id);
-      if (!p) return;
-      document.getElementById("prod-edit-id").value = p.id;
-      document.getElementById("prod-name").value = p.name;
-      document.getElementById("prod-category").value = p.category || "Snack";
-      document.getElementById("prod-price").value = p.price;
-      document.getElementById("prod-cost-price").value = p.cost_price !== undefined ? p.cost_price : Math.round((p.price || 0) * 0.7);
-      document.getElementById("prod-daily-quota").value = p.daily_quota !== undefined ? p.daily_quota : 50;
-      document.getElementById("prod-current-stock").value = p.stock !== undefined ? p.stock : 50;
-      document.getElementById("product-modal").classList.remove("hidden");
-    };
-
-    window.deleteProduct = async function(id, name) {
-      if (confirm(`Hapus produk "${name}"?`)) await deleteDoc(doc(db, "products", id));
-    };
-
-    window.resetAllDailyStockNow = async function() {
-      if (confirm("Reset seluruh stok kue ke kuota harian awal?")) {
-        const promises = productsList.map(p => {
-          const q = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
-          return updateDoc(doc(db, "products", p.id), { stock: q, status: q > 0 ? "AVAILABLE" : "OUT_OF_STOCK" });
-        });
-        await Promise.all(promises);
-        alert("Semua stok telah di-refill sesuai kuota!");
-      }
-    };
-
-    // ================= INTEGRASI PESANAN ➔ LAPORAN =================
+    // SINKRONISASI: Stok Awal = Sisa Siap Saji (stock) dari katalog, default status sisa = "resellable"
     window.syncCakesFromCatalogToSales = async function() {
       if (productsList.length === 0) {
         alert("Katalog produk kosong!");
@@ -1448,6 +1288,10 @@
           currentDailySalesDoc.items[existingIndex].initial_stock = currentReadyStock;
           currentDailySalesDoc.items[existingIndex].selling_price = sellP;
           currentDailySalesDoc.items[existingIndex].cost_price = costP;
+          // Pastikan tidak rugi fiktif
+          if (!currentDailySalesDoc.items[existingIndex].remaining_status) {
+            currentDailySalesDoc.items[existingIndex].remaining_status = "resellable";
+          }
         } else {
           currentDailySalesDoc.items.push({
             product_id: p.id,
@@ -1473,7 +1317,56 @@
       alert(`Berhasil mensinkronkan ${productsList.length} produk katalog dan pesanan web tanggal ${selectedSalesDate}!`);
     };
 
+    // Reset data penjualan harian tanggal terpilih jika ada salah hitung
+    window.resetSalesDayData = async function() {
+      if (confirm(`Yakin ingin mereset seluruh laporan penjualan tanggal ${selectedSalesDate}? Data akan dikosongkan dan siap disinkronkan ulang secara bersih.`)) {
+        currentDailySalesDoc.items = [];
+        currentDailySalesDoc.operational_costs = [];
+        currentDailySalesDoc.daily_notes = "";
+        await saveDailySalesDocToFirestore();
+      }
+    };
+
     // ================= PEMBUKUAN PENJUALAN HARIAN =================
+    window.loadSalesDataForDate = async function(dateStr) {
+      selectedSalesDate = normalizeDateString(dateStr);
+      const dObj = new Date(selectedSalesDate);
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById("sales-current-date-display").innerHTML = `
+        <i class="fa-solid fa-calendar-check text-amber-500"></i>
+        <span>${dObj.toLocaleDateString('id-ID', options)}</span>
+      `;
+
+      try {
+        const docSnap = await getDoc(doc(db, "daily_sales", selectedSalesDate));
+        if (docSnap.exists()) {
+          currentDailySalesDoc = docSnap.data();
+          if (!currentDailySalesDoc.items) currentDailySalesDoc.items = [];
+          if (!currentDailySalesDoc.operational_costs) currentDailySalesDoc.operational_costs = [];
+        } else {
+          currentDailySalesDoc = {
+            date: selectedSalesDate, items: [], operational_costs: [], daily_notes: "",
+            target_omzet: 400000, target_laba: 80000
+          };
+        }
+
+        const webOrdersMap = getAggregatedWebOrdersForDate(selectedSalesDate);
+        currentDailySalesDoc.items.forEach(it => {
+          const clean = (it.product_name || "").trim().toLowerCase();
+          if (webOrdersMap[clean] !== undefined) {
+            it.order_qty = webOrdersMap[clean];
+          }
+          if (!it.remaining_status) it.remaining_status = "resellable";
+        });
+
+        document.getElementById("sales-daily-notes").value = currentDailySalesDoc.daily_notes || "";
+        renderDailySalesTables();
+        calculateDailySalesSummary();
+      } catch (err) {
+        console.error("Gagal load sales:", err);
+      }
+    };
+
     function renderDailySalesTables() {
       const tbody = document.getElementById("sales-items-table-body");
       tbody.innerHTML = "";
@@ -1494,18 +1387,21 @@
               ${it.order_qty > 0 ? `${it.order_qty} pcs` : '-'}
             </td>
 
+            <!-- KOLOM TERJUAL (BISA DIEDIT LANGSUNG) -->
             <td class="p-3 text-center bg-amber-50/30">
               <div class="inline-flex items-center justify-center bg-white border-2 border-amber-400 rounded-xl px-1.5 py-0.5 shadow-2xs">
                 <input type="number" min="0" value="${it.sold_qty}" onchange="quickUpdateSaleSold(${idx}, this.value)" class="w-14 text-center text-xs font-bold text-gray-900 bg-transparent outline-none">
               </div>
             </td>
 
+            <!-- KOLOM SISA (BISA DIEDIT LANGSUNG) -->
             <td class="p-3 text-center">
               <div class="inline-flex items-center justify-center bg-white border border-gray-300 rounded-xl px-1.5 py-0.5 shadow-2xs">
                 <input type="number" min="0" value="${it.remaining_stock}" onchange="quickUpdateSaleRemaining(${idx}, this.value)" class="w-14 text-center text-xs font-bold text-orange-600 bg-transparent outline-none">
               </div>
             </td>
 
+            <!-- DROPDOWN STATUS SISA PRODUK -->
             <td class="p-3 text-center">
               <select onchange="quickUpdateSaleRemainingStatus(${idx}, this.value)" class="text-[11px] font-bold px-2 py-1 rounded-xl border outline-none cursor-pointer transition shadow-2xs ${it.remaining_status === 'unusable' ? 'bg-red-50 text-red-700 border-red-300' : 'bg-green-50 text-green-700 border-green-300'}">
                 <option value="resellable" ${it.remaining_status === 'resellable' ? 'selected' : ''}>🟢 Bisa dijual kembali</option>
@@ -1529,6 +1425,7 @@
         });
       }
 
+      // Biaya Operasional List
       const costListEl = document.getElementById("operational-costs-list");
       costListEl.innerHTML = "";
       const costs = currentDailySalesDoc.operational_costs || [];
@@ -1548,6 +1445,7 @@
       });
     }
 
+    // UPDATE STATUS SISA LANGSUNG DARI TABEL
     window.quickUpdateSaleRemainingStatus = async function(idx, newStatus) {
       const it = currentDailySalesDoc.items[idx];
       if (!it) return;
@@ -1560,6 +1458,7 @@
       await saveDailySalesDocToFirestore();
     };
 
+    // UPDATE TERJUAL LANGSUNG DARI TABEL
     window.quickUpdateSaleSold = async function(idx, newSoldVal) {
       const it = currentDailySalesDoc.items[idx];
       if (!it) return;
@@ -1583,6 +1482,7 @@
       await saveDailySalesDocToFirestore();
     };
 
+    // UPDATE SISA LANGSUNG DARI TABEL
     window.quickUpdateSaleRemaining = async function(idx, newRemVal) {
       const it = currentDailySalesDoc.items[idx];
       if (!it) return;
