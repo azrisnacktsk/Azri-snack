@@ -56,16 +56,19 @@
       </div>
       <div>
         <h2 class="text-xl font-bold text-gray-900">Admin AZRI SNACK</h2>
-        <p class="text-xs text-gray-400 mt-1">Masukkan PIN untuk mengakses panel toko</p>
+        <p class="text-xs text-gray-400 mt-1">Masuk dengan akun email admin toko</p>
       </div>
 
-      <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-4 pt-2">
-        <input type="password" id="pin-input" maxlength="10" placeholder="••••••" class="w-full text-center tracking-widest text-2xl py-3 border-2 border-gray-200 rounded-2xl focus:border-amber-500 focus:outline-none bg-gray-50 font-bold" required>
+      <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-3 pt-2">
+        <input type="email" id="login-email" placeholder="email@contoh.com" autocomplete="username" class="w-full text-center text-sm py-3 px-3 border-2 border-gray-200 rounded-2xl focus:border-amber-500 focus:outline-none bg-gray-50 font-semibold" required>
+        <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" class="w-full text-center text-sm py-3 px-3 border-2 border-gray-200 rounded-2xl focus:border-amber-500 focus:outline-none bg-gray-50 font-semibold" required>
+        <p id="login-error" class="hidden text-[11px] text-red-600 font-semibold text-center bg-red-50 border border-red-200 rounded-xl py-2 px-3"></p>
         <button type="submit" id="btn-login" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-98 text-white font-semibold py-3 rounded-2xl text-sm transition shadow-md flex items-center justify-center gap-2">
-          <span>Masuk Dashboard</span>
+          <span id="btn-login-text">Masuk Dashboard</span>
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       </form>
+      <p class="text-[10px] text-gray-400 leading-relaxed">Panel ini dilindungi login email & password (Firebase Auth).</p>
     </div>
   </div>
 
@@ -289,12 +292,20 @@
       <!-- ================= TAB 4: PENGATURAN TOKO ================= -->
       <section id="view-settings" class="tab-view hidden space-y-5 max-w-xl mx-auto no-print">
         <div class="bg-white p-5 rounded-2xl border border-gray-200 space-y-4">
-          <h3 class="font-bold text-gray-900 text-sm">Ganti PIN Masuk Admin</h3>
-          <form onsubmit="event.preventDefault(); handleUpdatePin();" class="space-y-3">
-            <input type="password" id="new-pin" maxlength="10" placeholder="PIN Baru" required class="w-full text-xs p-2.5 border rounded-xl outline-none">
-            <input type="password" id="confirm-pin" maxlength="10" placeholder="Ulangi PIN Baru" required class="w-full text-xs p-2.5 border rounded-xl outline-none">
-            <button type="submit" class="w-full bg-gray-900 text-white font-semibold py-2.5 rounded-xl text-xs">Simpan PIN Baru</button>
-          </form>
+          <div>
+            <h3 class="font-bold text-gray-900 text-sm">Akun Login Admin</h3>
+            <p class="text-[11px] text-gray-400 mt-1">Login panel memakai email & password lewat keamanan server Firebase Auth.</p>
+            <p class="text-xs text-gray-700 mt-2 bg-gray-50 border border-gray-200 rounded-xl p-2.5">Masuk sebagai: <strong id="settings-user-email">-</strong></p>
+          </div>
+          <div class="border-t border-gray-100 pt-4">
+            <h3 class="font-bold text-gray-900 text-sm mb-1">Ganti Password Akun</h3>
+            <p class="text-[11px] text-gray-400 mb-3">Password disimpan terenkripsi oleh Firebase (tidak bisa dibaca siapa pun).</p>
+            <form onsubmit="event.preventDefault(); handleChangePassword();" class="space-y-3">
+              <input type="password" id="new-password" minlength="6" placeholder="Password Baru (min. 6 karakter)" required class="w-full text-xs p-2.5 border rounded-xl outline-none">
+              <input type="password" id="confirm-password" minlength="6" placeholder="Ulangi Password Baru" required class="w-full text-xs p-2.5 border rounded-xl outline-none">
+              <button type="submit" class="w-full bg-gray-900 text-white font-semibold py-2.5 rounded-xl text-xs">Simpan Password Baru</button>
+            </form>
+          </div>
         </div>
       </section>
     </main>
@@ -508,22 +519,27 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
-      getFirestore, collection, onSnapshot, doc, setDoc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp 
+      getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { 
+      getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, 
+      updatePassword, reauthenticateWithCredential, EmailAuthProvider 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAzriSnackPlaceholderKey",
+      apiKey: "AIzaSyBZSDRItVU6-_a-j_4T0P39bxBtWelKxEM",
       authDomain: "azri-snack-db.firebaseapp.com",
       projectId: "azri-snack-db",
-      storageBucket: "azri-snack-db.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef123456"
+      storageBucket: "azri-snack-db.firebasestorage.app",
+      messagingSenderId: "117431141487",
+      appId: "1:117431141487:web:4bf46d90590f02c657399a"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    let currentAdminPin = "123456";
+    let dashboardInitialized = false;
     let ordersList = [];
     let productsList = [];
     let expenseList = [];
@@ -543,27 +559,95 @@
       return s.split("T")[0];
     }
 
-    // PIN Auth
-    onSnapshot(doc(db, "settings", "admin_auth"), (snap) => {
-      if (snap.exists()) currentAdminPin = snap.data().pin || "123456";
+    // ==== SANITASI XSS ==== 
+    // Selalu pakai escapeHtml() untuk data dari pengguna/pelanggan
+    // sebelum dimasukkan ke innerHTML/template literal.
+    window.escapeHtml = function(value) {
+      if (value === null || value === undefined) return "";
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    };
+
+    // Validasi URL gambar: hanya izinkan http(s), data:image, atau path lokal.
+    // Menolak skema berbahaya seperti javascript: yang bisa picu XSS via <img src>.
+    window.safeImgUrl = function(url, fallback) {
+      const fb = fallback || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+      if (!url) return fb;
+      const s = String(url).trim();
+      if (/^(https?:\/\/|data:image\/|\.\/|\.\.\/|\/)/i.test(s)) return s;
+      return fb;
+    };
+
+    // ==== AUTENTIKASI FIREBASE (Email & Password) ====
+    function showLoginScreen() {
+      document.getElementById("dashboard-screen").classList.add("hidden");
+      document.getElementById("login-screen").classList.remove("hidden");
+    }
+
+    function showDashboard() {
+      document.getElementById("login-screen").classList.add("hidden");
+      document.getElementById("dashboard-screen").classList.remove("hidden");
+      const emailEl = document.getElementById("settings-user-email");
+      if (emailEl && auth.currentUser) emailEl.innerText = auth.currentUser.email;
+      if (!dashboardInitialized) {
+        dashboardInitialized = true;
+        initDashboard();
+      }
+    }
+
+    // Sesi tersimpan otomatis (localStorage) — jika sudah login, langsung ke dashboard
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        showDashboard();
+      } else {
+        showLoginScreen();
+      }
     });
 
-    window.handleLogin = function() {
-      const pin = document.getElementById("pin-input").value;
-      if (pin === currentAdminPin) {
-        document.getElementById("login-screen").classList.add("hidden");
-        document.getElementById("dashboard-screen").classList.remove("hidden");
-        initDashboard();
-      } else {
-        alert("PIN Admin salah!");
-        document.getElementById("pin-input").value = "";
+    window.handleLogin = async function() {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      const errEl = document.getElementById("login-error");
+      const btn = document.getElementById("btn-login");
+      const btnText = document.getElementById("btn-login-text");
+
+      errEl.classList.add("hidden");
+      btn.disabled = true;
+      btnText.innerText = "Memverifikasi...";
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // onAuthStateChanged akan memanggil showDashboard()
+      } catch (err) {
+        let msg = "Login gagal. Coba lagi.";
+        if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+          msg = "Email atau password salah.";
+        } else if (err.code === "auth/invalid-email") {
+          msg = "Format email tidak valid.";
+        } else if (err.code === "auth/too-many-requests") {
+          msg = "Terlalu banyak percobaan. Coba lagi beberapa saat lagi.";
+        }
+        errEl.innerText = msg;
+        errEl.classList.remove("hidden");
+        document.getElementById("login-password").value = "";
+      } finally {
+        btn.disabled = false;
+        btnText.innerText = "Masuk Dashboard";
       }
     };
 
-    window.handleLogout = function() {
-      document.getElementById("dashboard-screen").classList.add("hidden");
-      document.getElementById("login-screen").classList.remove("hidden");
-      document.getElementById("pin-input").value = "";
+    window.handleLogout = async function() {
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.error("Gagal logout:", e);
+      }
+      // onAuthStateChanged akan memanggil showLoginScreen()
+      document.getElementById("login-password").value = "";
     };
 
     window.switchTab = function(tabName) {
@@ -654,9 +738,9 @@
           if (o.items && Array.isArray(o.items)) {
             itemsHtml = o.items.map(i => {
               if (i.is_snackbox) {
-                return `<div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-2 rounded-xl mb-1.5 font-medium">🍱 <strong>${i.name}</strong> (${i.qty} Box)<br><span class="text-[10px] text-gray-500 italic">${i.description || ''}</span></div>`;
+                return `<div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-2 rounded-xl mb-1.5 font-medium">🍱 <strong>${escapeHtml(i.name)}</strong> (${i.qty} Box)<br><span class="text-[10px] text-gray-500 italic">${escapeHtml(i.description || '')}</span></div>`;
               } else {
-                return `<span class="inline-block bg-gray-100 text-gray-700 text-[11px] px-2.5 py-1 rounded-lg mr-1 mb-1 font-medium">${i.name} x${i.qty}</span>`;
+                return `<span class="inline-block bg-gray-100 text-gray-700 text-[11px] px-2.5 py-1 rounded-lg mr-1 mb-1 font-medium">${escapeHtml(i.name)} x${i.qty}</span>`;
               }
             }).join("");
           }
@@ -670,18 +754,18 @@
           card.innerHTML = `
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-2.5">
               <div>
-                <span class="text-xs font-bold text-amber-600">#${o.invoice_no || o.id}</span>
-                <h3 class="font-bold text-sm text-gray-900">${o.customer_name || 'Pelanggan'} <span class="text-xs font-normal text-gray-400">(${o.customer_phone || '-'})</span></h3>
+                <span class="text-xs font-bold text-amber-600">#${escapeHtml(o.invoice_no || o.id)}</span>
+                <h3 class="font-bold text-sm text-gray-900">${escapeHtml(o.customer_name || 'Pelanggan')} <span class="text-xs font-normal text-gray-400">(${escapeHtml(o.customer_phone || '-')})</span></h3>
               </div>
               
               <div class="flex items-center gap-1.5 flex-wrap">
                 <!-- TOMBOL CETAK NOTA RESMI -->
-                <button onclick="openReceiptModal('${o.id}')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition active:scale-95 shadow-2xs">
+                <button data-action="receipt" class="js-receipt px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition active:scale-95 shadow-2xs">
                   <i class="fa-solid fa-print text-amber-600"></i>
                   <span>Cetak Nota</span>
                 </button>
 
-                <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-gray-200 outline-none ${getStatusColorClass(o.status)}">
+                <select class="js-order-status text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-gray-200 outline-none ${getStatusColorClass(o.status)}">
                   <option value="PENDING" ${o.status === 'PENDING' ? 'selected' : ''}>Menunggu (Pending)</option>
                   <option value="PROCESSING" ${o.status === 'PROCESSING' ? 'selected' : ''}>Diproses</option>
                   <option value="READY" ${o.status === 'READY' ? 'selected' : ''}>Siap</option>
@@ -696,11 +780,15 @@
             </div>
 
             <div class="text-xs text-gray-600 grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div><p><span class="text-gray-400">Jadwal Acara:</span> <strong>${dateStr}</strong></p><p><span class="text-gray-400">Pengambilan:</span> ${o.delivery_type || 'Ambil Sendiri'}</p></div>
+              <div><p><span class="text-gray-400">Jadwal Acara:</span> <strong>${escapeHtml(dateStr)}</strong></p><p><span class="text-gray-400">Pengambilan:</span> ${escapeHtml(o.delivery_type || 'Ambil Sendiri')}</p></div>
               <div><p><span class="text-gray-400">Status Bayar:</span> <strong class="${getPaymentColorClass(payStatus)}">${getPaymentLabel(payStatus, dpAmount)}</strong></p><p><span class="text-gray-400">Total Tagihan:</span> <strong class="text-amber-600 text-sm font-serif">Rp${Number(o.total_price || 0).toLocaleString('id-ID')}</strong></p></div>
             </div>
             <div>${itemsHtml}</div>
           `;
+          const receiptBtn = card.querySelector('.js-receipt');
+          if (receiptBtn) receiptBtn.addEventListener('click', () => openReceiptModal(o.id));
+          const statusSel = card.querySelector('.js-order-status');
+          if (statusSel) statusSel.addEventListener('change', (ev) => updateOrderStatus(o.id, ev.target.value));
           container.appendChild(card);
         } catch (e) {
           console.error("Error rendering order card:", e, o);
@@ -781,8 +869,8 @@
           const qtyUnit = item.is_snackbox ? "box" : "pcs";
           tr.innerHTML = `
             <td class="py-1.5 font-bold text-gray-800">
-              <span>${item.name}</span>
-              ${item.description ? `<p class="text-[10px] text-gray-500 font-normal italic leading-tight mt-0.5">${item.description}</p>` : ''}
+              <span>${escapeHtml(item.name)}</span>
+              ${item.description ? `<p class="text-[10px] text-gray-500 font-normal italic leading-tight mt-0.5">${escapeHtml(item.description)}</p>` : ''}
             </td>
             <td class="py-1.5 text-center text-gray-600">Rp${Number(item.price || 0).toLocaleString('id-ID')}</td>
             <td class="py-1.5 text-center font-bold text-gray-900">${item.qty} ${qtyUnit}</td>
@@ -955,7 +1043,7 @@
       const tbody = document.getElementById("summary-items-table");
       tbody.innerHTML = "";
       Object.keys(cakeCount).forEach((k, idx) => {
-        tbody.innerHTML += `<tr><td class="p-2.5">${idx + 1}</td><td class="p-2.5 font-bold">${k}</td><td class="p-2.5 text-center font-bold text-amber-700">${cakeCount[k]} pcs</td><td class="p-2.5 text-right text-gray-400 font-mono">[ ] Siap</td></tr>`;
+        tbody.innerHTML += `<tr><td class="p-2.5">${idx + 1}</td><td class="p-2.5 font-bold">${escapeHtml(k)}</td><td class="p-2.5 text-center font-bold text-amber-700">${cakeCount[k]} pcs</td><td class="p-2.5 text-right text-gray-400 font-mono">[ ] Siap</td></tr>`;
       });
 
       const pkgBox = document.getElementById("summary-packaging-box");
@@ -1031,26 +1119,26 @@
       const quota = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
       const stock = p.stock !== undefined ? Number(p.stock) : quota;
       const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
-      const imgSrc = p.image_url || fallbackImg;
+      const imgSrc = safeImgUrl(p.image_url, fallbackImg);
 
       const tr = document.createElement("tr");
       tr.className = isOut ? "hover:bg-red-50/30 transition" : "hover:bg-gray-50/80 transition";
       tr.innerHTML = `
         <td class="p-3.5 flex items-center gap-3">
-          <img src="${imgSrc}" class="w-10 h-10 rounded-xl object-cover border border-gray-200 flex-shrink-0" onerror="this.src='${fallbackImg}'">
+          <img src="${escapeHtml(imgSrc)}" class="w-10 h-10 rounded-xl object-cover border border-gray-200 flex-shrink-0" onerror="this.src='${fallbackImg}'">
           <div>
-            <p class="font-bold text-gray-900">${p.name}</p>
-            <p class="text-[10px] text-gray-400 line-clamp-1">${p.description || '-'}</p>
+            <p class="font-bold text-gray-900">${escapeHtml(p.name)}</p>
+            <p class="text-[10px] text-gray-400 line-clamp-1">${escapeHtml(p.description || '-')}</p>
           </div>
         </td>
 
-        <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-semibold">${p.category || 'Kue'}</span></td>
+        <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-semibold">${escapeHtml(p.category || 'Kue')}</span></td>
         <td class="p-3.5 font-bold text-amber-600">Rp${sellingPrice.toLocaleString('id-ID')}</td>
         
         <td class="p-3.5 text-center">
           <div class="inline-flex items-center justify-center bg-gray-50 border border-gray-300 rounded-xl px-2 py-1 shadow-2xs">
             <span class="text-[10px] text-gray-400 mr-0.5">Rp</span>
-            <input type="number" min="0" value="${costPrice}" onchange="updateProductCostPriceDirect('${p.id}', this.value)" class="w-14 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
+            <input type="number" min="0" value="${costPrice}" data-action="cost" class="js-cost w-14 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
           </div>
         </td>
 
@@ -1063,30 +1151,43 @@
 
         <td class="p-3.5 text-center">
           <div class="inline-flex items-center justify-center bg-amber-50 border border-amber-300 rounded-xl px-2 py-1 shadow-2xs">
-            <input type="number" min="0" value="${quota}" onchange="updateProductDailyQuotaDirect('${p.id}', this.value)" class="w-12 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+            <input type="number" min="0" value="${quota}" data-action="quota" class="js-quota w-12 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
             <span class="text-[10px] text-amber-800 font-semibold ml-0.5">pcs</span>
           </div>
         </td>
 
         <td class="p-3.5 text-center">
           <div class="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
-            <button onclick="quickChangeStock('${p.id}', -5)" class="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs">-5</button>
-            <input type="number" min="0" value="${stock}" onchange="updateProductCurrentStock('${p.id}', this.value)" class="w-10 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
-            <button onclick="quickChangeStock('${p.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs">+5</button>
+            <button data-action="minus" class="js-minus w-6 h-6 rounded-lg bg-white hover:bg-gray-100 font-bold text-xs">-5</button>
+            <input type="number" min="0" value="${stock}" data-action="stock" class="js-stock w-10 text-center text-xs font-bold text-gray-800 bg-transparent outline-none">
+            <button data-action="plus" class="js-plus w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs">+5</button>
           </div>
         </td>
 
         <td class="p-3.5 text-center">
-          <button onclick="toggleProductStockStatus('${p.id}', '${p.status || 'AVAILABLE'}')" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border transition ${isOut ? 'bg-red-50 text-red-600 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}">
+          <button data-action="toggle" class="js-toggle px-2.5 py-1 rounded-xl text-[10px] font-bold border transition ${isOut ? 'bg-red-50 text-red-600 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}">
             ${isOut ? 'Habis' : 'Ready'}
           </button>
         </td>
 
         <td class="p-3.5 text-center">
-          <button onclick="editProduct('${p.id}')" class="text-blue-600 p-1" title="Edit Lengkap"><i class="fa-solid fa-pen text-xs"></i></button>
-          <button onclick="deleteProduct('${p.id}', '${p.name}')" class="text-red-500 p-1" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
+          <button data-action="edit" class="js-edit text-blue-600 p-1" title="Edit Lengkap"><i class="fa-solid fa-pen text-xs"></i></button>
+          <button data-action="delete" class="js-delete text-red-500 p-1" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
         </td>
       `;
+
+      const prodId = p.id;
+      const curStatus = p.status || 'AVAILABLE';
+      const on = (sel, evt, fn) => { const el = tr.querySelector(sel); if (el) el.addEventListener(evt, fn); };
+      on('.js-cost', 'change', (e) => updateProductCostPriceDirect(prodId, e.target.value));
+      on('.js-quota', 'change', (e) => updateProductDailyQuotaDirect(prodId, e.target.value));
+      on('.js-stock', 'change', (e) => updateProductCurrentStock(prodId, e.target.value));
+      on('.js-minus', 'click', () => quickChangeStock(prodId, -5));
+      on('.js-plus', 'click', () => quickChangeStock(prodId, 5));
+      on('.js-toggle', 'click', () => toggleProductStockStatus(prodId, curStatus));
+      on('.js-edit', 'click', () => editProduct(prodId));
+      on('.js-delete', 'click', () => deleteProduct(prodId, p.name));
+
       return tr;
     }
 
@@ -1227,16 +1328,43 @@
       const list = document.getElementById("expense-list");
       list.innerHTML = "";
       expenseList.forEach(e => {
-        list.innerHTML += `<div class="flex justify-between p-2 bg-gray-50 rounded-xl text-xs"><span>${e.description} (${e.date})</span><strong class="text-red-600">-Rp${Number(e.amount).toLocaleString('id-ID')}</strong></div>`;
+        list.innerHTML += `<div class="flex justify-between p-2 bg-gray-50 rounded-xl text-xs"><span>${escapeHtml(e.description)} (${escapeHtml(e.date)})</span><strong class="text-red-600">-Rp${Number(e.amount).toLocaleString('id-ID')}</strong></div>`;
       });
     }
 
-    window.handleUpdatePin = async function() {
-      const np = document.getElementById("new-pin").value;
-      const cp = document.getElementById("confirm-pin").value;
-      if (np !== cp || np.length < 4) { alert("PIN tidak cocok!"); return; }
-      await setDoc(doc(db, "settings", "admin_auth"), { pin: np }, { merge: true });
-      alert("PIN diubah!");
+    window.handleChangePassword = async function() {
+      const np = document.getElementById("new-password").value;
+      const cp = document.getElementById("confirm-password").value;
+      const user = auth.currentUser;
+
+      if (!user) { alert("Sesi login tidak ditemukan. Silakan logout & login ulang."); return; }
+      if (np !== cp) { alert("Password baru tidak cocok!"); return; }
+      if (np.length < 6) { alert("Password minimal 6 karakter!"); return; }
+
+      try {
+        await updatePassword(user, np);
+        alert("Password berhasil diubah!");
+        document.getElementById("new-password").value = "";
+        document.getElementById("confirm-password").value = "";
+      } catch (err) {
+        if (err.code === "auth/requires-recent-login") {
+          // Firebase minta verifikasi ulang: minta password lama, re-login, lalu update
+          const oldPass = prompt("Keamanan Firebase: masukkan password AKUN saat ini untuk mengubah password:");
+          if (!oldPass) return;
+          try {
+            const cred = EmailAuthProvider.credential(user.email, oldPass);
+            await reauthenticateWithCredential(user, cred);
+            await updatePassword(user, np);
+            alert("Password berhasil diubah!");
+            document.getElementById("new-password").value = "";
+            document.getElementById("confirm-password").value = "";
+          } catch (e2) {
+            alert("Gagal: password lama salah atau jaringan bermasalah.");
+          }
+        } else {
+          alert("Gagal mengubah password: " + (err.message || err.code));
+        }
+      }
     };
   </script>
 </body>

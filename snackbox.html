@@ -37,6 +37,16 @@
           fontFamily: {
             sans: ['Poppins', 'sans-serif'],
             serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            cream: { 50:'#FDFBF6', 100:'#FAF5EC', 200:'#F1E7D6', 300:'#E3D3B8', 400:'#CBB38C' },
+            ink: { 900:'#1C1917', 800:'#292524', 700:'#44403C', 600:'#57534E', 500:'#78716C', 400:'#A8A29E', 300:'#D6D3D1', 200:'#E7E5E4', 100:'#F5F5F4' },
+            gold: { 50:'#FDF6EA', 100:'#F8E8CC', 200:'#EFD09B', 300:'#E2B365', 400:'#D19434', 500:'#B87516', 600:'#9A5B0F', 700:'#7C4608', 800:'#5C3306' }
+          },
+          boxShadow: {
+            soft: '0 1px 2px rgba(28,25,23,.04), 0 18px 40px -28px rgba(28,25,23,.35)',
+            lift: '0 2px 4px rgba(28,25,23,.05), 0 30px 60px -34px rgba(28,25,23,.5)',
+            glow: '0 14px 34px -14px rgba(154,91,15,.45)'
           }
         }
       }
@@ -60,41 +70,63 @@
     }
     input[type=number] { -moz-appearance: textfield; }
     html { scroll-behavior: smooth; }
+
+    /* ==== DESIGN SYSTEM: ELEGAN PREMIUM ==== */
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .hero-surface {
+      background:
+        radial-gradient(120% 130% at 12% 0%, rgba(255,238,206,0.22) 0%, rgba(255,238,206,0) 55%),
+        linear-gradient(135deg, #7C4608 0%, #9A5B0F 48%, #B87516 100%);
+    }
+    .texture-dots {
+      background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1px);
+      background-size: 14px 14px;
+    }
+    .rule-gold {
+      background: linear-gradient(90deg, transparent, #E2B365 20%, #E2B365 80%, transparent);
+      height: 1px;
+    }
   </style>
 </head>
-<body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
+<body class="bg-cream-100 text-ink-800 pb-36 min-h-screen selection:bg-gold-500 selection:text-white">
 
   <!-- Header / Navbar -->
-  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-amber-100/70 shadow-xs">
+  <header class="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-cream-200 shadow-soft">
     <div class="max-w-4xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between">
       
       <!-- Logo Toko & Link Kembali -->
       <div class="flex items-center gap-2.5">
-        <a href="index.html" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center justify-center border border-amber-200/60 transition" title="Lihat Katalog Satuan">
+        <a href="index.html" class="w-9 h-9 rounded-full bg-white text-gold-700 hover:bg-cream-50 flex items-center justify-center border border-cream-200 shadow-soft transition" title="Lihat Katalog Satuan">
           <i class="fa-solid fa-arrow-left text-xs sm:text-sm"></i>
         </a>
 
-        <div id="store-logo-container" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
-          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-0.5">
+        <div id="store-logo-container" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-1 ring-gold-700/20">
+          <div class="w-full h-full bg-cream-50 rounded-[13px] flex items-center justify-center overflow-hidden p-0.5">
             <span id="store-logo-fallback" class="text-xl">🍰</span>
             <img id="store-logo-img" src="./logo.png" alt="Logo AZRI SNACK" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
         <div>
-          <span class="font-serif font-bold text-sm sm:text-base text-gray-900 leading-none tracking-tight block">AZRI SNACK</span>
-          <span class="text-[10px] text-amber-700 font-medium tracking-wide mt-0.5 block">Spesialis Custom Snack Box</span>
+          <span class="font-serif font-bold text-sm sm:text-base text-ink-900 leading-none tracking-tight block">AZRI SNACK</span>
+          <span class="text-[9px] text-gold-600 font-semibold uppercase tracking-[0.16em] mt-0.5 block">Spesialis Custom Snack Box</span>
         </div>
       </div>
 
       <!-- Tombol Aksi Header -->
       <div class="flex items-center gap-2">
-        <a href="index.html" class="text-xs text-amber-800 hover:text-amber-900 font-semibold px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200/80 transition hidden sm:inline-flex items-center gap-1.5">
-          <i class="fa-solid fa-cake-candles text-[11px]"></i>
+        <a href="index.html" class="text-xs text-ink-700 hover:text-ink-900 font-semibold px-3.5 py-1.5 rounded-full bg-cream-100 border border-cream-200 transition hidden sm:inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-cake-candles text-[11px] text-gold-600"></i>
           <span>Katalog Satuan</span>
         </a>
-        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none" title="Lihat Keranjang">
+        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-cream-100 rounded-2xl text-gold-700 hover:bg-cream-200/80 transition border border-cream-200 shadow-soft active:scale-95 focus:outline-none" title="Lihat Keranjang">
           <i class="fa-solid fa-basket-shopping text-base sm:text-lg"></i>
-          <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
+          <span id="cart-badge" class="absolute -top-1 -right-1 bg-gold-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
         </button>
       </div>
     </div>
@@ -102,37 +134,39 @@
 
   <!-- ================= 1. SECTION HERO ================= -->
   <section class="max-w-4xl mx-auto px-4 mt-3 sm:mt-4">
-    <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-amber-500/15 relative overflow-hidden">
-      <div class="absolute -right-6 -bottom-10 opacity-15 text-9xl pointer-events-none select-none">🍱</div>
+    <div class="hero-surface rounded-[28px] p-6 sm:p-8 text-cream-50 shadow-lift relative overflow-hidden">
+      <div class="absolute inset-0 texture-dots opacity-40 pointer-events-none select-none"></div>
+      <div class="absolute -top-24 -left-16 w-64 h-64 rounded-full bg-gold-200/20 blur-3xl pointer-events-none select-none"></div>
+      <div class="absolute -right-8 -bottom-14 opacity-[0.07] text-[11rem] pointer-events-none select-none">🍱</div>
 
       <div class="relative z-10 space-y-2.5 max-w-xl">
-        <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-amber-100 border border-white/20">
-          <span>★</span> Custom Sesuai Kebutuhan Acara Anda
+        <div class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full eyebrow text-gold-100 border border-white/15">
+          <span class="text-gold-200">★</span> Custom Sesuai Kebutuhan Acara Anda
         </div>
         
-        <h1 class="font-serif text-xl sm:text-3xl font-bold leading-tight tracking-tight">
-          SNACK BOX AZRI SNACK
+        <h1 class="font-serif text-2xl sm:text-4xl font-bold leading-tight tracking-tight">
+          Snack Box Custom AZRI SNACK
         </h1>
         
-        <p class="text-xs sm:text-sm text-amber-50 leading-relaxed font-normal">
+        <p class="text-xs sm:text-sm text-cream-100/80 leading-relaxed font-normal max-w-lg">
           Fresh, praktis, dan cocok untuk berbagai acara. Bebas tentukan kombinasi kue basah gurih & manis kesukaan Anda!
         </p>
 
         <div class="flex flex-wrap items-center gap-2 pt-1 pb-1">
-          <div class="bg-black/25 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs border border-white/15">
-            <span class="text-amber-200 font-medium">Mulai:</span> <strong id="hero-starting-price" class="font-serif">Rp8.000 / box</strong>
+          <div class="bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-xs border border-white/15">
+            <span class="text-gold-200 font-medium">Mulai:</span> <strong id="hero-starting-price" class="font-serif">Rp8.000 / box</strong>
           </div>
-          <div class="bg-black/25 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs border border-white/15">
-            <span class="text-amber-200 font-medium">Order:</span> <strong>Minimal 5 box</strong>
+          <div class="bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-xs border border-white/15">
+            <span class="text-gold-200 font-medium">Order:</span> <strong>Minimal 5 box</strong>
           </div>
         </div>
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-2">
-          <a href="#snackbox-builder" class="bg-white hover:bg-amber-50 text-amber-900 font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-lg transition text-center flex items-center justify-center gap-2 active:scale-98">
-            <i class="fa-solid fa-box-open text-amber-600"></i>
+          <a href="#snackbox-builder" class="bg-cream-50 hover:bg-white text-gold-800 font-bold text-xs sm:text-sm px-5 py-3.5 rounded-full shadow-lg transition text-center flex items-center justify-center gap-2 active:scale-98">
+            <i class="fa-solid fa-box-open text-gold-600"></i>
             <span>🍱 PESAN SNACK BOX</span>
           </a>
-          <a href="index.html" class="bg-black/25 hover:bg-black/40 text-white font-medium text-xs px-4 py-3 rounded-2xl border border-white/20 transition text-center flex items-center justify-center gap-1.5 active:scale-98">
+          <a href="index.html" class="bg-black/25 hover:bg-black/40 text-cream-100 font-medium text-xs px-4 py-3.5 rounded-full border border-white/20 transition text-center flex items-center justify-center gap-1.5 active:scale-98">
             <i class="fa-solid fa-cake-candles text-xs"></i>
             <span>LIHAT KATALOG SATUAN</span>
           </a>
@@ -143,58 +177,59 @@
 
   <!-- ================= 2. SECTION KEUNGGULAN ================= -->
   <section class="max-w-4xl mx-auto px-4 mt-6">
-    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-amber-100 shadow-2xs space-y-3">
+    <div class="bg-white rounded-[28px] p-5 sm:p-7 border border-cream-200 shadow-soft space-y-3">
       <div class="text-center sm:text-left">
-        <h2 class="font-serif font-bold text-base sm:text-lg text-gray-900">Mengapa Pilih AZRI SNACK?</h2>
-        <p class="text-xs text-gray-400 mt-0.5">Solusi sajian snack box berkualitas tanpa repot untuk kelancaran acara Anda.</p>
+        <p class="eyebrow text-gold-600 mb-1">Keunggulan</p>
+        <h2 class="font-serif font-bold text-lg sm:text-xl text-ink-900 tracking-tight">Mengapa Pilih AZRI SNACK?</h2>
+        <p class="text-xs text-ink-400 mt-0.5">Solusi sajian snack box berkualitas tanpa repot untuk kelancaran acara Anda.</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-2">
-        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
-          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+        <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="w-6 h-6 rounded-lg bg-gold-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
           <div>
-            <h3 class="text-xs font-bold text-gray-800">Bisa Custom Isi Snack Box</h3>
-            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Bebas pilih varian kue manis & gurih sesuai selera.</p>
+            <h3 class="text-xs font-bold text-ink-900">Bisa Custom Isi Snack Box</h3>
+            <p class="text-[11px] text-ink-500 leading-tight mt-0.5">Bebas pilih varian kue manis & gurih sesuai selera.</p>
           </div>
         </div>
 
-        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
-          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+        <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="w-6 h-6 rounded-lg bg-gold-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
           <div>
-            <h3 class="text-xs font-bold text-gray-800">Pilihan Kue Beragam</h3>
-            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Tersedia aneka gorengan renyah hingga kue basah tradisional.</p>
+            <h3 class="text-xs font-bold text-ink-900">Pilihan Kue Beragam</h3>
+            <p class="text-[11px] text-ink-500 leading-tight mt-0.5">Tersedia aneka gorengan renyah hingga kue basah tradisional.</p>
           </div>
         </div>
 
-        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
-          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+        <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="w-6 h-6 rounded-lg bg-gold-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
           <div>
-            <h3 class="text-xs font-bold text-gray-800">Fresh Setiap Hari</h3>
-            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Diproduksi segar daily menggunakan bahan pilihan higienis.</p>
+            <h3 class="text-xs font-bold text-ink-900">Fresh Setiap Hari</h3>
+            <p class="text-[11px] text-ink-500 leading-tight mt-0.5">Diproduksi segar daily menggunakan bahan pilihan higienis.</p>
           </div>
         </div>
 
-        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
-          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+        <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="w-6 h-6 rounded-lg bg-gold-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
           <div>
-            <h3 class="text-xs font-bold text-gray-800">Cocok untuk Pesanan Acara</h3>
-            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Kemasan box rapi, bersih, dan pantas untuk tamu undangan.</p>
+            <h3 class="text-xs font-bold text-ink-900">Cocok untuk Pesanan Acara</h3>
+            <p class="text-[11px] text-ink-500 leading-tight mt-0.5">Kemasan box rapi, bersih, dan pantas untuk tamu undangan.</p>
           </div>
         </div>
 
-        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
-          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+        <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="w-6 h-6 rounded-lg bg-gold-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
           <div>
-            <h3 class="text-xs font-bold text-gray-800">Kapasitas Produksi Besar</h3>
-            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Siap melayani pesanan puluhan hingga ratusan box tepat waktu.</p>
+            <h3 class="text-xs font-bold text-ink-900">Kapasitas Produksi Besar</h3>
+            <p class="text-[11px] text-ink-500 leading-tight mt-0.5">Siap melayani pesanan puluhan hingga ratusan box tepat waktu.</p>
           </div>
         </div>
 
-        <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-amber-50/50 border border-amber-100/60">
-          <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+        <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="w-6 h-6 rounded-lg bg-gold-600 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
           <div>
-            <h3 class="text-xs font-bold text-gray-800">Pemesanan Mudah via WA</h3>
-            <p class="text-[11px] text-gray-500 leading-tight mt-0.5">Hitung otomatis di web & langsung terhubung ke WhatsApp toko.</p>
+            <h3 class="text-xs font-bold text-ink-900">Pemesanan Mudah via WA</h3>
+            <p class="text-[11px] text-ink-500 leading-tight mt-0.5">Hitung otomatis di web & langsung terhubung ke WhatsApp toko.</p>
           </div>
         </div>
       </div>
@@ -204,82 +239,84 @@
   <!-- ================= 3. SECTION COCOK UNTUK BERBAGAI ACARA ================= -->
   <section class="max-w-4xl mx-auto px-4 mt-6">
     <div class="text-center mb-3">
-      <h2 class="font-serif font-bold text-base sm:text-lg text-gray-900">Cocok Untuk Berbagai Acara</h2>
-      <p class="text-xs text-gray-400">Siap melengkapi hidangan spesial di setiap momen Anda</p>
+      <p class="eyebrow text-gold-600 mb-1">Berbagai Momen</p>
+      <h2 class="font-serif font-bold text-lg sm:text-xl text-ink-900 tracking-tight">Cocok Untuk Berbagai Acara</h2>
+      <p class="text-xs text-ink-400">Siap melengkapi hidangan spesial di setiap momen Anda</p>
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
-      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+      <div class="bg-white p-3.5 rounded-2xl border border-cream-200 text-center space-y-1 shadow-soft hover:border-gold-300 hover:-translate-y-0.5 transition">
         <span class="text-2xl block">🏢</span>
-        <h3 class="text-xs font-bold text-gray-800">Meeting Kantor</h3>
+        <h3 class="text-xs font-bold text-ink-900">Meeting Kantor</h3>
       </div>
-      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+      <div class="bg-white p-3.5 rounded-2xl border border-cream-200 text-center space-y-1 shadow-soft hover:border-gold-300 hover:-translate-y-0.5 transition">
         <span class="text-2xl block">🎓</span>
-        <h3 class="text-xs font-bold text-gray-800">Seminar</h3>
+        <h3 class="text-xs font-bold text-ink-900">Seminar</h3>
       </div>
-      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+      <div class="bg-white p-3.5 rounded-2xl border border-cream-200 text-center space-y-1 shadow-soft hover:border-gold-300 hover:-translate-y-0.5 transition">
         <span class="text-2xl block">🙏</span>
-        <h3 class="text-xs font-bold text-gray-800">Pengajian</h3>
+        <h3 class="text-xs font-bold text-ink-900">Pengajian</h3>
       </div>
-      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+      <div class="bg-white p-3.5 rounded-2xl border border-cream-200 text-center space-y-1 shadow-soft hover:border-gold-300 hover:-translate-y-0.5 transition">
         <span class="text-2xl block">👨‍👩‍👧</span>
-        <h3 class="text-xs font-bold text-gray-800">Arisan</h3>
+        <h3 class="text-xs font-bold text-ink-900">Arisan</h3>
       </div>
-      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+      <div class="bg-white p-3.5 rounded-2xl border border-cream-200 text-center space-y-1 shadow-soft hover:border-gold-300 hover:-translate-y-0.5 transition">
         <span class="text-2xl block">🎂</span>
-        <h3 class="text-xs font-bold text-gray-800">Ulang Tahun</h3>
+        <h3 class="text-xs font-bold text-ink-900">Ulang Tahun</h3>
       </div>
-      <div class="bg-white p-3 rounded-2xl border border-gray-200/80 text-center space-y-1 shadow-2xs hover:border-amber-400 transition">
+      <div class="bg-white p-3.5 rounded-2xl border border-cream-200 text-center space-y-1 shadow-soft hover:border-gold-300 hover:-translate-y-0.5 transition">
         <span class="text-2xl block">🎉</span>
-        <h3 class="text-xs font-bold text-gray-800">Acara Keluarga</h3>
+        <h3 class="text-xs font-bold text-ink-900">Acara Keluarga</h3>
       </div>
     </div>
   </section>
 
   <!-- ================= 4 - 9. KONFIGURATOR UTAMA SNACK BOX ================= -->
   <main id="snackbox-builder" class="max-w-4xl mx-auto px-4 mt-8 scroll-mt-20">
-    <div class="bg-white border-2 border-amber-300 rounded-3xl p-4 sm:p-7 shadow-md space-y-6">
+    <div class="bg-white border border-cream-200 rounded-[28px] p-4 sm:p-7 shadow-soft space-y-6">
       
-      <div class="border-b border-gray-100 pb-3">
-        <h2 class="font-serif font-bold text-gray-900 text-lg sm:text-xl">Konfigurator Custom Snack Box</h2>
-        <p class="text-xs text-gray-500 mt-0.5">Tentukan paket isi kue, opsi minuman, dan rincian menu sesuai keinginan Anda.</p>
+      <div class="border-b border-cream-100 pb-3">
+        <p class="eyebrow text-gold-600 mb-1">Langkah 1 - 3</p>
+        <h2 class="font-serif font-bold text-ink-900 text-lg sm:text-xl tracking-tight">Konfigurator Custom Snack Box</h2>
+        <p class="text-xs text-ink-500 mt-0.5">Tentukan paket isi kue, opsi minuman, dan rincian menu sesuai keinginan Anda.</p>
       </div>
 
       <!-- 4. SECTION PILIH PAKET SNACK BOX -->
       <div class="space-y-2">
-        <label class="block text-xs font-bold text-gray-800 flex items-center gap-1.5">
-          <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">1</span>
+        <label class="block text-xs font-bold text-ink-900 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-gold-600 text-white text-[11px] font-bold flex items-center justify-center">1</span>
           <span>Pilih Paket Snack Box:</span>
         </label>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3.5">
-          <div onclick="setBoxItemCount(2)" id="card-box-2" class="box-card active relative p-3.5 sm:p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/40 cursor-pointer transition shadow-2xs hover:shadow-xs">
-            <h3 class="font-serif font-bold text-sm text-gray-900">Paket Hemat (2 Kue)</h3>
-            <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Cocok untuk coffee break santai & acara singkat.</p>
-            <div class="mt-2.5 pt-2 border-t border-amber-200/60 flex items-center justify-between text-xs">
-              <span class="text-gray-400 text-[10px]">Isi Box:</span>
-              <strong class="text-amber-800 font-bold">2 Pcs Kue</strong>
+          <div onclick="setBoxItemCount(2)" id="card-box-2" class="box-card active relative p-3.5 sm:p-4 rounded-2xl border-2 border-gold-500 bg-gold-50/50 cursor-pointer transition shadow-soft">
+            <h3 class="font-serif font-bold text-sm text-ink-900">Paket Hemat (2 Kue)</h3>
+            <p class="text-[11px] text-ink-500 mt-0.5 leading-tight">Cocok untuk coffee break santai & acara singkat.</p>
+            <div class="mt-2.5 pt-2 border-t border-gold-200/60 flex items-center justify-between text-xs">
+              <span class="text-ink-400 text-[10px]">Isi Box:</span>
+              <strong class="text-gold-700 font-bold">2 Pcs Kue</strong>
             </div>
           </div>
 
-          <div onclick="setBoxItemCount(3)" id="card-box-3" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400">
-            <span class="absolute -top-2.5 right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wider">
+          <div onclick="setBoxItemCount(3)" id="card-box-3" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-cream-200 bg-white cursor-pointer transition shadow-soft hover:border-gold-300">
+            <span class="absolute -top-2.5 right-3 bg-ink-900 text-gold-200 text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider">
               ★ PALING POPULER
             </span>
-            <h3 class="font-serif font-bold text-sm text-gray-900">Paket Standar (3 Kue)</h3>
-            <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Porsi pas kombinasi manis, asin, dan gurih.</p>
+            <h3 class="font-serif font-bold text-sm text-ink-900">Paket Standar (3 Kue)</h3>
+            <p class="text-[11px] text-ink-500 mt-0.5 leading-tight">Porsi pas kombinasi manis, asin, dan gurih.</p>
             <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
-              <span class="text-gray-400 text-[10px]">Isi Box:</span>
-              <strong class="text-amber-800 font-bold">3 Pcs Kue</strong>
+              <span class="text-ink-400 text-[10px]">Isi Box:</span>
+              <strong class="text-gold-700 font-bold">3 Pcs Kue</strong>
             </div>
           </div>
 
-          <div onclick="setBoxItemCount(4)" id="card-box-4" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400">
-            <h3 class="font-serif font-bold text-sm text-gray-900">Paket Komplit (4 Kue)</h3>
-            <p class="text-[11px] text-gray-500 mt-0.5 leading-tight">Sajian mewah & kenyang untuk meeting VIP / hajatan.</p>
+          <div onclick="setBoxItemCount(4)" id="card-box-4" class="box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-cream-200 bg-white cursor-pointer transition shadow-soft hover:border-gold-300">
+            <h3 class="font-serif font-bold text-sm text-ink-900">Paket Komplit (4 Kue)</h3>
+            <p class="text-[11px] text-ink-500 mt-0.5 leading-tight">Sajian mewah & kenyang untuk meeting VIP / hajatan.</p>
             <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
-              <span class="text-gray-400 text-[10px]">Isi Box:</span>
-              <strong class="text-amber-800 font-bold">4 Pcs Kue</strong>
+              <span class="text-ink-400 text-[10px]">Isi Box:</span>
+              <strong class="text-gold-700 font-bold">4 Pcs Kue</strong>
             </div>
           </div>
         </div>
@@ -287,35 +324,35 @@
 
       <!-- 5. PILIHAN MINUMAN -->
       <div class="space-y-2">
-        <label class="block text-xs font-bold text-gray-800 flex items-center gap-1.5">
-          <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">2</span>
+        <label class="block text-xs font-bold text-ink-900 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-gold-600 text-white text-[11px] font-bold flex items-center justify-center">2</span>
           <span>Pilihan Minuman:</span>
         </label>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-amber-400 bg-amber-50/40 cursor-pointer shadow-2xs transition">
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-gold-400 bg-gold-50/50 cursor-pointer shadow-soft transition">
             <div class="flex items-center gap-2.5">
-              <input type="radio" name="box_drink_opt" value="with_drink" checked onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
+              <input type="radio" name="box_drink_opt" value="with_drink" checked onchange="updateBoxPriceCalculation()" class="text-gold-600 focus:ring-gold-400">
               <div>
-                <p class="font-bold text-xs text-gray-900 flex items-center gap-1.5">
+                <p class="font-bold text-xs text-ink-900 flex items-center gap-1.5">
                   <span>PLUS AIR MINERAL</span>
                   <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">+ Gelas Cup</span>
                 </p>
-                <p class="text-[11px] text-gray-500">Termasuk Kardus Box Snack + Air Mineral Gelas</p>
+                <p class="text-[11px] text-ink-500">Termasuk Kardus Box Snack + Air Mineral Gelas</p>
               </div>
             </div>
-            <span class="text-xs font-bold text-amber-700 whitespace-nowrap">+Rp3.000 / box</span>
+            <span class="text-xs font-bold text-gold-700 whitespace-nowrap">+Rp3.000 / box</span>
           </label>
 
-          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer shadow-2xs transition hover:border-amber-300">
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-cream-200 bg-white cursor-pointer shadow-soft transition hover:border-gold-300">
             <div class="flex items-center gap-2.5">
-              <input type="radio" name="box_drink_opt" value="no_drink" onchange="updateBoxPriceCalculation()" class="text-amber-500 focus:ring-amber-400">
+              <input type="radio" name="box_drink_opt" value="no_drink" onchange="updateBoxPriceCalculation()" class="text-gold-600 focus:ring-gold-400">
               <div>
-                <p class="font-bold text-xs text-gray-900">TANPA MINUMAN</p>
-                <p class="text-[11px] text-gray-500">Hanya Kardus Box Snack Cantik & Bersih</p>
+                <p class="font-bold text-xs text-ink-900">TANPA MINUMAN</p>
+                <p class="text-[11px] text-ink-500">Hanya Kardus Box Snack Cantik & Bersih</p>
               </div>
             </div>
-            <span class="text-xs font-bold text-gray-600 whitespace-nowrap">+Rp2.000 / box</span>
+            <span class="text-xs font-bold text-ink-600 whitespace-nowrap">+Rp2.000 / box</span>
           </label>
         </div>
       </div>
@@ -323,85 +360,85 @@
       <!-- 6. PILIH MENU KUE -->
       <div class="space-y-2">
         <div>
-          <label class="block text-xs font-bold text-gray-800 flex items-center gap-1.5">
-            <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">3</span>
+          <label class="block text-xs font-bold text-ink-900 flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-full bg-gold-600 text-white text-[11px] font-bold flex items-center justify-center">3</span>
             <span>Pilih Menu Kue Sesuai Keinginan Anda:</span>
           </label>
-          <p class="text-[11px] text-gray-400 mt-0.5 ml-6.5">Silakan pilih kue sesuai jumlah isi paket yang Anda pilih.</p>
+          <p class="text-[11px] text-ink-400 mt-0.5 ml-6.5">Silakan pilih kue sesuai jumlah isi paket yang Anda pilih.</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1" id="snackbox-cake-selectors">
           <!-- Selector Kue 1 -->
-          <div class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1">
-            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
-              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">1</span>
+          <div class="bg-cream-50 p-3 rounded-2xl border border-cream-200 space-y-1">
+            <label class="text-[11px] font-bold text-ink-800 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-gold-600 text-white text-[9px] flex items-center justify-center font-bold">1</span>
               <span>Pilihan Kue Pertama:</span>
             </label>
-            <select id="box-select-cake-1" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+            <select id="box-select-cake-1" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-cream-200 font-semibold outline-none focus:ring-2 focus:ring-gold-400"></select>
           </div>
 
           <!-- Selector Kue 2 -->
-          <div class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1">
-            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
-              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">2</span>
+          <div class="bg-cream-50 p-3 rounded-2xl border border-cream-200 space-y-1">
+            <label class="text-[11px] font-bold text-ink-800 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-gold-600 text-white text-[9px] flex items-center justify-center font-bold">2</span>
               <span>Pilihan Kue Kedua:</span>
             </label>
-            <select id="box-select-cake-2" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+            <select id="box-select-cake-2" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-cream-200 font-semibold outline-none focus:ring-2 focus:ring-gold-400"></select>
           </div>
 
           <!-- Selector Kue 3 -->
           <div id="wrapper-cake-3" class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
-            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
-              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">3</span>
+            <label class="text-[11px] font-bold text-ink-800 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-gold-600 text-white text-[9px] flex items-center justify-center font-bold">3</span>
               <span>Pilihan Kue Ketiga:</span>
             </label>
-            <select id="box-select-cake-3" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+            <select id="box-select-cake-3" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-cream-200 font-semibold outline-none focus:ring-2 focus:ring-gold-400"></select>
           </div>
 
           <!-- Selector Kue 4 -->
           <div id="wrapper-cake-4" class="bg-gray-50/90 p-3 rounded-2xl border border-gray-200 space-y-1 hidden">
-            <label class="text-[11px] font-bold text-amber-900 flex items-center gap-1">
-              <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] flex items-center justify-center font-bold">4</span>
+            <label class="text-[11px] font-bold text-ink-800 flex items-center gap-1">
+              <span class="w-4 h-4 rounded-full bg-gold-600 text-white text-[9px] flex items-center justify-center font-bold">4</span>
               <span>Pilihan Kue Keempat:</span>
             </label>
-            <select id="box-select-cake-4" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-gray-200 font-semibold outline-none focus:ring-2 focus:ring-amber-500"></select>
+            <select id="box-select-cake-4" onchange="updateBoxPriceCalculation()" class="w-full bg-white text-xs p-2.5 rounded-xl border border-cream-200 font-semibold outline-none focus:ring-2 focus:ring-gold-400"></select>
           </div>
         </div>
       </div>
 
       <!-- 7 & 8 & 9. JUMLAH BOX, TOTAL PEMBAYARAN, & TOMBOL MASUKKAN KERANJANG -->
-      <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 p-4 sm:p-5 rounded-3xl border border-amber-200 space-y-4">
+      <div class="bg-cream-50 p-4 sm:p-5 rounded-[24px] border border-cream-200 space-y-4">
         
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs items-center">
           <!-- Harga per Box -->
-          <div class="bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
-            <span class="text-gray-500 text-[11px] block">Harga per Box:</span>
-            <strong id="box-single-price" class="text-base font-bold text-amber-700 font-serif">Rp0</strong>
+          <div class="bg-white p-3 rounded-2xl border border-cream-200 shadow-soft">
+            <span class="text-ink-400 text-[11px] block">Harga per Box:</span>
+            <strong id="box-single-price" class="text-base font-bold text-gold-600 font-serif">Rp0</strong>
           </div>
 
           <!-- Jumlah Box -->
-          <div class="bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
-            <span class="text-gray-500 text-[11px] block mb-1">Jumlah Box:</span>
-            <div class="flex items-center justify-between bg-gray-50 rounded-xl p-0.5 border border-gray-200">
-              <button type="button" onclick="changeBoxQty(-5)" class="w-8 h-8 rounded-lg bg-white font-bold text-xs text-gray-700 flex items-center justify-center shadow-2xs active:scale-90">-</button>
+          <div class="bg-white p-3 rounded-2xl border border-cream-200 shadow-soft">
+            <span class="text-ink-400 text-[11px] block mb-1">Jumlah Box:</span>
+            <div class="flex items-center justify-between bg-cream-100 rounded-xl p-0.5 border border-cream-200">
+              <button type="button" onclick="changeBoxQty(-5)" class="w-8 h-8 rounded-lg bg-white font-bold text-xs text-ink-700 flex items-center justify-center shadow-xs active:scale-90">-</button>
               <div class="text-center">
-                <input type="number" id="snackbox-qty-input" min="5" value="10" oninput="updateBoxPriceCalculation()" class="w-12 text-center text-xs font-bold text-gray-900 bg-transparent outline-none inline-block">
-                <span class="text-[10px] text-gray-400 font-medium">box</span>
+                <input type="number" id="snackbox-qty-input" min="5" value="10" oninput="updateBoxPriceCalculation()" class="w-12 text-center text-xs font-bold text-ink-900 bg-transparent outline-none inline-block">
+                <span class="text-[10px] text-ink-400 font-medium">box</span>
               </div>
-              <button type="button" onclick="changeBoxQty(5)" class="w-8 h-8 rounded-lg bg-amber-500 font-bold text-xs text-white flex items-center justify-center shadow-2xs active:scale-90">+</button>
+              <button type="button" onclick="changeBoxQty(5)" class="w-8 h-8 rounded-lg bg-gold-600 font-bold text-xs text-white flex items-center justify-center shadow-xs active:scale-90">+</button>
             </div>
-            <span class="text-[10px] text-gray-400 italic block mt-1 text-center">Minimal 5 box</span>
+            <span class="text-[10px] text-ink-400 italic block mt-1 text-center">Minimal 5 box</span>
           </div>
 
           <!-- Total Pembayaran -->
-          <div class="bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
-            <span class="text-gray-500 text-[11px] block">Total Pembayaran:</span>
-            <strong id="box-grand-total" class="text-lg sm:text-xl font-bold text-amber-700 font-serif">Rp0</strong>
+          <div class="bg-white p-3 rounded-2xl border border-cream-200 shadow-soft">
+            <span class="text-ink-400 text-[11px] block">Total Pembayaran:</span>
+            <strong id="box-grand-total" class="text-lg sm:text-xl font-bold text-gold-600 font-serif">Rp0</strong>
           </div>
         </div>
 
         <!-- Tombol Masukkan ke Keranjang Utama -->
-        <button type="button" onclick="addCustomSnackBoxToCart()" class="w-full bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-98 text-white font-bold py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition">
+        <button type="button" onclick="addCustomSnackBoxToCart()" class="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 active:scale-98 text-white font-bold py-3.5 px-6 rounded-full text-xs sm:text-sm shadow-glow flex items-center justify-center gap-2 transition">
           <i class="fa-solid fa-cart-plus text-base"></i>
           <span>+ Masukkan ke Keranjang</span>
         </button>
@@ -413,33 +450,33 @@
 
   <!-- ================= 10. TRUST / LANGKAH PEMESANAN MUDAH ================= -->
   <section class="max-w-4xl mx-auto px-4 mt-8">
-    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-gray-200 shadow-2xs space-y-3">
-      <h2 class="font-serif font-bold text-base sm:text-lg text-gray-900 text-center">Pesan Snack Box dengan Mudah</h2>
-      <p class="text-xs text-gray-400 text-center">5 Langkah praktis dari pemesanan hingga diantar ke lokasi acara Anda</p>
+    <div class="bg-white rounded-[28px] p-5 sm:p-7 border border-cream-200 shadow-soft space-y-3">
+      <h2 class="font-serif font-bold text-lg sm:text-xl text-ink-900 text-center tracking-tight">Pesan Snack Box dengan Mudah</h2>
+      <p class="text-xs text-ink-400 text-center">5 Langkah praktis dari pemesanan hingga diantar ke lokasi acara Anda</p>
 
       <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-2 text-center text-xs">
-        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
-          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">1</div>
-          <p class="font-bold text-gray-800">Pilih Paket</p>
-          <p class="text-[10px] text-gray-500">2, 3, atau 4 kue</p>
+        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-200 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-gold-600 text-white text-[11px] font-bold mx-auto flex items-center justify-center">1</div>
+          <p class="font-bold text-ink-900">Pilih Paket</p>
+          <p class="text-[10px] text-ink-400">2, 3, atau 4 kue</p>
         </div>
 
-        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
-          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">2</div>
-          <p class="font-bold text-gray-800">Pilih Isi Kue</p>
-          <p class="text-[10px] text-gray-500">Kombinasi selera</p>
+        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-200 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-gold-600 text-white text-[11px] font-bold mx-auto flex items-center justify-center">2</div>
+          <p class="font-bold text-ink-900">Pilih Isi Kue</p>
+          <p class="text-[10px] text-ink-400">Kombinasi selera</p>
         </div>
 
-        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
-          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">3</div>
-          <p class="font-bold text-gray-800">Tentukan Box</p>
-          <p class="text-[10px] text-gray-500">Min. 5 box</p>
+        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-200 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-gold-600 text-white text-[11px] font-bold mx-auto flex items-center justify-center">3</div>
+          <p class="font-bold text-ink-900">Tentukan Box</p>
+          <p class="text-[10px] text-ink-400">Min. 5 box</p>
         </div>
 
-        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100/60 space-y-1">
-          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold mx-auto flex items-center justify-center">4</div>
-          <p class="font-bold text-gray-800">Ke Keranjang</p>
-          <p class="text-[10px] text-gray-500">Cek total rincian</p>
+        <div class="p-3 bg-cream-50 rounded-2xl border border-cream-200 space-y-1">
+          <div class="w-6 h-6 rounded-full bg-gold-600 text-white text-[11px] font-bold mx-auto flex items-center justify-center">4</div>
+          <p class="font-bold text-ink-900">Ke Keranjang</p>
+          <p class="text-[10px] text-ink-400">Cek total rincian</p>
         </div>
 
         <div class="col-span-2 sm:col-span-1 p-3 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-1">
@@ -449,7 +486,7 @@
         </div>
       </div>
 
-      <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3 text-center text-xs text-emerald-900 mt-2 font-medium flex items-center justify-center gap-2">
+      <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-center text-xs text-emerald-900 mt-2 font-medium flex items-center justify-center gap-2">
         <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
         <span>Pesanan akan dikonfirmasi oleh admin AZRI SNACK melalui WhatsApp.</span>
       </div>
@@ -458,29 +495,34 @@
 
   <!-- ================= 11. CTA TERAKHIR SEBELUM FOOTER ================= -->
   <section class="max-w-4xl mx-auto px-4 mt-6">
-    <div class="bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 rounded-3xl p-6 text-white text-center space-y-2 border border-amber-500/30 shadow-xl">
-      <h2 class="font-serif font-bold text-lg sm:text-xl">Siap Pesan Snack Box?</h2>
-      <p class="text-xs text-gray-300 max-w-md mx-auto">Sesuaikan isi snack box dengan kebutuhan acara Anda.</p>
-      
-      <div class="pt-2">
-        <a href="#snackbox-builder" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-lg transition active:scale-95">
-          <i class="fa-solid fa-box-open"></i>
-          <span>🍱 PESAN SNACK BOX SEKARANG</span>
-        </a>
+    <div class="bg-ink-900 rounded-[28px] p-6 sm:p-8 text-cream-100 text-center space-y-2 border border-white/5 shadow-lift relative overflow-hidden">
+      <div class="absolute inset-0 texture-dots opacity-40 pointer-events-none select-none"></div>
+      <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-gold-600/10 blur-3xl pointer-events-none select-none"></div>
+      <div class="relative z-10 space-y-2">
+        <p class="eyebrow text-gold-300">Siap Pesan?</p>
+        <h2 class="font-serif font-bold text-xl sm:text-2xl text-cream-50 tracking-tight">Siap Pesan Snack Box?</h2>
+        <p class="text-xs text-cream-300/70 max-w-md mx-auto">Sesuaikan isi snack box dengan kebutuhan acara Anda.</p>
+        
+        <div class="pt-3">
+          <a href="#snackbox-builder" class="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full shadow-glow transition active:scale-95">
+            <i class="fa-solid fa-box-open"></i>
+            <span>🍱 PESAN SNACK BOX SEKARANG</span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Sticky Bottom Cart Bar -->
   <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
-    <div class="bg-gray-950/95 text-white rounded-3xl p-3.5 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
+    <div class="bg-ink-900/95 text-cream-100 rounded-[26px] p-3.5 px-4 shadow-lift flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/10">
       <div>
-        <p class="text-[11px] text-gray-300 font-medium">
-          <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Box
+        <p class="text-[11px] text-cream-300/70 font-medium">
+          <span id="cart-item-count" class="text-gold-300 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Box
         </p>
-        <p id="cart-price-total" class="text-base font-bold text-amber-400 font-serif">Rp0</p>
+        <p id="cart-price-total" class="text-base font-bold text-cream-50 font-serif">Rp0</p>
       </div>
-      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-amber-500/20">
+      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 active:scale-95 text-white px-5 py-2.5 rounded-full text-xs font-semibold flex items-center gap-2 transition shadow-glow whitespace-nowrap">
         <span>Rincian Pesanan</span>
         <i class="fa-solid fa-arrow-right text-[11px]"></i>
       </button>
@@ -489,16 +531,16 @@
 
   <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
   <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-[28px] sm:rounded-[28px] max-h-[90vh] flex flex-col shadow-lift overflow-hidden animate-slide-up">
       
-      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div class="px-5 py-4 border-b border-cream-100 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
+          <div class="w-7 h-7 rounded-xl bg-gold-100 text-gold-700 flex items-center justify-center text-xs">
             <i class="fa-solid fa-bag-shopping"></i>
           </div>
-          <h3 class="font-bold text-gray-900 text-sm sm:text-base">Rincian Belanja Snack Box</h3>
+          <h3 class="font-serif font-bold text-ink-900 text-base sm:text-lg tracking-tight">Rincian Belanja Snack Box</h3>
         </div>
-        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
+        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-cream-100 text-ink-500 hover:bg-cream-200 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
@@ -506,62 +548,62 @@
       <div class="p-5 overflow-y-auto space-y-5">
         <div>
           <div class="flex items-center justify-between mb-2">
-            <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Paket Terpilih</h4>
-            <span class="text-[10px] text-gray-400">Atur jumlah box</span>
+            <h4 class="eyebrow text-ink-400">Paket Terpilih</h4>
+            <span class="text-[10px] text-ink-400">Atur jumlah box</span>
           </div>
 
           <div id="cart-items-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
 
-          <div class="mt-3.5 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
-            <span>Total Pembayaran Sementara</span>
-            <span id="modal-subtotal" class="text-amber-600 text-base font-serif">Rp0</span>
+          <div class="mt-3.5 pt-3 border-t border-cream-100 flex justify-between items-center text-sm font-bold">
+            <span class="text-ink-800">Total Pembayaran Sementara</span>
+            <span id="modal-subtotal" class="text-gold-600 text-base font-serif">Rp0</span>
           </div>
         </div>
 
-        <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 pt-2 border-t border-gray-100">
-          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Data Pemesan</h4>
+        <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 pt-2 border-t border-cream-100">
+          <h4 class="eyebrow text-ink-400">Data Pemesan</h4>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan / Kantor / Acara *</label>
-            <input type="text" id="cust-name" required enterkeyhint="next" placeholder="Contoh: Ibu Rina (PT Maju Jaya)" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Nama Pemesan / Kantor / Acara *</label>
+            <input type="text" id="cust-name" required enterkeyhint="next" placeholder="Contoh: Ibu Rina (PT Maju Jaya)" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Nomor WhatsApp Aktif *</label>
-            <input type="tel" id="cust-phone" required enterkeyhint="next" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Nomor WhatsApp Aktif *</label>
+            <input type="tel" id="cust-phone" required enterkeyhint="next" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Acara *</label>
-              <input type="date" id="order-date" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+              <label class="block text-xs font-medium text-ink-700 mb-1">Tanggal Acara *</label>
+              <input type="date" id="order-date" required class="w-full px-3 py-2 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">Jam Diambil/Kirim *</label>
-              <input type="time" id="order-time" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+              <label class="block text-xs font-medium text-ink-700 mb-1">Jam Diambil/Kirim *</label>
+              <input type="time" id="order-time" required class="w-full px-3 py-2 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Metode Pengambilan *</label>
-            <select id="delivery-type" onchange="toggleAddressField()" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Metode Pengambilan *</label>
+            <select id="delivery-type" onchange="toggleAddressField()" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-white">
               <option value="Ambil Sendiri">Ambil Sendiri di Toko AZRI SNACK</option>
               <option value="Diantar / Delivery">Diantar ke Kantor / Lokasi Acara</option>
             </select>
           </div>
 
           <div id="address-box" class="hidden">
-            <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
-            <textarea id="cust-address" rows="2" enterkeyhint="done" placeholder="Nama gedung, lantai, nama jalan, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
+            <label class="block text-xs font-medium text-ink-700 mb-1">Alamat Pengiriman Lengkap *</label>
+            <textarea id="cust-address" rows="2" enterkeyhint="done" placeholder="Nama gedung, lantai, nama jalan, patokan..." class="w-full px-3.5 py-2 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400"></textarea>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Tambahan (Opsional)</label>
-            <input type="text" id="order-notes" enterkeyhint="done" placeholder="Misal: Pisahkan 10 box untuk VIP, tulisan di box" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Catatan Tambahan (Opsional)</label>
+            <input type="text" id="order-notes" enterkeyhint="done" placeholder="Misal: Pisahkan 10 box untuk VIP, tulisan di box" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
           </div>
 
           <div class="pt-2">
-            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
+            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-700 hover:bg-emerald-800 active:scale-98 text-white font-semibold py-3.5 px-4 rounded-full text-xs sm:text-sm shadow-lg shadow-emerald-800/20 flex items-center justify-center gap-2 transition">
               <i class="fa-brands fa-whatsapp text-lg"></i>
               <span>Kirim Pesanan ke WhatsApp Toko</span>
             </button>
@@ -573,23 +615,37 @@
   </div>
 
   <!-- Footer -->
-  <footer class="max-w-4xl mx-auto px-4 mt-16 text-center text-xs text-gray-500">
-    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/70 shadow-xs space-y-4 text-left sm:text-center">
-      <div class="flex items-center justify-center gap-2 font-serif font-bold text-gray-900 text-lg">
-        <span class="text-xl">🍰</span> AZRI SNACK
+  <footer class="mt-16 px-4">
+    <div class="max-w-4xl mx-auto bg-ink-900 rounded-[28px] p-6 sm:p-8 text-cream-200 shadow-lift relative overflow-hidden">
+      <div class="absolute inset-0 texture-dots opacity-[0.35] pointer-events-none select-none"></div>
+      <div class="absolute -top-20 -right-16 w-64 h-64 rounded-full bg-gold-600/10 blur-3xl pointer-events-none select-none"></div>
+
+      <div class="relative z-10 text-center space-y-3">
+        <div class="flex items-center justify-center gap-2 font-serif font-bold text-cream-50 text-xl tracking-tight">
+          <span class="text-2xl">🍰</span> AZRI SNACK
+        </div>
+        <p class="eyebrow text-gold-300">Spesialis Custom Snack Box</p>
+
+        <p class="text-cream-300/70 text-xs max-w-md mx-auto leading-relaxed">
+          Menyajikan aneka paket custom snack box berkualitas dan kue basah tradisional untuk memeriahkan setiap acara Anda di wilayah Jakarta Selatan & sekitarnya.
+        </p>
+
+        <div class="rule-gold my-4 opacity-40 max-w-xs mx-auto"></div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 text-xs font-medium">
+          <a href="index.html" class="inline-flex items-center gap-1.5 text-cream-200/80 hover:text-cream-50 transition bg-white/[0.05] border border-white/10 px-3.5 py-2 rounded-full">
+            <i class="fa-solid fa-cake-candles text-gold-300 text-[11px]"></i> Lihat Katalog Satuan
+          </a>
+          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="inline-flex items-center gap-1.5 text-cream-200/80 hover:text-cream-50 transition bg-white/[0.05] border border-white/10 px-3.5 py-2 rounded-full">
+            <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i> WhatsApp: 0858-9202-2079
+          </button>
+        </div>
       </div>
-      <p class="text-gray-500 text-xs max-w-md mx-auto leading-relaxed">
-        Menyajikan aneka paket custom snack box berkualitas dan kue basah tradisional untuk memeriahkan setiap acara Anda di wilayah Jakarta Selatan & sekitarnya.
-      </p>
-      <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-gray-600 pt-2 border-t border-gray-100">
-        <a href="index.html" class="text-amber-700 hover:underline">← Lihat Katalog Satuan</a>
-        <span>•</span>
-        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="text-emerald-600 font-semibold hover:underline">
-          <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp: 0858-9202-2079
-        </button>
+
+      <div class="relative z-10 mt-6 pt-4 border-t border-white/10 text-[11px] text-cream-300/50 text-center">
+        © 2026 AZRI SNACK. All Rights Reserved.
       </div>
     </div>
-    <p class="mt-5 text-[11px] text-gray-400">© 2026 AZRI SNACK. All Rights Reserved.</p>
   </footer>
 
   <!-- Firebase Module Script -->
@@ -600,12 +656,12 @@
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAzriSnackPlaceholderKey",
+      apiKey: "AIzaSyBZSDRItVU6-_a-j_4T0P39bxBtWelKxEM",
       authDomain: "azri-snack-db.firebaseapp.com",
       projectId: "azri-snack-db",
-      storageBucket: "azri-snack-db.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef123456"
+      storageBucket: "azri-snack-db.firebasestorage.app",
+      messagingSenderId: "117431141487",
+      appId: "1:117431141487:web:4bf46d90590f02c657399a"
     };
 
     const WA_STORE_PHONE = "6285892022079";
@@ -720,9 +776,9 @@
       [2, 3, 4].forEach(n => {
         const card = document.getElementById(`card-box-${n}`);
         if (n === count) {
-          card.className = "box-card active relative p-3.5 sm:p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/40 cursor-pointer transition shadow-2xs";
+          card.className = "box-card active relative p-3.5 sm:p-4 rounded-2xl border-2 border-gold-500 bg-gold-50/50 cursor-pointer transition shadow-soft";
         } else {
-          card.className = "box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-gray-200 bg-white cursor-pointer transition shadow-2xs hover:border-amber-400";
+          card.className = "box-card relative p-3.5 sm:p-4 rounded-2xl border-2 border-cream-200 bg-white cursor-pointer transition shadow-soft hover:border-gold-300";
         }
       });
 
@@ -768,7 +824,7 @@
 
       const heroPriceEl = document.getElementById("hero-starting-price");
       if (heroPriceEl && boxSinglePrice > 0) {
-        heroPriceEl.innerText = "Mulai Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
+        heroPriceEl.innerText = "Rp" + boxSinglePrice.toLocaleString("id-ID") + " / box";
       }
     };
 
@@ -894,35 +950,35 @@
 
       const items = Object.values(cart);
       if (items.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 text-xs text-gray-400">Keranjang masih kosong.</div>`;
+        container.innerHTML = `<div class="text-center py-6 text-xs text-ink-400">Keranjang masih kosong.</div>`;
         return;
       }
 
       items.forEach(item => {
         const row = document.createElement("div");
-        row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
+        row.className = "flex items-center gap-2.5 bg-cream-50 p-2.5 rounded-2xl border border-cream-200";
         row.innerHTML = `
           <!-- Wadah Gambar Ukuran Terkunci 52px x 52px -->
-          <div style="width: 52px; height: 52px; flex-shrink: 0;" class="rounded-xl bg-white p-1 border border-amber-200 shadow-2xs flex items-center justify-center overflow-hidden">
+          <div style="width: 52px; height: 52px; flex-shrink: 0;" class="rounded-xl bg-white p-1 border border-cream-200 shadow-xs flex items-center justify-center overflow-hidden">
             <img src="${item.image_url || SNACKBOX_OFFICIAL_IMG}" alt="${item.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='./logo.png'">
           </div>
 
           <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
-            <p class="text-[10px] text-gray-500 line-clamp-1">${item.description || ''}</p>
-            <span class="text-[11px] text-amber-700 font-semibold font-serif">Rp${item.price.toLocaleString('id-ID')} / box</span>
+            <h4 class="font-bold text-xs text-ink-900 truncate">${item.name}</h4>
+            <p class="text-[10px] text-ink-400 line-clamp-1">${item.description || ''}</p>
+            <span class="text-[11px] text-gold-700 font-semibold font-serif">Rp${item.price.toLocaleString('id-ID')} / box</span>
           </div>
 
           <div class="flex items-center gap-2 flex-shrink-0">
-            <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5 shadow-2xs">
-              <button type="button" onclick="updateQty('${item.id}', -5)" class="w-6 h-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
-              <input type="number" min="5" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-8 text-center font-bold text-gray-900 text-xs outline-none bg-transparent">
-              <button type="button" onclick="updateQty('${item.id}', 5)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
+            <div class="flex items-center bg-white border border-cream-200 rounded-xl p-0.5 shadow-xs">
+              <button type="button" onclick="updateQty('${item.id}', -5)" class="w-6 h-6 rounded-lg bg-cream-100 hover:bg-cream-200 text-ink-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
+              <input type="number" min="5" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-8 text-center font-bold text-ink-900 text-xs outline-none bg-transparent">
+              <button type="button" onclick="updateQty('${item.id}', 5)" class="w-6 h-6 rounded-lg bg-gold-600 hover:bg-gold-700 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
             </div>
 
-            <span class="font-bold text-xs text-gray-900 text-right min-w-[55px] font-serif">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
+            <span class="font-bold text-xs text-ink-900 text-right min-w-[55px] font-serif">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
 
-            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus paket ini" class="w-6 h-6 rounded-lg text-gray-300 hover:text-red-500 flex items-center justify-center transition">
+            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus paket ini" class="w-6 h-6 rounded-lg text-ink-300 hover:text-red-500 flex items-center justify-center transition">
               <i class="fa-solid fa-trash-can text-xs"></i>
             </button>
           </div>

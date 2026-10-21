@@ -1,0 +1,69 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Fungsi bantu ----
+    // "Admin" = pengguna yang sudah login lewat Firebase Auth.
+    // (Login PIN di admin.html TIDAK dihitung — itu dicek di browser, bukan di server.)
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Validasi pesanan yang dibuat pelanggan dari halaman publik.
+    function isValidOrder() {
+      let d = request.resource.data;
+      return d.invoice_no is string
+          && d.invoice_no.startsWith('AZRI-')
+          && d.customer_name is string
+          && d.customer_name.size() >= 1
+          && d.customer_name.size() <= 100
+          && d.customer_phone is string
+          && d.customer_phone.size() >= 1
+          && d.customer_phone.size() <= 20
+          && d.event_date is string
+          && d.status == 'PENDING'            // pelanggan TIDAK boleh set status sendiri
+          && d.payment_status == 'UNPAID'     // pelanggan TIDAK boleh menandai lunas
+          && d.total_price is number
+          && d.total_price >= 0
+          && d.total_price <= 500000000
+          && d.items is list
+          && d.items.size() >= 1
+          && d.items.size() <= 200;
+    }
+
+    // ===== PRODUK (katalog) =====
+    // Baca publik agar katalog tampil di index/snackbox/karyawan.
+    // Tulis hanya admin/karyawan yang sudah login Firebase Auth.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // ===== PESANAN (berisi data pribadi pelanggan) =====
+    // Pelanggan hanya boleh MENBUAT pesanan.
+    // Membaca / mengubah / menghapus hanya admin yang login.
+    match /orders/{orderId} {
+      allow create: if isValidOrder();
+      allow read, update, delete: if isSignedIn();
+    }
+
+    // ===== PENGELUARAN / KAS =====
+    match /expenses/{expenseId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ===== PENGATURAN TOKO =====
+    // Logo (store_config) boleh dibaca publik untuk ditampilkan di halaman.
+    // Semua pengaturan lain (termasuk PIN admin & mengubah logo) hanya admin login.
+    match /settings/{settingId} {
+      allow read: if settingId == 'store_config' || isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // ===== TOLAK semua dokumen lain yang tidak didefinisikan =====
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
