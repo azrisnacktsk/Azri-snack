@@ -33,6 +33,19 @@
           fontFamily: {
             sans: ['Poppins', 'sans-serif'],
             serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            // Ivory hangat sebagai kanvas utama
+            cream: { 50:'#FDFBF6', 100:'#FAF5EC', 200:'#F1E7D6', 300:'#E3D3B8', 400:'#CBB38C' },
+            // Tinta batu untuk teks (lebih hangat dari gray murni)
+            ink: { 900:'#1C1917', 800:'#292524', 700:'#44403C', 600:'#57534E', 500:'#78716C', 400:'#A8A29E', 300:'#D6D3D1', 200:'#E7E5E4', 100:'#F5F5F4' },
+            // Emas / amber premium sebagai aksen brand
+            gold: { 50:'#FDF6EA', 100:'#F8E8CC', 200:'#EFD09B', 300:'#E2B365', 400:'#D19434', 500:'#B87516', 600:'#9A5B0F', 700:'#7C4608', 800:'#5C3306' }
+          },
+          boxShadow: {
+            soft: '0 1px 2px rgba(28,25,23,.04), 0 18px 40px -28px rgba(28,25,23,.35)',
+            lift: '0 2px 4px rgba(28,25,23,.05), 0 30px 60px -34px rgba(28,25,23,.5)',
+            glow: '0 14px 34px -14px rgba(154,91,15,.45)'
           }
         }
       }
@@ -72,9 +85,34 @@
     .animate-shimmer {
       animation: shimmerBar 1.5s infinite linear;
     }
+
+    /* ==== DESIGN SYSTEM: ELEGAN PREMIUM ==== */
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    /* Permukaan hero: gradasi karamel tua yang kaya, bukan oranye terang */
+    .hero-surface {
+      background:
+        radial-gradient(120% 130% at 12% 0%, rgba(255,238,206,0.22) 0%, rgba(255,238,206,0) 55%),
+        linear-gradient(135deg, #7C4608 0%, #9A5B0F 48%, #B87516 100%);
+    }
+    /* Titik halus sebagai tekstur, memberi kesan cetak premium */
+    .texture-dots {
+      background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1px);
+      background-size: 14px 14px;
+    }
+    /* Garis emas tipis untuk pemisah elegan */
+    .rule-gold {
+      background: linear-gradient(90deg, transparent, #E2B365 20%, #E2B365 80%, transparent);
+      height: 1px;
+    }
   </style>
 </head>
-<body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
+<body class="bg-cream-100 text-ink-800 pb-36 min-h-screen selection:bg-gold-500 selection:text-white">
 
   <!-- ================= PRELOAD / SPLASH SCREEN PEMBUKA ================= -->
   <div id="app-preload-screen" class="fixed inset-0 z-50 bg-[#faf8f5] flex flex-col items-center justify-center p-6 transition-all duration-700">
@@ -128,20 +166,19 @@
   </div>
 
   <!-- Header / Navbar -->
-  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
+  <header class="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-cream-200 shadow-soft">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-      
       <!-- Logo Toko & Brand -->
       <div class="flex items-center gap-3.5">
-        <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md shadow-amber-500/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
-          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
+        <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-1 ring-gold-700/20">
+          <div class="w-full h-full bg-cream-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
             <span id="store-logo-fallback" class="text-2xl">🍰</span>
             <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
         <div>
           <h1 class="font-serif font-bold text-lg sm:text-xl text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
-          <p class="text-[11px] text-amber-700/80 font-medium tracking-wide mt-1">Kue Tradisional & Snack Box</p>
+          <p class="text-[9px] text-gold-600 font-semibold uppercase tracking-[0.18em] mt-1">Kue Tradisional & Snack Box</p>
         </div>
       </div>
 
@@ -152,9 +189,9 @@
           <span>0858-9202-2079</span>
         </button>
         
-        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none">
+        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-cream-100 rounded-2xl text-gold-700 hover:bg-cream-200/80 transition border border-cream-200 shadow-soft active:scale-95 focus:outline-none">
           <i class="fa-solid fa-basket-shopping text-lg"></i>
-          <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
+          <span id="cart-badge" class="absolute -top-1 -right-1 bg-gold-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
         </button>
       </div>
     </div>
@@ -163,40 +200,42 @@
     <div class="max-w-5xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
       <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-        <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-9 py-2.5 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/40 outline-none transition border border-gray-200/80 focus:border-amber-400">
+        <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-white pl-9 pr-9 py-2.5 text-xs rounded-full focus:ring-2 focus:ring-gold-500/25 outline-none transition border border-cream-200 focus:border-gold-300 placeholder:text-ink-400">
         <button type="button" id="btn-clear-search" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1">
           <i class="fa-solid fa-circle-xmark text-sm"></i>
         </button>
       </form>
 
       <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
-        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-900 text-white shadow-xs transition">Semua Menu</button>
-        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Snack & Gorengan</button>
-        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Kue Basah</button>
+        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap bg-ink-900 text-cream-100 shadow-soft transition">Semua Menu</button>
+        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Snack & Gorengan</button>
+        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Kue Basah</button>
       </div>
     </div>
   </header>
 
   <!-- Hero Banner -->
   <section class="max-w-5xl mx-auto px-4 mt-4">
-    <div class="relative overflow-hidden bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-lg shadow-amber-500/10">
-      <div class="absolute -right-6 -bottom-10 opacity-15 text-9xl pointer-events-none select-none">🍰</div>
+    <div class="relative overflow-hidden hero-surface rounded-[28px] p-5 sm:p-8 text-cream-50 shadow-lift">
+      <div class="absolute inset-0 texture-dots opacity-40 pointer-events-none select-none"></div>
+      <div class="absolute -top-24 -left-16 w-64 h-64 rounded-full bg-gold-200/20 blur-3xl pointer-events-none select-none"></div>
+      <div class="absolute -right-8 -bottom-14 opacity-[0.07] text-[11rem] pointer-events-none select-none">🍰</div>
 
       <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div class="space-y-1.5 max-w-lg">
-          <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">
-            <span class="text-amber-200">★</span> Pesanan Acara & Hajatan
+          <div class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full eyebrow text-gold-100 border border-white/15">
+            <span class="text-gold-200">★</span> Pesanan Acara & Hajatan
           </div>
-          <h2 class="font-serif text-lg sm:text-2xl font-bold leading-snug">Aneka Kue Basah & Gorengan Gurih</h2>
-          <p class="text-xs text-amber-50/90 leading-relaxed">Dibuat dari bahan segar berkualitas. Pesan H-1 atau H-2 untuk sajian terbaik acara Anda.</p>
+          <h2 class="font-serif text-xl sm:text-3xl font-bold leading-tight tracking-tight">Aneka Kue Basah & Gorengan Gurih</h2>
+          <p class="text-xs sm:text-sm text-cream-100/80 leading-relaxed max-w-md">Dibuat dari bahan segar berkualitas. Pesan H-1 atau H-2 untuk sajian terbaik acara Anda.</p>
         </div>
         
         <div class="flex flex-col sm:items-end gap-2 text-xs">
-          <div class="inline-flex items-center gap-2 bg-black/20 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10">
-            <i class="fa-solid fa-clock text-amber-200 text-xs"></i>
+          <div class="inline-flex items-center gap-2 bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10">
+            <i class="fa-solid fa-clock text-gold-200 text-xs"></i>
             <span>Buka Setiap Hari: 06.00 - 18.00</span>
           </div>
-          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin konsultasi pesanan kue acara.')" class="inline-flex items-center gap-1.5 text-xs text-amber-100 hover:text-white font-medium transition underline">
+          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin konsultasi pesanan kue acara.')" class="inline-flex items-center gap-1.5 text-xs text-gold-100 hover:text-white font-semibold transition underline underline-offset-4 decoration-gold-200/50">
             <i class="fa-brands fa-whatsapp text-sm"></i> Chat WA Admin Toko
           </button>
         </div>
@@ -206,18 +245,18 @@
 
   <!-- BANNER TAUTAN KE HALAMAN KHUSUS SNACK BOX -->
   <section class="max-w-5xl mx-auto px-4 mt-3">
-    <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-2xl p-3.5 sm:p-4 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl flex-shrink-0">
+    <div class="bg-white rounded-[24px] p-4 sm:p-5 shadow-soft border border-cream-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-gold-50 text-gold-700 border border-gold-200 flex items-center justify-center text-xl flex-shrink-0">
           🍱
         </div>
         <div>
-          <h3 class="font-bold text-sm sm:text-base leading-tight">Mau Pesan Paket Custom Snack Box?</h3>
+          <h3 class="font-serif font-bold text-base sm:text-lg text-ink-900 leading-tight tracking-tight">Mau Pesan Paket Custom Snack Box?</h3>
           <!-- Subjudul yang diminta -->
-          <p class="text-xs text-amber-100 mt-0.5">Praktis untuk meeting, kantor dan berbagai acara</p>
+          <p class="text-xs text-ink-500 mt-0.5">Praktis untuk meeting, kantor dan berbagai acara</p>
         </div>
       </div>
-      <a href="snackbox.html" class="inline-flex items-center justify-center gap-2 bg-white text-amber-800 hover:bg-amber-50 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-xs whitespace-nowrap active:scale-95">
+      <a href="snackbox.html" class="inline-flex items-center justify-center gap-2 bg-ink-900 hover:bg-ink-800 text-cream-50 font-semibold text-xs px-5 py-3 rounded-full transition shadow-soft whitespace-nowrap active:scale-95">
         <span>Buka Menu Snack Box</span>
         <i class="fa-solid fa-arrow-right text-[11px]"></i>
       </a>
@@ -226,30 +265,30 @@
 
   <!-- PEMBERITAHUAN STOK HARI INI & PINTASAN SCROLL KE PRODUK HABIS -->
   <section class="max-w-5xl mx-auto px-4 mt-3">
-    <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
+    <div class="bg-white border border-cream-200 rounded-[24px] p-4 sm:p-5 shadow-soft">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div class="w-9 h-9 rounded-xl bg-gold-50 text-gold-700 border border-gold-200 flex items-center justify-center flex-shrink-0 mt-0.5">
             <i class="fa-solid fa-calendar-check text-base"></i>
           </div>
-          <div class="text-xs text-gray-700 leading-relaxed">
-            <p class="font-bold text-gray-900 flex items-center gap-1.5">
+          <div class="text-xs text-ink-700 leading-relaxed">
+            <p class="font-bold text-ink-900 flex items-center gap-1.5">
               <span>Stok Hari Ini & Pemesanan Hari Besok</span>
-              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
+              <span class="bg-cream-200 text-ink-700 text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md">Penting</span>
             </p>
-            <p class="text-gray-600 mt-0.5">
-              Menu yang <strong>habis hari ini</strong> otomatis berada di urutan paling bawah, namun <strong>tetap bisa Anda pesan untuk jadwal besok atau lusa</strong>.
+            <p class="text-ink-500 mt-0.5">
+              Menu yang <strong class="text-ink-700">habis hari ini</strong> otomatis berada di urutan paling bawah, namun <strong class="text-ink-700">tetap bisa Anda pesan untuk jadwal besok atau lusa</strong>.
             </p>
           </div>
         </div>
         
         <div class="flex items-center gap-2 flex-wrap">
-          <button id="btn-scroll-soldout" onclick="scrollToSoldOutProducts()" class="hidden inline-flex items-center justify-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-2 rounded-xl border border-blue-200 transition shadow-2xs whitespace-nowrap">
-            <i class="fa-solid fa-arrow-down text-xs"></i>
+          <button id="btn-scroll-soldout" onclick="scrollToSoldOutProducts()" class="hidden inline-flex items-center justify-center gap-1.5 bg-ink-900 hover:bg-ink-800 text-cream-100 text-[11px] font-semibold px-3.5 py-2 rounded-full transition shadow-soft whitespace-nowrap">
+            <i class="fa-solid fa-arrow-down text-[10px]"></i>
             <span>Menu Habis (Bisa Pesan Besok)</span>
           </button>
           
-          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap">
+          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-cream-50 text-ink-800 text-[11px] font-semibold px-3.5 py-2 rounded-full border border-cream-200 transition shadow-soft whitespace-nowrap">
             <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
             <span>Konsultasi WA</span>
           </button>
@@ -266,12 +305,15 @@
 
   <!-- Product Catalog Grid (Siap Saji / Ready Hari Ini - Urut A-Z) -->
   <main id="catalog-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2">
-        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu Siap Saji</h3>
-        <span id="product-count-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
+    <div class="flex items-end justify-between mb-4">
+      <div>
+        <p class="eyebrow text-gold-600 mb-1">Katalog Harian</p>
+        <div class="flex items-center gap-2">
+          <h3 class="font-serif font-bold text-ink-900 text-lg sm:text-xl tracking-tight">Menu Siap Saji</h3>
+          <span id="product-count-badge" class="bg-cream-200 text-ink-700 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
+        </div>
       </div>
-      <span class="text-[11px] text-gray-400">Urut A-Z • Klik kartu untuk detail</span>
+      <span class="text-[11px] text-ink-400 hidden sm:block pb-1">Urut A-Z • Klik kartu untuk detail</span>
     </div>
 
     <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5 hidden">
@@ -281,20 +323,23 @@
 
   <!-- BAGIAN PRODUK HABIS HARI INI (SCROLL KE BAWAH - Urut A-Z) -->
   <section id="soldout-section" class="max-w-5xl mx-auto px-4 mt-12 scroll-mt-24 hidden">
-    <div class="border-t-2 border-dashed border-gray-200 pt-6">
+    <div class="rule-gold mb-6"></div>
       <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-xs">
-            <i class="fa-solid fa-clock-rotate-left"></i>
+        <div>
+          <p class="eyebrow text-gold-600 mb-1">Pra-Pesan</p>
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-ink-900 text-cream-100 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <h3 class="font-serif font-bold text-ink-900 text-lg sm:text-xl tracking-tight">Habis Hari Ini</h3>
+            <span id="soldout-count-badge" class="bg-white text-ink-600 border border-cream-200 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
           </div>
-          <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Habis Hari Ini (Bisa Dipesan untuk Besok/Lusa)</h3>
-          <span id="soldout-count-badge" class="bg-red-50 text-red-700 border border-red-200 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
         </div>
       </div>
 
-      <p class="text-xs text-gray-500 mb-4 bg-blue-50/80 p-3 rounded-2xl border border-blue-100 flex items-center gap-2">
-        <i class="fa-solid fa-circle-info text-blue-600"></i>
-        <span>Stok siap saji untuk hari ini sudah habis terjual. Anda tetap bisa memasukkan menu di bawah ke keranjang untuk jadwal <strong>besok, lusa, atau acara mendatang</strong>.</span>
+      <p class="text-xs text-ink-600 mb-4 bg-cream-50 p-3.5 rounded-2xl border border-cream-200 flex items-start gap-2.5 leading-relaxed">
+        <i class="fa-solid fa-circle-info text-gold-500 mt-0.5"></i>
+        <span>Stok siap saji untuk hari ini sudah habis terjual. Anda tetap bisa memasukkan menu di bawah ke keranjang untuk jadwal <strong class="text-ink-800">besok, lusa, atau acara mendatang</strong>.</span>
       </p>
 
       <div id="soldout-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5">
@@ -305,14 +350,14 @@
 
   <!-- Sticky Bottom Cart Bar -->
   <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
-    <div class="bg-gray-950/95 text-white rounded-3xl p-3.5 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
+    <div class="bg-ink-900/95 text-cream-100 rounded-[26px] p-3.5 px-4 shadow-lift flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/10">
       <div>
-        <p class="text-[11px] text-gray-300 font-medium">
-          <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Pcs Kue
+        <p class="text-[11px] text-cream-300/70 font-medium">
+          <span id="cart-item-count" class="text-gold-300 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Pcs Kue
         </p>
-        <p id="cart-price-total" class="text-base font-bold text-amber-400 font-serif">Rp0</p>
+        <p id="cart-price-total" class="text-base font-bold text-cream-50 font-serif">Rp0</p>
       </div>
-      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-amber-500/20">
+      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 active:scale-95 text-white px-5 py-2.5 rounded-full text-xs font-semibold flex items-center gap-2 transition shadow-glow whitespace-nowrap">
         <span>Rincian Pesanan</span>
         <i class="fa-solid fa-arrow-right text-[11px]"></i>
       </button>
@@ -320,58 +365,58 @@
   </div>
 
   <!-- Floating Direct WhatsApp Button -->
-  <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya-tanya menu.')" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95">
+  <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya-tanya menu.')" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-600 hover:bg-emerald-700 text-white w-12 h-12 sm:w-13 sm:h-13 rounded-full flex items-center justify-center shadow-lg shadow-emerald-900/25 ring-4 ring-cream-100/60 transition transform hover:scale-105 active:scale-95">
     <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
   </button>
 
   <!-- MODAL DETAIL PRODUK -->
   <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+    <div class="bg-white w-full sm:max-w-md rounded-t-[28px] sm:rounded-[28px] max-h-[90vh] flex flex-col shadow-lift overflow-hidden animate-slide-up">
       
-      <div class="relative w-full h-60 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
+      <div class="relative w-full h-60 sm:h-64 bg-cream-100 overflow-hidden flex-shrink-0">
         <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
         <button onclick="closeProductDetailModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
-        <span id="detail-category" class="absolute bottom-3 left-3 bg-gray-900/80 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1 rounded-full shadow-md">Kategori</span>
-        <span id="detail-stock-badge" class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-gray-100">Sisa Stok: 50 pcs</span>
+        <span id="detail-category" class="absolute bottom-3 left-3 bg-ink-900/85 backdrop-blur-md text-cream-100 text-[11px] font-semibold px-3 py-1 rounded-full shadow-md">Kategori</span>
+        <span id="detail-stock-badge" class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-ink-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-cream-200">Sisa Stok: 50 pcs</span>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-4">
         <div>
-          <h3 id="detail-title" class="font-serif font-bold text-xl text-gray-900">Nama Produk</h3>
-          <p id="detail-price" class="text-base font-bold text-amber-600 mt-0.5">Rp0</p>
+          <h3 id="detail-title" class="font-serif font-bold text-xl text-ink-900 tracking-tight">Nama Produk</h3>
+          <p id="detail-price" class="text-base font-bold text-gold-600 mt-0.5">Rp0</p>
         </div>
 
-        <div id="detail-preorder-notice" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-3 text-xs text-blue-800 flex items-start gap-2.5">
-          <i class="fa-solid fa-calendar-day text-blue-600 mt-0.5"></i>
+        <div id="detail-preorder-notice" class="hidden bg-cream-50 border border-gold-200 rounded-2xl p-3.5 text-xs text-ink-700 flex items-start gap-2.5">
+          <i class="fa-regular fa-calendar text-gold-600 mt-0.5"></i>
           <div>
-            <p class="font-bold">Stok Siap Saji Hari Ini Habis</p>
-            <p class="text-[11px] text-blue-600 mt-0.5">Menu ini tetap bisa Anda pesan sekarang untuk jadwal acara <strong>besok, lusa, atau hari berikutnya</strong>.</p>
+            <p class="font-bold text-ink-900">Stok Siap Saji Hari Ini Habis</p>
+            <p class="text-[11px] text-ink-500 mt-0.5">Menu ini tetap bisa Anda pesan sekarang untuk jadwal acara <strong class="text-ink-700">besok, lusa, atau hari berikutnya</strong>.</p>
           </div>
         </div>
 
         <div>
-          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi Menu</h4>
-          <p id="detail-desc" class="text-xs text-gray-600 leading-relaxed bg-amber-50/40 p-3.5 rounded-2xl border border-amber-100/50">Deskripsi lengkap...</p>
+          <h4 class="eyebrow text-ink-400 mb-1.5">Deskripsi Menu</h4>
+          <p id="detail-desc" class="text-xs text-ink-600 leading-relaxed bg-cream-50 p-3.5 rounded-2xl border border-cream-200">Deskripsi lengkap...</p>
         </div>
 
-        <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+        <div class="pt-2 border-t border-cream-100 flex items-center justify-between">
           <div>
-            <span class="text-xs font-semibold text-gray-700 block">Jumlah Pesanan:</span>
-            <span id="detail-order-hint" class="text-[10px] text-gray-400">Atur porsi yang diinginkan</span>
+            <span class="text-xs font-semibold text-ink-700 block">Jumlah Pesanan:</span>
+            <span id="detail-order-hint" class="text-[10px] text-ink-400">Atur porsi yang diinginkan</span>
           </div>
           
-          <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
-            <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-xl bg-white text-amber-800 font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-100 active:scale-90 transition">-</button>
-            <input type="number" id="detail-qty-input" min="1" value="1" enterkeyhint="done" oninput="handleModalManualInput(this)" class="w-14 text-center text-sm font-bold text-amber-950 bg-transparent outline-none">
-            <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-xl bg-amber-500 text-white font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-600 active:scale-90 transition">+</button>
+          <div class="flex items-center gap-1 bg-cream-100 border border-cream-200 rounded-full p-1">
+            <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-full bg-white text-gold-800 font-bold text-base flex items-center justify-center shadow-xs hover:bg-cream-50 active:scale-90 transition">-</button>
+            <input type="number" id="detail-qty-input" min="1" value="1" enterkeyhint="done" oninput="handleModalManualInput(this)" class="w-14 text-center text-sm font-bold text-ink-900 bg-transparent outline-none">
+            <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-full bg-gold-600 text-white font-bold text-base flex items-center justify-center shadow-xs hover:bg-gold-700 active:scale-90 transition">+</button>
           </div>
         </div>
       </div>
 
-      <div class="p-4 bg-gray-50 border-t border-gray-100">
-        <button id="btn-add-modal-cart" onclick="confirmAddToCartFromModal()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98">
+      <div class="p-4 bg-cream-50 border-t border-cream-200">
+        <button id="btn-add-modal-cart" onclick="confirmAddToCartFromModal()" class="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-semibold py-3.5 px-4 rounded-full text-xs sm:text-sm shadow-glow flex items-center justify-center gap-2 transition active:scale-98">
           <i class="fa-solid fa-basket-shopping"></i>
           <span id="btn-add-modal-text">Tambahkan ke Keranjang</span>
         </button>
@@ -382,16 +427,16 @@
 
   <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
   <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-[28px] sm:rounded-[28px] max-h-[90vh] flex flex-col shadow-lift overflow-hidden animate-slide-up">
       
-      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div class="px-5 py-4 border-b border-cream-100 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
+          <div class="w-7 h-7 rounded-xl bg-gold-100 text-gold-700 flex items-center justify-center text-xs">
             <i class="fa-solid fa-bag-shopping"></i>
           </div>
-          <h3 class="font-bold text-gray-900 text-sm sm:text-base">Rincian Belanja & Checkout</h3>
+          <h3 class="font-serif font-bold text-ink-900 text-base sm:text-lg tracking-tight">Rincian Belanja & Checkout</h3>
         </div>
-        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
+        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-cream-100 text-ink-500 hover:bg-cream-200 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
@@ -399,62 +444,62 @@
       <div class="p-5 overflow-y-auto space-y-5">
         <div>
           <div class="flex items-center justify-between mb-2">
-            <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Item Terpilih</h4>
-            <span class="text-[10px] text-gray-400">Atur porsi pesanan</span>
+            <h4 class="eyebrow text-ink-400">Item Terpilih</h4>
+            <span class="text-[10px] text-ink-400">Atur porsi pesanan</span>
           </div>
 
           <div id="cart-items-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
 
-          <div class="mt-3.5 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
-            <span>Total Pembayaran Sementara</span>
-            <span id="modal-subtotal" class="text-amber-600 text-base font-serif">Rp0</span>
+          <div class="mt-3.5 pt-3 border-t border-cream-100 flex justify-between items-center text-sm font-bold">
+            <span class="text-ink-800">Total Pembayaran Sementara</span>
+            <span id="modal-subtotal" class="text-gold-600 text-base font-serif">Rp0</span>
           </div>
         </div>
 
-        <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 pt-2 border-t border-gray-100">
-          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Data Pemesan</h4>
+        <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 pt-2 border-t border-cream-100">
+          <h4 class="eyebrow text-ink-400">Data Pemesan</h4>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan *</label>
-            <input type="text" id="cust-name" required enterkeyhint="next" placeholder="Contoh: Ibu Rina" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Nama Pemesan *</label>
+            <input type="text" id="cust-name" required enterkeyhint="next" placeholder="Contoh: Ibu Rina" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Nomor WhatsApp Aktif *</label>
-            <input type="tel" id="cust-phone" required enterkeyhint="next" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Nomor WhatsApp Aktif *</label>
+            <input type="tel" id="cust-phone" required enterkeyhint="next" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Acara *</label>
-              <input type="date" id="order-date" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+              <label class="block text-xs font-medium text-ink-700 mb-1">Tanggal Acara *</label>
+              <input type="date" id="order-date" required class="w-full px-3 py-2 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">Jam Diambil/Kirim *</label>
-              <input type="time" id="order-time" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+              <label class="block text-xs font-medium text-ink-700 mb-1">Jam Diambil/Kirim *</label>
+              <input type="time" id="order-time" required class="w-full px-3 py-2 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Metode Pengambilan *</label>
-            <select id="delivery-type" onchange="toggleAddressField()" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Metode Pengambilan *</label>
+            <select id="delivery-type" onchange="toggleAddressField()" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-white">
               <option value="Ambil Sendiri">Ambil Sendiri di Toko AZRI SNACK</option>
               <option value="Diantar / Delivery">Diantar ke Alamat (Ongkir dihitung via WA)</option>
             </select>
           </div>
 
           <div id="address-box" class="hidden">
-            <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
-            <textarea id="cust-address" rows="2" enterkeyhint="done" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
+            <label class="block text-xs font-medium text-ink-700 mb-1">Alamat Pengiriman Lengkap *</label>
+            <textarea id="cust-address" rows="2" enterkeyhint="done" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400"></textarea>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Khusus (Opsional)</label>
-            <input type="text" id="order-notes" enterkeyhint="done" placeholder="Misal: Pisahkan 5 box pedas, bungkus rapi" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            <label class="block text-xs font-medium text-ink-700 mb-1">Catatan Khusus (Opsional)</label>
+            <input type="text" id="order-notes" enterkeyhint="done" placeholder="Misal: Pisahkan 5 box pedas, bungkus rapi" class="w-full px-3.5 py-2.5 text-xs border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500/25 focus:border-gold-300 outline-none transition bg-cream-50/60 focus:bg-white placeholder:text-ink-400">
           </div>
 
           <div class="pt-2">
-            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
+            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-700 hover:bg-emerald-800 active:scale-98 text-white font-semibold py-3.5 px-4 rounded-full text-xs sm:text-sm shadow-lg shadow-emerald-800/20 flex items-center justify-center gap-2 transition">
               <i class="fa-brands fa-whatsapp text-lg"></i>
               <span>Kirim Pesanan ke WhatsApp Toko</span>
             </button>
@@ -466,39 +511,59 @@
   </div>
 
   <!-- Footer -->
-  <footer class="max-w-5xl mx-auto px-4 mt-16 text-center text-xs text-gray-500">
-    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/70 shadow-xs space-y-4 text-left sm:text-center">
-      <div class="flex items-center justify-center gap-2 font-serif font-bold text-gray-900 text-lg">
-        <span class="text-xl">🍰</span> AZRI SNACK
-      </div>
+  <footer class="mt-16 px-4">
+    <div class="max-w-5xl mx-auto bg-ink-900 rounded-[28px] p-6 sm:p-9 text-cream-200 shadow-lift relative overflow-hidden">
+      <div class="absolute inset-0 texture-dots opacity-[0.35] pointer-events-none select-none"></div>
+      <div class="absolute -top-20 -right-16 w-64 h-64 rounded-full bg-gold-600/10 blur-3xl pointer-events-none select-none"></div>
 
-      <p class="text-gray-500 text-xs max-w-md mx-auto leading-relaxed">
-        Menyajikan aneka kue basah tradisional dan paket snack box berkualitas untuk memeriahkan setiap acara dan momen istimewa Anda.
-      </p>
-
-      <div class="bg-amber-50/60 border border-amber-100/80 rounded-2xl p-4 max-w-lg mx-auto text-left">
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
-            <i class="fa-solid fa-location-dot text-sm"></i>
+      <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <div>
+          <div class="flex items-center gap-2 font-serif font-bold text-cream-50 text-xl tracking-tight">
+            <span class="text-2xl">🍰</span> AZRI SNACK
           </div>
-          <div class="text-xs text-gray-700 leading-relaxed">
-            <p class="font-bold text-gray-900 mb-0.5">Alamat Outlet / Dapur Toko:</p>
-            <p class="text-gray-600">Jl Bukit Duri Tanjakan, Gg H Tompel RT 002 RW 011, Kel. Bukit Duri, Kec. Tebet, Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12840</p>
-            <a href="https://maps.app.goo.gl/oYoQGY4durXxAfRB8" target="_blank" class="inline-flex items-center gap-1.5 text-amber-700 hover:text-amber-800 font-semibold mt-2 text-xs underline">
+          <p class="eyebrow text-gold-300 mt-1.5">Kue Tradisional & Snack Box</p>
+
+          <p class="text-cream-300/70 text-xs max-w-sm mt-4 leading-relaxed">
+            Menyajikan aneka kue basah tradisional dan paket snack box berkualitas untuk memeriahkan setiap acara dan momen istimewa Anda.
+          </p>
+
+          <div class="rule-gold my-5 opacity-40"></div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="flex items-center gap-2.5 text-cream-300/80">
+              <i class="fa-solid fa-clock text-gold-300 w-4 text-center"></i>
+              <span>Buka Setiap Hari, 06.00 - 18.00 WIB</span>
+            </div>
+            <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="flex items-center gap-2.5 text-cream-300/80 hover:text-cream-50 transition">
+              <i class="fa-brands fa-whatsapp text-emerald-400 w-4 text-center text-base"></i>
+              <span class="font-medium">0858-9202-2079</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <p class="eyebrow text-gold-300 mb-2.5">Lokasi Outlet</p>
+          <div class="bg-white/[0.04] border border-white/10 rounded-2xl p-4">
+            <p class="text-cream-200/85 text-xs leading-relaxed">
+              Jl Bukit Duri Tanjakan, Gg H Tompel RT 002 RW 011, Kel. Bukit Duri, Kec. Tebet, Jakarta Selatan, DKI Jakarta 12840
+            </p>
+            <a href="https://maps.app.goo.gl/oYoQGY4durXxAfRB8" target="_blank" class="inline-flex items-center gap-1.5 text-gold-300 hover:text-gold-200 font-semibold mt-3 text-xs underline underline-offset-4">
               <i class="fa-solid fa-map-location-dot"></i> Buka Petunjuk Arah di Google Maps
             </a>
           </div>
+
+          <a href="snackbox.html" class="mt-3 inline-flex items-center justify-center gap-2 w-full bg-gold-500 hover:bg-gold-400 text-ink-900 font-bold text-xs px-4 py-3 rounded-2xl transition shadow-glow active:scale-95">
+            <span>🍱 Pesan Paket Snack Box</span>
+            <i class="fa-solid fa-arrow-right text-[11px]"></i>
+          </a>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-medium text-gray-600 pt-2 border-t border-gray-100">
-        <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-500"></i> Buka: 06.00 - 18.00 WIB</span>
-        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="flex items-center gap-1.5 text-emerald-600 font-semibold hover:underline">
-          <i class="fa-brands fa-whatsapp text-base"></i> 0858-9202-2079
-        </button>
+      <div class="relative z-10 mt-7 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-cream-300/50">
+        <span>© 2026 AZRI SNACK. All Rights Reserved.</span>
+        <span>Dibuat Fresh Setiap Hari • Tebet, Jakarta Selatan</span>
       </div>
     </div>
-    <p class="mt-5 text-[11px] text-gray-400">© 2026 AZRI SNACK. All Rights Reserved.</p>
   </footer>
 
   <!-- Firebase Module Script -->
@@ -509,12 +574,12 @@
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAzriSnackPlaceholderKey",
+      apiKey: "AIzaSyBZSDRItVU6-_a-j_4T0P39bxBtWelKxEM",
       authDomain: "azri-snack-db.firebaseapp.com",
       projectId: "azri-snack-db",
-      storageBucket: "azri-snack-db.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef123456"
+      storageBucket: "azri-snack-db.firebasestorage.app",
+      messagingSenderId: "117431141487",
+      appId: "1:117431141487:web:4bf46d90590f02c657399a",
     };
 
     const WA_STORE_PHONE = "6285892022079";
@@ -720,18 +785,18 @@
 
       if (readyProducts.length === 0 && soldOutProducts.length === 0) {
         gridReady.innerHTML = `
-          <div class="col-span-full text-center py-14 bg-white rounded-3xl border border-gray-100">
-            <i class="fa-solid fa-cookie-bite text-3xl text-amber-200 mb-2"></i>
-            <p class="text-xs text-gray-400 font-medium">Menu yang Anda cari tidak ditemukan.</p>
-            <button onclick="clearSearchInput()" class="mt-3 text-xs bg-amber-100 text-amber-800 font-semibold px-3 py-1.5 rounded-xl hover:bg-amber-200 transition">
+          <div class="col-span-full text-center py-14 bg-white rounded-[24px] border border-cream-200 shadow-soft">
+            <i class="fa-solid fa-cookie-bite text-3xl text-gold-200 mb-2"></i>
+            <p class="text-xs text-ink-400 font-medium">Menu yang Anda cari tidak ditemukan.</p>
+            <button onclick="clearSearchInput()" class="mt-3 text-[11px] bg-ink-900 text-cream-100 font-semibold px-4 py-2 rounded-full hover:bg-ink-800 transition">
               Tampilkan Semua Menu
             </button>
           </div>
         `;
       } else if (readyProducts.length === 0) {
         gridReady.innerHTML = `
-          <div class="col-span-full text-center py-8 bg-amber-50/60 rounded-3xl border border-amber-200/60">
-            <p class="text-xs text-amber-800 font-medium">Semua stok siap saji untuk kategori ini sudah habis hari ini. Silakan lihat daftar menu di bawah untuk pesan besok.</p>
+          <div class="col-span-full text-center py-8 bg-cream-50 rounded-[24px] border border-cream-200">
+            <p class="text-xs text-ink-600 font-medium">Semua stok siap saji untuk kategori ini sudah habis hari ini. Silakan lihat daftar menu di bawah untuk pesan besok.</p>
           </div>
         `;
       } else {
@@ -757,63 +822,63 @@
 
     function createProductCardHTML(p, liveStock, inCartQty, isSoldOut, fallbackImg) {
       const card = document.createElement("div");
-      card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/80' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
+      card.className = `bg-white rounded-[24px] p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-cream-200 shadow-soft opacity-95' : 'border-cream-200 shadow-soft hover:shadow-lift hover:-translate-y-0.5'}`;
       
       card.innerHTML = `
         <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
-          <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
-            <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
+          <div class="relative w-full h-36 rounded-2xl bg-cream-100 overflow-hidden mb-3 ring-1 ring-cream-200/70">
+            <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='${fallbackImg}'">
             
-            <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
+            <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-ink-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-soft ring-1 ring-cream-200">
               ${p.category || 'Kue'}
             </span>
 
             ${isSoldOut ? `
-              <span class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+              <span class="absolute top-2 right-2 bg-white/95 backdrop-blur-md text-ink-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-soft ring-1 ring-cream-200 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-ink-300"></span>
                 Habis Hari Ini
               </span>
             ` : `
-              <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
+              <span class="absolute bottom-2 left-2 bg-ink-900/75 backdrop-blur-md text-cream-100 text-[9px] font-medium px-2.5 py-0.5 rounded-full shadow-soft">
                 Sisa Hari Ini: ${liveStock} pcs
               </span>
             `}
           </div>
 
-          <h3 class="font-bold text-xs sm:text-sm line-clamp-1 text-gray-900 group-hover:text-amber-600 transition">${p.name}</h3>
+          <h3 class="font-semibold text-[13px] leading-tight line-clamp-1 text-ink-900 group-hover:text-gold-600 transition tracking-tight">${p.name}</h3>
           
           ${isSoldOut ? `
-            <p class="text-blue-600 font-medium text-[10px] line-clamp-1 mt-0.5">
-              <i class="fa-solid fa-calendar-plus text-[9px]"></i> Bisa dipesan untuk besok/lusa
+            <p class="text-gold-600 font-medium text-[10px] line-clamp-1 mt-1 whitespace-nowrap">
+              Pre-order besok/lusa
             </p>
           ` : `
-            <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
+            <p class="text-ink-400 text-[10px] line-clamp-1 mt-1">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
           `}
         </div>
 
-        <div class="mt-3 pt-2.5 border-t border-gray-50 flex items-center justify-between">
-          <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
+        <div class="mt-3 pt-2.5 border-t border-cream-100 flex items-center justify-between gap-1.5">
+          <span class="font-serif font-bold text-[13px] text-ink-900 whitespace-nowrap">Rp${Number(p.price).toLocaleString('id-ID')}</span>
           
           <div id="btn-container-${p.id}">
             ${isSoldOut ? (inCartQty > 0 ? `
-              <div class="flex items-center bg-blue-50 border border-blue-200 rounded-xl p-0.5">
-                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-blue-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-blue-950 bg-transparent outline-none">
-                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+              <div class="flex items-center bg-ink-100 border border-ink-200 rounded-full p-0.5">
+                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-full bg-white text-ink-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-[11px] font-bold text-ink-900 bg-transparent outline-none">
+                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-full bg-ink-900 text-cream-50 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
               </div>
             ` : `
-              <button onclick="updateQty('${p.id}', 1)" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition shadow-2xs">
-                <i class="fa-solid fa-calendar-plus"></i> Pesan Besok
+              <button onclick="updateQty('${p.id}', 1)" class="bg-ink-900 hover:bg-ink-800 active:scale-95 text-cream-100 text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 transition shadow-soft whitespace-nowrap">
+                Pesan Besok
               </button>
             `) : (inCartQty > 0 ? `
-              <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
-                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
-                <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
-                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+              <div class="flex items-center bg-gold-50 border border-gold-200 rounded-full p-0.5">
+                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-full bg-white text-gold-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-[11px] font-bold text-gold-800 bg-transparent outline-none">
+                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-full bg-gold-600 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
               </div>
             ` : `
-              <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
-                <i class="fa-solid fa-plus text-[10px]"></i> Pesan
+              <button onclick="updateQty('${p.id}', 1)" class="bg-gold-600 hover:bg-gold-700 active:scale-95 text-white text-[11px] font-semibold px-3.5 py-1.5 rounded-full flex items-center gap-1 transition shadow-glow whitespace-nowrap">
+                <i class="fa-solid fa-plus text-[9px]"></i> Pesan
               </button>
             `)}
           </div>
@@ -845,16 +910,16 @@
 
       if (isSoldOut) {
         preorderNotice.classList.remove("hidden");
-        stockBadge.className = "absolute bottom-3 right-3 bg-red-600 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md";
+        stockBadge.className = "absolute bottom-3 right-3 bg-ink-900/90 text-cream-100 text-[11px] font-bold px-3 py-1 rounded-full shadow-md";
         stockBadge.innerText = "Habis Hari Ini";
         btnAddText.innerText = "Pesan untuk Jadwal Besok / Lusa";
-        btnAddModal.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition active:scale-98";
+        btnAddModal.className = "w-full bg-ink-900 hover:bg-ink-800 text-cream-50 font-semibold py-3.5 px-4 rounded-full text-xs sm:text-sm shadow-lift flex items-center justify-center gap-2 transition active:scale-98";
       } else {
         preorderNotice.classList.add("hidden");
-        stockBadge.className = "absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-gray-100";
+        stockBadge.className = "absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-ink-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-cream-200";
         stockBadge.innerText = `Sisa Stok Hari Ini: ${liveStock} pcs`;
         btnAddText.innerText = "Tambahkan ke Keranjang";
-        btnAddModal.className = "w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98";
+        btnAddModal.className = "w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-semibold py-3.5 px-4 rounded-full text-xs sm:text-sm shadow-glow flex items-center justify-center gap-2 transition active:scale-98";
       }
 
       const qtyInput = document.getElementById("detail-qty-input");
@@ -1041,11 +1106,11 @@
     window.filterCategory = function(cat) {
       currentFilter = cat;
       document.querySelectorAll(".cat-btn").forEach(btn => {
-        btn.classList.remove("bg-gray-900", "text-white", "shadow-xs");
-        btn.classList.add("bg-white", "text-gray-600");
+        btn.classList.remove("bg-ink-900", "text-cream-100", "shadow-soft", "font-semibold");
+        btn.classList.add("bg-white", "text-ink-700", "font-medium");
       });
-      event.target.classList.remove("bg-white", "text-gray-600");
-      event.target.classList.add("bg-gray-900", "text-white", "shadow-xs");
+      event.target.classList.remove("bg-white", "text-ink-700", "font-medium");
+      event.target.classList.add("bg-ink-900", "text-cream-100", "shadow-soft", "font-semibold");
       renderFilteredProducts();
     };
 
