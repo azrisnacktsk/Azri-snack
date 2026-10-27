@@ -94,13 +94,13 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
     }
-    /* Permukaan hero: gradasi karamel tua yang kaya, bukan oranye terang */
+    /* Permukaan hero: gradasi karamel tua yang kaya */
     .hero-surface {
       background:
         radial-gradient(120% 130% at 12% 0%, rgba(255,238,206,0.22) 0%, rgba(255,238,206,0) 55%),
         linear-gradient(135deg, #7C4608 0%, #9A5B0F 48%, #B87516 100%);
     }
-    /* Titik halus sebagai tekstur, memberi kesan cetak premium */
+    /* Titik halus sebagai tekstur */
     .texture-dots {
       background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1px);
       background-size: 14px 14px;
@@ -118,11 +118,11 @@
   <div id="app-preload-screen" class="fixed inset-0 z-50 bg-[#faf8f5] flex flex-col items-center justify-center p-6 transition-all duration-700">
     <div class="flex flex-col items-center text-center max-w-xs w-full space-y-6">
       <div class="relative">
-        <div class="absolute -inset-2 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-[32px] blur-md opacity-70 animate-pulse"></div>
-        <div class="relative w-28 h-28 rounded-3xl bg-white p-1 shadow-2xl animate-pulse-glow flex items-center justify-center overflow-hidden border border-amber-200/80">
-          <div class="w-full h-full bg-gradient-to-br from-amber-50 to-orange-50 rounded-[20px] flex items-center justify-center overflow-hidden p-2">
+        <div class="absolute -inset-2 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-full blur-md opacity-70 animate-pulse"></div>
+        <div class="relative w-28 h-28 rounded-full bg-white p-1 shadow-2xl animate-pulse-glow flex items-center justify-center overflow-hidden border border-amber-200/80">
+          <div class="w-full h-full bg-gradient-to-br from-amber-50 to-orange-50 rounded-full flex items-center justify-center overflow-hidden p-1">
             <span id="preload-logo-fallback" class="text-5xl">🍰</span>
-            <img id="preload-logo-img" src="./logo.png" alt="AZRI SNACK" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('preload-logo-fallback').classList.remove('hidden');">
+            <img id="preload-logo-img" src="./logo.png" alt="AZRI SNACK" class="w-full h-full object-cover rounded-full hidden" onerror="this.classList.add('hidden'); document.getElementById('preload-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
       </div>
@@ -170,10 +170,10 @@
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <!-- Logo Toko & Brand -->
       <div class="flex items-center gap-3.5">
-        <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-1 ring-gold-700/20">
-          <div class="w-full h-full bg-cream-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
-            <span id="store-logo-fallback" class="text-2xl">🍰</span>
-            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
+        <div id="store-logo-container" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-2 ring-gold-600/30">
+          <div class="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden p-0.5">
+            <span id="store-logo-fallback" class="text-xl">🍰</span>
+            <img id="store-logo-img" src="./logo.png" alt="Logo AZRI SNACK" class="w-full h-full object-cover rounded-full hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
         <div>
@@ -596,6 +596,24 @@
     let selectedModalProduct = null;
     let isInitialDataLoaded = false;
 
+    // -- MENAMPILKAN LOGO SECARA LANGSUNG SAAT HALAMAN DIMUAT --
+    const logoImg = document.getElementById("store-logo-img");
+    const fallback = document.getElementById("store-logo-fallback");
+    if (logoImg) {
+      logoImg.src = "./logo.png";
+      logoImg.classList.remove("hidden");
+      if (fallback) fallback.classList.add("hidden");
+    }
+
+    const preImg = document.getElementById("preload-logo-img");
+    const preFallback = document.getElementById("preload-logo-fallback");
+    if (preImg) {
+      preImg.src = "./logo.png";
+      preImg.classList.remove("hidden");
+      if (preFallback) preFallback.classList.add("hidden");
+    }
+    // ----------------------------------------------------------
+
     function hidePreloadScreen() {
       const preload = document.getElementById("app-preload-screen");
       const pBar = document.getElementById("preload-progress-bar");
@@ -692,24 +710,12 @@
       openUniversalWhatsApp(WA_STORE_PHONE, msg);
     };
 
-    // 1. Sync Logo Toko
+    // 1. Sync Logo Toko dari Firebase (Opsional jika di-update dari dashboard admin)
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists() && docSnap.data().logo_url) {
         const logoUrl = docSnap.data().logo_url;
-        
-        const logoImg = document.getElementById("store-logo-img");
-        const fallback = document.getElementById("store-logo-fallback");
-        logoImg.src = logoUrl;
-        logoImg.classList.remove("hidden");
-        fallback.classList.add("hidden");
-
-        const preImg = document.getElementById("preload-logo-img");
-        const preFallback = document.getElementById("preload-logo-fallback");
-        if (preImg && preFallback) {
-          preImg.src = logoUrl;
-          preImg.classList.remove("hidden");
-          preFallback.classList.add("hidden");
-        }
+        if(logoImg) logoImg.src = logoUrl;
+        if(preImg) preImg.src = logoUrl;
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
@@ -723,7 +729,7 @@
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
-      updateCartUI(); // Sinkronkan UI keranjang setelah produk termuat
+      updateCartUI(); 
 
       if (!isInitialDataLoaded) {
         isInitialDataLoaded = true;
