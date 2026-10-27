@@ -149,7 +149,7 @@
 
   <!-- Banner PWA Install -->
   <div id="pwa-install-banner" class="hidden bg-gray-900 text-white px-4 py-2.5 shadow-md sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto flex items-center justify-between gap-3 text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
         <span class="text-base">📱</span>
         <span>Pasang aplikasi <strong>AZRI SNACK</strong> di layar utama HP Anda!</span>
@@ -167,7 +167,7 @@
 
   <!-- Header / Navbar -->
   <header class="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-cream-200 shadow-soft">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <!-- Logo Toko & Brand -->
       <div class="flex items-center gap-3.5">
         <div id="store-logo-container" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-2 ring-gold-600/30">
@@ -197,7 +197,7 @@
     </div>
 
     <!-- Search Box & Filter Tabs -->
-    <div class="max-w-5xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
+    <div class="max-w-7xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
       <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
         <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-white pl-9 pr-9 py-2.5 text-xs rounded-full focus:ring-2 focus:ring-gold-500/25 outline-none transition border border-cream-200 focus:border-gold-300 placeholder:text-ink-400">
@@ -215,7 +215,7 @@
   </header>
 
   <!-- Hero Banner -->
-  <section class="max-w-5xl mx-auto px-4 mt-4">
+  <section class="max-w-7xl mx-auto px-4 mt-4">
     <div class="relative overflow-hidden hero-surface rounded-[28px] p-5 sm:p-8 text-cream-50 shadow-lift">
       <div class="absolute inset-0 texture-dots opacity-40 pointer-events-none select-none"></div>
       <div class="absolute -top-24 -left-16 w-64 h-64 rounded-full bg-gold-200/20 blur-3xl pointer-events-none select-none"></div>
@@ -244,7 +244,7 @@
   </section>
 
   <!-- BANNER TAUTAN KE HALAMAN KHUSUS SNACK BOX -->
-  <section class="max-w-5xl mx-auto px-4 mt-3">
+  <section class="max-w-7xl mx-auto px-4 mt-3">
     <div class="bg-white rounded-[24px] p-4 sm:p-5 shadow-soft border border-cream-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
       <div class="flex items-center gap-3.5">
         <div class="w-12 h-12 rounded-2xl bg-gold-50 text-gold-700 border border-gold-200 flex items-center justify-center text-xl flex-shrink-0">
@@ -263,7 +263,7 @@
   </section>
 
   <!-- PEMBERITAHUAN STOK HARI INI & PINTASAN SCROLL KE PRODUK HABIS -->
-  <section class="max-w-5xl mx-auto px-4 mt-3">
+  <section class="max-w-7xl mx-auto px-4 mt-3">
     <div class="bg-white border border-cream-200 rounded-[24px] p-4 sm:p-5 shadow-soft">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-start gap-3">
@@ -297,13 +297,13 @@
   </section>
 
   <!-- Loading State (Dalam Halaman) -->
-  <div id="loading" class="max-w-5xl mx-auto px-4 py-20 text-center">
+  <div id="loading" class="max-w-7xl mx-auto px-4 py-20 text-center">
     <div class="w-10 h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
     <p class="mt-3 text-xs sm:text-sm text-gray-400 font-medium">Menyiapkan aneka menu lezat...</p>
   </div>
 
   <!-- Product Catalog Grid (Siap Saji / Ready Hari Ini - Urut A-Z) -->
-  <main id="catalog-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
+  <main id="catalog-section" class="max-w-7xl mx-auto px-4 mt-6 scroll-mt-24">
     <div class="flex items-end justify-between mb-4">
       <div>
         <p class="eyebrow text-gold-600 mb-1">Katalog Harian</p>
@@ -315,13 +315,14 @@
       <span class="text-[11px] text-ink-400 hidden sm:block pb-1">Urut A-Z • Klik kartu untuk detail</span>
     </div>
 
-    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5 hidden">
+    <!-- UPDATE GRID COLUMNS DI SINI -->
+    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4.5 hidden">
       <!-- Diisi otomatis oleh JavaScript -->
     </div>
   </main>
 
   <!-- BAGIAN PRODUK HABIS HARI INI (SCROLL KE BAWAH - Urut A-Z) -->
-  <section id="soldout-section" class="max-w-5xl mx-auto px-4 mt-12 scroll-mt-24 hidden">
+  <section id="soldout-section" class="max-w-7xl mx-auto px-4 mt-12 scroll-mt-24 hidden">
     <div class="rule-gold mb-6"></div>
       <div class="flex items-center justify-between mb-4">
         <div>
@@ -341,7 +342,8 @@
         <span>Stok siap saji untuk hari ini sudah habis terjual. Anda tetap bisa memasukkan menu di bawah ke keranjang untuk jadwal <strong class="text-ink-800">besok, lusa, atau acara mendatang</strong>.</span>
       </p>
 
-      <div id="soldout-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5">
+      <!-- UPDATE GRID COLUMNS DI SINI -->
+      <div id="soldout-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4.5">
         <!-- Diisi otomatis oleh JavaScript -->
       </div>
     </div>
@@ -511,7 +513,7 @@
 
   <!-- Footer -->
   <footer class="mt-16 px-4">
-    <div class="max-w-5xl mx-auto bg-ink-900 rounded-[28px] p-6 sm:p-9 text-cream-200 shadow-lift relative overflow-hidden">
+    <div class="max-w-7xl mx-auto bg-ink-900 rounded-[28px] p-6 sm:p-9 text-cream-200 shadow-lift relative overflow-hidden">
       <div class="absolute inset-0 texture-dots opacity-[0.35] pointer-events-none select-none"></div>
       <div class="absolute -top-20 -right-16 w-64 h-64 rounded-full bg-gold-600/10 blur-3xl pointer-events-none select-none"></div>
 
