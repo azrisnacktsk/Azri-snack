@@ -3,438 +3,1232 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AZRI SNACK - Pesan Kue & Snack Box</title>
-  
+  <title>AZRI SNACK - Aneka Kue Basah & Snack Box Premium</title>
+
+  <!-- Konfigurasi PWA & Web App Meta -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AZRI SNACK">
+  <link rel="apple-touch-icon" href="./logo.png">
+  <link rel="icon" type="image/png" href="./logo.png">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
+
+  <!-- Font Awesome Icons CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Google Fonts: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
+  <!-- Google Font Poppins & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    /* Animasi Keranjang */
-    .cart-slide-in { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
-    .cart-slide-in.active { transform: translateX(0); }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] { -moz-appearance: textfield; }
+    html { scroll-behavior: smooth; }
+
+    /* Animasi Preload */
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); }
+      50% { transform: scale(1.04); box-shadow: 0 0 45px rgba(245, 158, 11, 0.6); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 2.2s infinite ease-in-out;
+    }
+    @keyframes shimmerBar {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+    .animate-shimmer {
+      animation: shimmerBar 1.5s infinite linear;
+    }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen relative">
+<body class="bg-[#faf8f5] text-gray-800 pb-36 min-h-screen selection:bg-amber-500 selection:text-white">
 
-  <!-- ================= NAVBAR ================= -->
-  <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-200">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm overflow-hidden flex items-center justify-center">
-          <div class="w-full h-full bg-amber-50 rounded-[10px] flex items-center justify-center overflow-hidden p-0.5">
-            <span class="text-lg">🍰</span>
+  <!-- ================= PRELOAD / SPLASH SCREEN PEMBUKA ================= -->
+  <div id="app-preload-screen" class="fixed inset-0 z-50 bg-[#faf8f5] flex flex-col items-center justify-center p-6 transition-all duration-700">
+    <div class="flex flex-col items-center text-center max-w-xs w-full space-y-6">
+      <div class="relative">
+        <div class="absolute -inset-2 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-[32px] blur-md opacity-70 animate-pulse"></div>
+        <div class="relative w-28 h-28 rounded-3xl bg-white p-1 shadow-2xl animate-pulse-glow flex items-center justify-center overflow-hidden border border-amber-200/80">
+          <div class="w-full h-full bg-gradient-to-br from-amber-50 to-orange-50 rounded-[20px] flex items-center justify-center overflow-hidden p-2">
+            <span id="preload-logo-fallback" class="text-5xl">🍰</span>
+            <img id="preload-logo-img" src="./logo.png" alt="AZRI SNACK" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('preload-logo-fallback').classList.remove('hidden');">
           </div>
-        </div>
-        <div>
-          <h1 class="font-bold text-lg text-gray-900 leading-tight">AZRI SNACK</h1>
-          <p class="text-[10px] text-gray-500 font-medium">Kue Tradisional & Snack Box</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <a href="snackbox.html" class="hidden sm:flex text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-2 rounded-xl items-center gap-1.5 transition font-semibold">
-          <i class="fa-solid fa-box-open text-amber-600"></i>
-          <span>Pesan Snack Box</span>
-        </a>
-        <button onclick="toggleCart()" class="relative bg-gray-100 hover:bg-gray-200 text-gray-800 p-2.5 rounded-xl transition shadow-sm">
-          <i class="fa-solid fa-cart-shopping"></i>
-          <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full hidden shadow-md border-2 border-white">0</span>
+      <div class="space-y-1">
+        <h1 class="font-serif font-bold text-2xl text-gray-900 tracking-tight">AZRI SNACK</h1>
+        <p class="text-xs text-amber-700 font-medium tracking-wide">Kue Tradisional & Snack Box</p>
+      </div>
+
+      <div class="w-full space-y-2.5 pt-2">
+        <div class="w-48 h-2 bg-amber-100 rounded-full overflow-hidden mx-auto relative shadow-inner">
+          <div id="preload-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full w-1/3 transition-all duration-500"></div>
+          <div class="absolute inset-0 bg-white/40 w-1/2 animate-shimmer"></div>
+        </div>
+        <p id="preload-status-text" class="text-[11px] text-gray-400 font-medium animate-pulse">
+          <i class="fa-solid fa-cookie text-amber-500 mr-1"></i> Menyiapkan sajian fresh...
+        </p>
+      </div>
+    </div>
+    <div class="absolute bottom-6 text-center text-[10px] text-gray-400 font-medium">
+      Dibuat Fresh Setiap Hari • Sejak 2026
+    </div>
+  </div>
+
+  <!-- Banner PWA Install -->
+  <div id="pwa-install-banner" class="hidden bg-gray-900 text-white px-4 py-2.5 shadow-md sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📱</span>
+        <span>Pasang aplikasi <strong>AZRI SNACK</strong> di layar utama HP Anda!</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="triggerPWAInstall()" class="bg-amber-500 hover:bg-amber-600 font-bold px-3 py-1.5 rounded-xl shadow-xs transition active:scale-95">
+          Pasang App
         </button>
+        <button onclick="dismissPWABanner()" class="text-gray-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-amber-100/60 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Logo Toko & Brand -->
+      <div class="flex items-center gap-3.5">
+        <div id="store-logo-container" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md shadow-amber-500/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
+          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
+            <span id="store-logo-fallback" class="text-2xl">🍰</span>
+            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
+          </div>
+        </div>
+        <div>
+          <h1 class="font-serif font-bold text-lg sm:text-xl text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
+          <p class="text-[11px] text-amber-700/80 font-medium tracking-wide mt-1">Kue Tradisional & Snack Box</p>
+        </div>
+      </div>
+
+      <!-- Kontak Cepat & Keranjang Belanja -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin bertanya tentang menu kue.')" class="hidden sm:inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3.5 py-1.5 rounded-full text-xs font-semibold hover:bg-emerald-100 transition border border-emerald-200/60 shadow-2xs">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span>0858-9202-2079</span>
+        </button>
+        
+        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-50 rounded-2xl text-amber-700 hover:bg-amber-100/80 transition border border-amber-200/50 shadow-2xs active:scale-95 focus:outline-none">
+          <i class="fa-solid fa-basket-shopping text-lg"></i>
+          <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Box & Filter Tabs -->
+    <div class="max-w-5xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
+      <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+        <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-gray-50/90 pl-9 pr-9 py-2.5 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/40 outline-none transition border border-gray-200/80 focus:border-amber-400">
+        <button type="button" id="btn-clear-search" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1">
+          <i class="fa-solid fa-circle-xmark text-sm"></i>
+        </button>
+      </form>
+
+      <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
+        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-900 text-white shadow-xs transition">Semua Menu</button>
+        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Snack & Gorengan</button>
+        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200/70 hover:bg-gray-50 transition">Kue Basah</button>
       </div>
     </div>
   </header>
 
-  <!-- ================= HERO SECTION ================= -->
-  <section class="bg-gradient-to-b from-amber-500 to-orange-500 text-white py-10 px-4 text-center">
-    <div class="max-w-2xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-bold mb-2">Selamat Datang di AZRI SNACK</h2>
-      <p class="text-sm md:text-base text-amber-50 font-medium mb-6">Pesan kue basah dan jajanan pasar favorit Anda. Dibuat fresh setiap hari dengan bahan berkualitas.</p>
-      
-      <!-- Kategori Filter -->
-      <div class="flex flex-wrap justify-center gap-2">
-        <button onclick="filterCategory('ALL')" id="btn-cat-ALL" class="cat-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white text-amber-600 shadow-md transition">Semua Menu</button>
-        <button onclick="filterCategory('Kue Basah')" id="btn-cat-Kue Basah" class="cat-btn px-4 py-1.5 rounded-full text-xs font-bold bg-amber-600/50 hover:bg-amber-600 text-white border border-amber-400 transition">Kue Basah</button>
-        <button onclick="filterCategory('Snack')" id="btn-cat-Snack" class="cat-btn px-4 py-1.5 rounded-full text-xs font-bold bg-amber-600/50 hover:bg-amber-600 text-white border border-amber-400 transition">Gorengan & Lainya</button>
+  <!-- Hero Banner -->
+  <section class="max-w-5xl mx-auto px-4 mt-4">
+    <div class="relative overflow-hidden bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-3xl p-5 sm:p-7 text-white shadow-lg shadow-amber-500/10">
+      <div class="absolute -right-6 -bottom-10 opacity-15 text-9xl pointer-events-none select-none">🍰</div>
+
+      <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="space-y-1.5 max-w-lg">
+          <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">
+            <span class="text-amber-200">★</span> Pesanan Acara & Hajatan
+          </div>
+          <h2 class="font-serif text-lg sm:text-2xl font-bold leading-snug">Aneka Kue Basah & Gorengan Gurih</h2>
+          <p class="text-xs text-amber-50/90 leading-relaxed">Dibuat dari bahan segar berkualitas. Pesan H-1 atau H-2 untuk sajian terbaik acara Anda.</p>
+        </div>
+        
+        <div class="flex flex-col sm:items-end gap-2 text-xs">
+          <div class="inline-flex items-center gap-2 bg-black/20 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10">
+            <i class="fa-solid fa-clock text-amber-200 text-xs"></i>
+            <span>Buka Setiap Hari: 06.00 - 18.00</span>
+          </div>
+          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin konsultasi pesanan kue acara.')" class="inline-flex items-center gap-1.5 text-xs text-amber-100 hover:text-white font-medium transition underline">
+            <i class="fa-brands fa-whatsapp text-sm"></i> Chat WA Admin Toko
+          </button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= PRODUCT GRID ================= -->
-  <main class="max-w-6xl mx-auto px-4 py-8">
-    <div id="loading-products" class="text-center py-10 text-gray-400 text-sm">
-      <i class="fa-solid fa-circle-notch fa-spin text-2xl text-amber-500 mb-2"></i>
-      <p>Memuat katalog menu...</p>
+  <!-- BANNER TAUTAN KE HALAMAN KHUSUS SNACK BOX -->
+  <section class="max-w-5xl mx-auto px-4 mt-3">
+    <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-2xl p-3.5 sm:p-4 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl flex-shrink-0">
+          🍱
+        </div>
+        <div>
+          <h3 class="font-bold text-sm sm:text-base leading-tight">Mau Pesan Paket Custom Snack Box?</h3>
+          <!-- Subjudul yang diminta -->
+          <p class="text-xs text-amber-100 mt-0.5">Praktis untuk meeting, kantor dan berbagai acara</p>
+        </div>
+      </div>
+      <a href="snackbox.html" class="inline-flex items-center justify-center gap-2 bg-white text-amber-800 hover:bg-amber-50 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-xs whitespace-nowrap active:scale-95">
+        <span>Buka Menu Snack Box</span>
+        <i class="fa-solid fa-arrow-right text-[11px]"></i>
+      </a>
     </div>
-    
-    <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden">
-      <!-- Produk akan dimuat melalui JavaScript -->
+  </section>
+
+  <!-- PEMBERITAHUAN STOK HARI INI & PINTASAN SCROLL KE PRODUK HABIS -->
+  <section class="max-w-5xl mx-auto px-4 mt-3">
+    <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i class="fa-solid fa-calendar-check text-base"></i>
+          </div>
+          <div class="text-xs text-gray-700 leading-relaxed">
+            <p class="font-bold text-gray-900 flex items-center gap-1.5">
+              <span>Stok Hari Ini & Pemesanan Hari Besok</span>
+              <span class="bg-amber-200/60 text-amber-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">Penting</span>
+            </p>
+            <p class="text-gray-600 mt-0.5">
+              Menu yang <strong>habis hari ini</strong> otomatis berada di urutan paling bawah, namun <strong>tetap bisa Anda pesan untuk jadwal besok atau lusa</strong>.
+            </p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-scroll-soldout" onclick="scrollToSoldOutProducts()" class="hidden inline-flex items-center justify-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-2 rounded-xl border border-blue-200 transition shadow-2xs whitespace-nowrap">
+            <i class="fa-solid fa-arrow-down text-xs"></i>
+            <span>Menu Habis (Bisa Pesan Besok)</span>
+          </button>
+          
+          <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya pesanan kue dalam jumlah banyak untuk acara.')" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-2 rounded-xl border border-amber-300 transition shadow-2xs whitespace-nowrap">
+            <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
+            <span>Konsultasi WA</span>
+          </button>
+        </div>
+      </div>
     </div>
-    
-    <div id="empty-products" class="text-center py-10 hidden">
-      <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i>
-      <p class="text-sm text-gray-500">Maaf, menu sedang kosong atau belum tersedia.</p>
+  </section>
+
+  <!-- Loading State (Dalam Halaman) -->
+  <div id="loading" class="max-w-5xl mx-auto px-4 py-20 text-center">
+    <div class="w-10 h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+    <p class="mt-3 text-xs sm:text-sm text-gray-400 font-medium">Menyiapkan aneka menu lezat...</p>
+  </div>
+
+  <!-- Product Catalog Grid (Siap Saji / Ready Hari Ini - Urut A-Z) -->
+  <main id="catalog-section" class="max-w-5xl mx-auto px-4 mt-6 scroll-mt-24">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Katalog Menu Siap Saji</h3>
+        <span id="product-count-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
+      </div>
+      <span class="text-[11px] text-gray-400">Urut A-Z • Klik kartu untuk detail</span>
+    </div>
+
+    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5 hidden">
+      <!-- Diisi otomatis oleh JavaScript -->
     </div>
   </main>
 
-  <!-- ================= KERANJANG BELANJA (SIDEBAR) ================= -->
-  <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
-  
-  <div id="cart-sidebar" class="cart-slide-in fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-50 shadow-2xl flex flex-col">
-    <!-- Header Keranjang -->
-    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
-      <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2">
-        <i class="fa-solid fa-basket-shopping text-amber-500"></i> Keranjang Anda
-      </h3>
-      <button onclick="toggleCart()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-
-    <!-- Isi Keranjang -->
-    <div class="flex-1 overflow-y-auto p-5 bg-gray-50">
-      <div id="cart-items" class="space-y-3">
-        <!-- Item keranjang muncul di sini -->
-        <div class="text-center py-10 text-gray-400 text-sm italic">Keranjang masih kosong.</div>
-      </div>
-
-      <!-- Form Data Pemesan (Muncul jika ada isi) -->
-      <div id="checkout-form" class="mt-6 space-y-4 hidden border-t border-gray-200 pt-4">
-        <h4 class="font-bold text-gray-800 text-sm">Informasi Pemesanan</h4>
-        
-        <input type="text" id="cust-name" placeholder="Nama Lengkap *" required class="w-full text-xs p-3 border border-gray-200 rounded-xl outline-none focus:border-amber-500 bg-white">
-        <input type="tel" id="cust-phone" placeholder="No. WhatsApp *" required class="w-full text-xs p-3 border border-gray-200 rounded-xl outline-none focus:border-amber-500 bg-white">
-        
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[10px] font-bold text-gray-500 mb-1">Tanggal Acara / Ambil *</label>
-            <input type="date" id="event-date" required class="w-full text-xs p-3 border border-gray-200 rounded-xl outline-none focus:border-amber-500 bg-white text-gray-700">
+  <!-- BAGIAN PRODUK HABIS HARI INI (SCROLL KE BAWAH - Urut A-Z) -->
+  <section id="soldout-section" class="max-w-5xl mx-auto px-4 mt-12 scroll-mt-24 hidden">
+    <div class="border-t-2 border-dashed border-gray-200 pt-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-xs">
+            <i class="fa-solid fa-clock-rotate-left"></i>
           </div>
-          <div>
-            <label class="block text-[10px] font-bold text-gray-500 mb-1">Jam (Opsional)</label>
-            <input type="time" id="event-time" class="w-full text-xs p-3 border border-gray-200 rounded-xl outline-none focus:border-amber-500 bg-white text-gray-700">
-          </div>
+          <h3 class="font-serif font-bold text-gray-900 text-base sm:text-lg">Habis Hari Ini (Bisa Dipesan untuk Besok/Lusa)</h3>
+          <span id="soldout-count-badge" class="bg-red-50 text-red-700 border border-red-200 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">0 Menu</span>
         </div>
+      </div>
 
-        <select id="delivery-type" class="w-full text-xs p-3 border border-gray-200 rounded-xl outline-none focus:border-amber-500 bg-white text-gray-700 font-medium">
-          <option value="Ambil Sendiri ke Toko">Ambil Sendiri ke Toko</option>
-          <option value="Diantar / Delivery">Diantar / Delivery (Konfirmasi WA)</option>
-        </select>
+      <p class="text-xs text-gray-500 mb-4 bg-blue-50/80 p-3 rounded-2xl border border-blue-100 flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-blue-600"></i>
+        <span>Stok siap saji untuk hari ini sudah habis terjual. Anda tetap bisa memasukkan menu di bawah ke keranjang untuk jadwal <strong>besok, lusa, atau acara mendatang</strong>.</span>
+      </p>
 
-        <textarea id="cust-notes" placeholder="Catatan tambahan / Alamat pengiriman (jika diantar)" rows="2" class="w-full text-xs p-3 border border-gray-200 rounded-xl outline-none focus:border-amber-500 bg-white"></textarea>
+      <div id="soldout-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4.5">
+        <!-- Diisi otomatis oleh JavaScript -->
       </div>
     </div>
+  </section>
 
-    <!-- Footer Total & Checkout -->
-    <div class="border-t border-gray-200 p-5 bg-white">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-sm font-bold text-gray-600">Total Belanja:</span>
-        <span id="cart-total" class="text-xl font-bold text-amber-600 font-serif">Rp0</span>
+  <!-- Sticky Bottom Cart Bar -->
+  <div id="sticky-cart" class="fixed bottom-4 left-4 right-4 max-w-lg mx-auto z-20 hidden">
+    <div class="bg-gray-950/95 text-white rounded-3xl p-3.5 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
+      <div>
+        <p class="text-[11px] text-gray-300 font-medium">
+          <span id="cart-item-count" class="text-amber-400 font-bold">0 Jenis</span> • <span id="cart-qty-total">0</span> Pcs Kue
+        </p>
+        <p id="cart-price-total" class="text-base font-bold text-amber-400 font-serif">Rp0</p>
       </div>
-      <button id="btn-checkout" onclick="submitOrder()" disabled class="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2">
-        <i class="fa-brands fa-whatsapp text-lg"></i>
-        <span>Pesan via WhatsApp</span>
+      <button onclick="toggleCartModal(true)" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-amber-500/20">
+        <span>Rincian Pesanan</span>
+        <i class="fa-solid fa-arrow-right text-[11px]"></i>
       </button>
     </div>
   </div>
 
-  <!-- ================= LOGIKA FIREBASE & KERANJANG ================= -->
+  <!-- Floating Direct WhatsApp Button -->
+  <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya mau tanya-tanya menu.')" title="Tanya Admin via WhatsApp" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-20 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95">
+    <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
+  </button>
+
+  <!-- MODAL DETAIL PRODUK -->
+  <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+      
+      <div class="relative w-full h-60 sm:h-64 bg-amber-50 overflow-hidden flex-shrink-0">
+        <img id="detail-img" src="" alt="Detail Produk" class="w-full h-full object-cover">
+        <button onclick="closeProductDetailModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+        <span id="detail-category" class="absolute bottom-3 left-3 bg-gray-900/80 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1 rounded-full shadow-md">Kategori</span>
+        <span id="detail-stock-badge" class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-gray-100">Sisa Stok: 50 pcs</span>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4">
+        <div>
+          <h3 id="detail-title" class="font-serif font-bold text-xl text-gray-900">Nama Produk</h3>
+          <p id="detail-price" class="text-base font-bold text-amber-600 mt-0.5">Rp0</p>
+        </div>
+
+        <div id="detail-preorder-notice" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-3 text-xs text-blue-800 flex items-start gap-2.5">
+          <i class="fa-solid fa-calendar-day text-blue-600 mt-0.5"></i>
+          <div>
+            <p class="font-bold">Stok Siap Saji Hari Ini Habis</p>
+            <p class="text-[11px] text-blue-600 mt-0.5">Menu ini tetap bisa Anda pesan sekarang untuk jadwal acara <strong>besok, lusa, atau hari berikutnya</strong>.</p>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi Menu</h4>
+          <p id="detail-desc" class="text-xs text-gray-600 leading-relaxed bg-amber-50/40 p-3.5 rounded-2xl border border-amber-100/50">Deskripsi lengkap...</p>
+        </div>
+
+        <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-gray-700 block">Jumlah Pesanan:</span>
+            <span id="detail-order-hint" class="text-[10px] text-gray-400">Atur porsi yang diinginkan</span>
+          </div>
+          
+          <div class="flex items-center gap-1 bg-amber-50/80 border border-amber-200/80 rounded-2xl p-1">
+            <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-xl bg-white text-amber-800 font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-100 active:scale-90 transition">-</button>
+            <input type="number" id="detail-qty-input" min="1" value="1" enterkeyhint="done" oninput="handleModalManualInput(this)" class="w-14 text-center text-sm font-bold text-amber-950 bg-transparent outline-none">
+            <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-xl bg-amber-500 text-white font-bold text-base flex items-center justify-center shadow-xs hover:bg-amber-600 active:scale-90 transition">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-gray-50 border-t border-gray-100">
+        <button id="btn-add-modal-cart" onclick="confirmAddToCartFromModal()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span id="btn-add-modal-text">Tambahkan ke Keranjang</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL CHECKOUT & RINCIAN KERANJANG -->
+  <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+      
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm sm:text-base">Rincian Belanja & Checkout</h3>
+        </div>
+        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-5">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Item Terpilih</h4>
+            <span class="text-[10px] text-gray-400">Atur porsi pesanan</span>
+          </div>
+
+          <div id="cart-items-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
+
+          <div class="mt-3.5 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold">
+            <span>Total Pembayaran Sementara</span>
+            <span id="modal-subtotal" class="text-amber-600 text-base font-serif">Rp0</span>
+          </div>
+        </div>
+
+        <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 pt-2 border-t border-gray-100">
+          <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Data Pemesan</h4>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pemesan *</label>
+            <input type="text" id="cust-name" required enterkeyhint="next" placeholder="Contoh: Ibu Rina" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Nomor WhatsApp Aktif *</label>
+            <input type="tel" id="cust-phone" required enterkeyhint="next" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Acara *</label>
+              <input type="date" id="order-date" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Jam Diambil/Kirim *</label>
+              <input type="time" id="order-time" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Metode Pengambilan *</label>
+            <select id="delivery-type" onchange="toggleAddressField()" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-white">
+              <option value="Ambil Sendiri">Ambil Sendiri di Toko AZRI SNACK</option>
+              <option value="Diantar / Delivery">Diantar ke Alamat (Ongkir dihitung via WA)</option>
+            </select>
+          </div>
+
+          <div id="address-box" class="hidden">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Alamat Pengiriman Lengkap *</label>
+            <textarea id="cust-address" rows="2" enterkeyhint="done" placeholder="Nama jalan, nomor rumah, patokan..." class="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Catatan Khusus (Opsional)</label>
+            <input type="text" id="order-notes" enterkeyhint="done" placeholder="Misal: Pisahkan 5 box pedas, bungkus rapi" class="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 outline-none transition bg-gray-50/50 focus:bg-white">
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" id="btn-submit-order" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
+              <i class="fa-brands fa-whatsapp text-lg"></i>
+              <span>Kirim Pesanan ke WhatsApp Toko</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="max-w-5xl mx-auto px-4 mt-16 text-center text-xs text-gray-500">
+    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/70 shadow-xs space-y-4 text-left sm:text-center">
+      <div class="flex items-center justify-center gap-2 font-serif font-bold text-gray-900 text-lg">
+        <span class="text-xl">🍰</span> AZRI SNACK
+      </div>
+
+      <p class="text-gray-500 text-xs max-w-md mx-auto leading-relaxed">
+        Menyajikan aneka kue basah tradisional dan paket snack box berkualitas untuk memeriahkan setiap acara dan momen istimewa Anda.
+      </p>
+
+      <div class="bg-amber-50/60 border border-amber-100/80 rounded-2xl p-4 max-w-lg mx-auto text-left">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+            <i class="fa-solid fa-location-dot text-sm"></i>
+          </div>
+          <div class="text-xs text-gray-700 leading-relaxed">
+            <p class="font-bold text-gray-900 mb-0.5">Alamat Outlet / Dapur Toko:</p>
+            <p class="text-gray-600">Jl Bukit Duri Tanjakan, Gg H Tompel RT 002 RW 011, Kel. Bukit Duri, Kec. Tebet, Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12840</p>
+            <a href="https://maps.app.goo.gl/oYoQGY4durXxAfRB8" target="_blank" class="inline-flex items-center gap-1.5 text-amber-700 hover:text-amber-800 font-semibold mt-2 text-xs underline">
+              <i class="fa-solid fa-map-location-dot"></i> Buka Petunjuk Arah di Google Maps
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-medium text-gray-600 pt-2 border-t border-gray-100">
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-500"></i> Buka: 06.00 - 18.00 WIB</span>
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK!')" class="flex items-center gap-1.5 text-emerald-600 font-semibold hover:underline">
+          <i class="fa-brands fa-whatsapp text-base"></i> 0858-9202-2079
+        </button>
+      </div>
+    </div>
+    <p class="mt-5 text-[11px] text-gray-400">© 2026 AZRI SNACK. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Firebase Module Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, getDoc, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Konfigurasi Asli AZRI SNACK
     const firebaseConfig = {
-      apiKey: "AIzaSyBZSDRItVU6-_a-j_4T0P39bxBtWelKxEM",
+      apiKey: "AIzaSyAzriSnackPlaceholderKey",
       authDomain: "azri-snack-db.firebaseapp.com",
       projectId: "azri-snack-db",
-      storageBucket: "azri-snack-db.firebasestorage.app",
-      messagingSenderId: "117431141487",
-      appId: "1:117431141487:web:4bf46d90590f02c657399a",
-      measurementId: "G-79T80VGNSY"
+      storageBucket: "azri-snack-db.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
     };
+
+    const WA_STORE_PHONE = "6285892022079";
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // PENYIMPANAN KERANJANG OTOMATIS (LocalStorage)
-    let cart = JSON.parse(localStorage.getItem('azri_cart')) || {};
-    let productsList = [];
-    let currentCategory = "ALL";
+    let allProducts = [];
+    let currentFilter = "All";
+    let searchQuery = "";
+    let cart = {};
+    let selectedModalProduct = null;
+    let isInitialDataLoaded = false;
 
-    // Muat data produk dari Firestore
-    onSnapshot(collection(db, "products"), (snapshot) => {
-      productsList = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        // Hanya tampilkan produk yang berstatus AVAILABLE dan stok > 0
-        if (data.status === "AVAILABLE" && (data.stock === undefined || data.stock > 0)) {
-          productsList.push({ id: doc.id, ...data });
+    function hidePreloadScreen() {
+      const preload = document.getElementById("app-preload-screen");
+      const pBar = document.getElementById("preload-progress-bar");
+      const pText = document.getElementById("preload-status-text");
+
+      if (pBar) pBar.style.width = "100%";
+      if (pText) pText.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Siap disajikan!';
+
+      setTimeout(() => {
+        if (preload) {
+          preload.classList.add("opacity-0", "-translate-y-4", "pointer-events-none");
+          setTimeout(() => preload.remove(), 700);
         }
-      });
-      renderProducts();
-      updateCartUI(); // Update UI keranjang saat halaman pertama dimuat
-    }, (error) => {
-      console.error("Gagal memuat produk:", error);
-      document.getElementById("loading-products").innerHTML = "<p class='text-red-500'>Gagal terhubung ke database.</p>";
+      }, 450);
+    }
+
+    setTimeout(() => {
+      if (!isInitialDataLoaded) {
+        hidePreloadScreen();
+      }
+    }, 2200);
+
+    function getTodayDateWIB() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      return wibDate.toISOString().split("T")[0];
+    }
+
+    function getTomorrowDateWIB() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      wibDate.setDate(wibDate.getDate() + 1);
+      return wibDate.toISOString().split("T")[0];
+    }
+
+    const todayWIBString = getTodayDateWIB();
+    document.getElementById("order-date").value = todayWIBString;
+
+    window.scrollToSoldOutProducts = function() {
+      const el = document.getElementById("soldout-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    window.submitSearchOnEnter = function(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById("search-input");
+      if (input) input.blur();
+      handleSearch();
+      const catalog = document.getElementById("catalog-section");
+      if (catalog) catalog.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.clearSearchInput = function() {
+      const input = document.getElementById("search-input");
+      input.value = "";
+      handleSearch();
+      input.focus();
+    };
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && e.target && e.target.tagName === "INPUT") {
+        if (e.target.id !== "search-input") {
+          e.target.blur();
+        }
+      }
     });
 
-    // Render Produk ke Layar
-    function renderProducts() {
-      const grid = document.getElementById("product-grid");
-      const loading = document.getElementById("loading-products");
-      const empty = document.getElementById("empty-products");
-      
-      loading.classList.add("hidden");
-      grid.innerHTML = "";
+    window.openUniversalWhatsApp = function(phone, message) {
+      const encodedMsg = encodeURIComponent(message);
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-      let filtered = productsList;
-      if (currentCategory !== "ALL") {
-        filtered = productsList.filter(p => p.category === currentCategory);
+      if (isMobile) {
+        const appUrl = `whatsapp://send?phone=${phone}&text=${encodedMsg}`;
+        const webUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
+
+        const startTime = Date.now();
+        window.location.href = appUrl;
+
+        setTimeout(() => {
+          if (Date.now() - startTime < 1500) {
+            window.location.href = webUrl;
+          }
+        }, 800);
+      } else {
+        window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`, "_blank");
+      }
+    };
+
+    window.openDirectWhatsApp = function(msg) {
+      openUniversalWhatsApp(WA_STORE_PHONE, msg);
+    };
+
+    // 1. Sync Logo Toko
+    onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().logo_url) {
+        const logoUrl = docSnap.data().logo_url;
+        
+        const logoImg = document.getElementById("store-logo-img");
+        const fallback = document.getElementById("store-logo-fallback");
+        logoImg.src = logoUrl;
+        logoImg.classList.remove("hidden");
+        fallback.classList.add("hidden");
+
+        const preImg = document.getElementById("preload-logo-img");
+        const preFallback = document.getElementById("preload-logo-fallback");
+        if (preImg && preFallback) {
+          preImg.src = logoUrl;
+          preImg.classList.remove("hidden");
+          preFallback.classList.add("hidden");
+        }
+      }
+    }, (err) => console.log("Gagal sync logo:", err));
+
+    // 2. Sync Realtime Produk
+    onSnapshot(collection(db, "products"), (snapshot) => {
+      allProducts = [];
+      snapshot.forEach(docSnap => {
+        allProducts.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("product-grid").classList.remove("hidden");
+      renderFilteredProducts();
+
+      if (!isInitialDataLoaded) {
+        isInitialDataLoaded = true;
+        hidePreloadScreen();
+      }
+    }, (err) => {
+      console.warn("Firestore fallback aktif:", err);
+      hidePreloadScreen();
+    });
+
+    // 3. Render Katalog Satuan (Siap Saji di Atas & Habis di Bawah - Urut A-Z)
+    function renderFilteredProducts() {
+      let filtered = [...allProducts];
+
+      if (currentFilter !== "All") {
+        filtered = filtered.filter(p => p.category === currentFilter);
       }
 
-      if (filtered.length === 0) {
-        grid.classList.add("hidden");
-        empty.classList.remove("hidden");
-        return;
+      if (searchQuery && searchQuery.trim() !== "") {
+        const query = searchQuery.toLowerCase().trim();
+        filtered = filtered.filter(p => 
+          (p.name && p.name.toLowerCase().includes(query)) || 
+          (p.description && p.description.toLowerCase().includes(query)) ||
+          (p.category && p.category.toLowerCase().includes(query))
+        );
       }
 
-      empty.classList.add("hidden");
-      grid.classList.remove("hidden");
-
-      filtered.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+      const readyProducts = [];
+      const soldOutProducts = [];
 
       filtered.forEach(p => {
-        const price = Number(p.price || 0);
-        const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
-        
-        const card = document.createElement("div");
-        card.className = "bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full";
-        card.innerHTML = `
-          <div class="relative pt-[75%] bg-gray-100">
-            <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='${fallbackImg}'">
-            <span class="absolute top-2 left-2 bg-white/90 backdrop-blur text-gray-800 text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">${p.category || 'Kue'}</span>
-          </div>
-          <div class="p-3 flex flex-col flex-1">
-            <h3 class="font-bold text-gray-900 text-sm leading-tight mb-1 line-clamp-2">${p.name}</h3>
-            <p class="font-bold text-amber-600 text-sm mt-auto mb-2 font-serif">Rp${price.toLocaleString('id-ID')}</p>
-            <button onclick="addToCart('${p.id}')" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold py-2 rounded-xl text-xs transition border border-amber-200">
-              <i class="fa-solid fa-plus mr-1"></i> Tambah
+        const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+        const isSoldOut = p.status === "OUT_OF_STOCK" || liveStock <= 0;
+        if (isSoldOut) {
+          soldOutProducts.push(p);
+        } else {
+          readyProducts.push(p);
+        }
+      });
+
+      readyProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOutProducts.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+
+      document.getElementById("product-count-badge").innerText = `${readyProducts.length} Ready`;
+      document.getElementById("soldout-count-badge").innerText = `${soldOutProducts.length} Menu`;
+
+      const scrollBtn = document.getElementById("btn-scroll-soldout");
+      if (soldOutProducts.length > 0) {
+        scrollBtn.classList.remove("hidden");
+      } else {
+        scrollBtn.classList.add("hidden");
+      }
+
+      const gridReady = document.getElementById("product-grid");
+      const gridSoldOut = document.getElementById("soldout-grid");
+      const soldOutSection = document.getElementById("soldout-section");
+
+      gridReady.innerHTML = "";
+      gridSoldOut.innerHTML = "";
+
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
+
+      if (readyProducts.length === 0 && soldOutProducts.length === 0) {
+        gridReady.innerHTML = `
+          <div class="col-span-full text-center py-14 bg-white rounded-3xl border border-gray-100">
+            <i class="fa-solid fa-cookie-bite text-3xl text-amber-200 mb-2"></i>
+            <p class="text-xs text-gray-400 font-medium">Menu yang Anda cari tidak ditemukan.</p>
+            <button onclick="clearSearchInput()" class="mt-3 text-xs bg-amber-100 text-amber-800 font-semibold px-3 py-1.5 rounded-xl hover:bg-amber-200 transition">
+              Tampilkan Semua Menu
             </button>
           </div>
         `;
-        grid.appendChild(card);
-      });
+      } else if (readyProducts.length === 0) {
+        gridReady.innerHTML = `
+          <div class="col-span-full text-center py-8 bg-amber-50/60 rounded-3xl border border-amber-200/60">
+            <p class="text-xs text-amber-800 font-medium">Semua stok siap saji untuk kategori ini sudah habis hari ini. Silakan lihat daftar menu di bawah untuk pesan besok.</p>
+          </div>
+        `;
+      } else {
+        readyProducts.forEach(p => {
+          const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+          const inCartQty = cart[p.id]?.qty || 0;
+          const card = createProductCardHTML(p, liveStock, inCartQty, false, fallbackImg);
+          gridReady.appendChild(card);
+        });
+      }
+
+      if (soldOutProducts.length > 0) {
+        soldOutSection.classList.remove("hidden");
+        soldOutProducts.forEach(p => {
+          const inCartQty = cart[p.id]?.qty || 0;
+          const card = createProductCardHTML(p, 0, inCartQty, true, fallbackImg);
+          gridSoldOut.appendChild(card);
+        });
+      } else {
+        soldOutSection.classList.add("hidden");
+      }
     }
 
-    window.filterCategory = function(cat) {
-      currentCategory = cat;
-      document.querySelectorAll(".cat-btn").forEach(btn => {
-        btn.classList.remove("bg-white", "text-amber-600", "shadow-md");
-        btn.classList.add("bg-amber-600/50", "text-white", "border", "border-amber-400");
-      });
-      const activeBtn = document.getElementById(`btn-cat-${cat}`);
-      if (activeBtn) {
-        activeBtn.classList.remove("bg-amber-600/50", "text-white", "border", "border-amber-400");
-        activeBtn.classList.add("bg-white", "text-amber-600", "shadow-md");
-      }
-      renderProducts();
-    };
-
-    // Buka/Tutup Keranjang
-    window.toggleCart = function() {
-      const sidebar = document.getElementById("cart-sidebar");
-      const overlay = document.getElementById("cart-overlay");
+    function createProductCardHTML(p, liveStock, inCartQty, isSoldOut, fallbackImg) {
+      const card = document.createElement("div");
+      card.className = `bg-white rounded-3xl p-3 border transition-all duration-300 flex flex-col justify-between group ${isSoldOut ? 'border-gray-200/80' : 'border-gray-100/90 shadow-2xs hover:shadow-md'}`;
       
-      if (sidebar.classList.contains("active")) {
-        sidebar.classList.remove("active");
-        overlay.classList.add("hidden");
+      card.innerHTML = `
+        <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
+          <div class="relative w-full h-36 rounded-2xl bg-amber-50 overflow-hidden mb-2.5">
+            <img src="${p.image_url || fallbackImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImg}'">
+            
+            <span class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-gray-700 text-[9px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs">
+              ${p.category || 'Kue'}
+            </span>
+
+            ${isSoldOut ? `
+              <span class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                Habis Hari Ini
+              </span>
+            ` : `
+              <span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-medium px-2 py-0.5 rounded-md shadow-2xs">
+                Sisa Hari Ini: ${liveStock} pcs
+              </span>
+            `}
+          </div>
+
+          <h3 class="font-bold text-xs sm:text-sm line-clamp-1 text-gray-900 group-hover:text-amber-600 transition">${p.name}</h3>
+          
+          ${isSoldOut ? `
+            <p class="text-blue-600 font-medium text-[10px] line-clamp-1 mt-0.5">
+              <i class="fa-solid fa-calendar-plus text-[9px]"></i> Bisa dipesan untuk besok/lusa
+            </p>
+          ` : `
+            <p class="text-gray-400 text-[11px] line-clamp-1 mt-0.5">${p.description || 'Pilihan kue istimewa AZRI SNACK.'}</p>
+          `}
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-gray-50 flex items-center justify-between">
+          <span class="font-bold text-xs sm:text-sm text-amber-600">Rp${Number(p.price).toLocaleString('id-ID')}</span>
+          
+          <div id="btn-container-${p.id}">
+            ${isSoldOut ? (inCartQty > 0 ? `
+              <div class="flex items-center bg-blue-50 border border-blue-200 rounded-xl p-0.5">
+                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-blue-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                <input type="number" min="0" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-blue-950 bg-transparent outline-none">
+                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+              </div>
+            ` : `
+              <button onclick="updateQty('${p.id}', 1)" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition shadow-2xs">
+                <i class="fa-solid fa-calendar-plus"></i> Pesan Besok
+              </button>
+            `) : (inCartQty > 0 ? `
+              <div class="flex items-center bg-amber-50/80 border border-amber-200 rounded-xl p-0.5">
+                <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">-</button>
+                <input type="number" min="0" enterkeyhint="done" value="${inCartQty}" onchange="setQtyManual('${p.id}', this.value)" class="w-9 text-center text-xs font-bold text-amber-950 bg-transparent outline-none">
+                <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-90">+</button>
+              </div>
+            ` : `
+              <button onclick="updateQty('${p.id}', 1)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 transition shadow-xs">
+                <i class="fa-solid fa-plus text-[10px]"></i> Pesan
+              </button>
+            `)}
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    // 4. Modal Detail Produk
+    window.openProductDetailModal = function(productId) {
+      const prod = allProducts.find(p => p.id === productId);
+      if (!prod) return;
+
+      selectedModalProduct = prod;
+      const liveStock = prod.stock !== undefined ? Number(prod.stock) : 0;
+      const isSoldOut = prod.status === "OUT_OF_STOCK" || liveStock <= 0;
+      const currentQty = cart[productId]?.qty || 1;
+
+      document.getElementById("detail-img").src = prod.image_url || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+      document.getElementById("detail-category").innerText = prod.category || "Menu AZRI SNACK";
+      document.getElementById("detail-title").innerText = prod.name;
+      document.getElementById("detail-price").innerText = "Rp" + Number(prod.price).toLocaleString("id-ID") + " / pcs";
+      document.getElementById("detail-desc").innerText = prod.description || "Dibuat dengan bahan baku segar pilihan dan resep tradisional istimewa dari AZRI SNACK.";
+      
+      const preorderNotice = document.getElementById("detail-preorder-notice");
+      const stockBadge = document.getElementById("detail-stock-badge");
+      const btnAddText = document.getElementById("btn-add-modal-text");
+      const btnAddModal = document.getElementById("btn-add-modal-cart");
+
+      if (isSoldOut) {
+        preorderNotice.classList.remove("hidden");
+        stockBadge.className = "absolute bottom-3 right-3 bg-red-600 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md";
+        stockBadge.innerText = "Habis Hari Ini";
+        btnAddText.innerText = "Pesan untuk Jadwal Besok / Lusa";
+        btnAddModal.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition active:scale-98";
       } else {
-        sidebar.classList.add("active");
-        overlay.classList.remove("hidden");
-        updateCartUI();
+        preorderNotice.classList.add("hidden");
+        stockBadge.className = "absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-md border border-gray-100";
+        stockBadge.innerText = `Sisa Stok Hari Ini: ${liveStock} pcs`;
+        btnAddText.innerText = "Tambahkan ke Keranjang";
+        btnAddModal.className = "w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition active:scale-98";
+      }
+
+      const qtyInput = document.getElementById("detail-qty-input");
+      qtyInput.value = currentQty;
+
+      document.getElementById("product-detail-modal").classList.remove("hidden");
+    };
+
+    window.closeProductDetailModal = function() {
+      document.getElementById("product-detail-modal").classList.add("hidden");
+      selectedModalProduct = null;
+    };
+
+    window.changeModalQty = function(delta) {
+      if (!selectedModalProduct) return;
+      const input = document.getElementById("detail-qty-input");
+      let currentVal = parseInt(input.value);
+      if (isNaN(currentVal) || currentVal < 1) currentVal = 1;
+
+      let nextVal = currentVal + delta;
+      if (nextVal < 1) nextVal = 1;
+
+      input.value = nextVal;
+    };
+
+    window.handleModalManualInput = function(input) {
+      if (!selectedModalProduct) return;
+      let val = parseInt(input.value);
+      if (isNaN(val) || val < 1) {
+        if (input.value !== "") input.value = 1;
       }
     };
 
-    // Tambah ke Keranjang
-    window.addToCart = function(id) {
-      const product = productsList.find(p => p.id === id);
-      if (!product) return;
+    window.confirmAddToCartFromModal = function() {
+      if (!selectedModalProduct) return;
+      const input = document.getElementById("detail-qty-input");
+      let qty = parseInt(input.value);
+      if (isNaN(qty) || qty < 1) qty = 1;
+      
+      setQtyManual(selectedModalProduct.id, qty);
+      closeProductDetailModal();
+    };
 
-      if (cart[id]) {
-        cart[id].qty += 1;
-      } else {
-        cart[id] = {
-          id: product.id,
-          name: product.name,
-          price: Number(product.price || 0),
-          qty: 1,
-          is_snackbox: false
-        };
+    // 5. Keranjang Belanja
+    window.updateQty = function(productId, delta) {
+      const prod = allProducts.find(p => p.id === productId);
+      if (!prod) return;
+
+      if (!cart[productId]) {
+        cart[productId] = { ...prod, qty: 0 };
       }
+
+      const nextQty = cart[productId].qty + delta;
+
+      if (nextQty <= 0) {
+        delete cart[productId];
+      } else {
+        cart[productId].qty = nextQty;
+      }
+
       updateCartUI();
-      
-      // Buka keranjang otomatis saat pertama kali tambah
-      const sidebar = document.getElementById("cart-sidebar");
-      if (!sidebar.classList.contains("active")) {
-        toggleCart();
-      }
+      renderFilteredProducts();
     };
 
-    // Ubah Kuantitas
-    window.changeCartQty = function(id, delta) {
-      if (cart[id]) {
-        cart[id].qty += delta;
-        if (cart[id].qty <= 0) {
-          delete cart[id];
-        }
+    window.setQtyManual = function(productId, rawValue) {
+      const prod = allProducts.find(p => p.id === productId);
+      if (!prod) return;
+
+      let qty = parseInt(rawValue);
+      if (isNaN(qty) || qty <= 0) {
+        delete cart[productId];
+      } else {
+        cart[productId] = { ...prod, qty: qty };
+      }
+
+      updateCartUI();
+      renderFilteredProducts();
+    };
+
+    window.removeItemFromCart = function(productId) {
+      if (cart[productId]) {
+        delete cart[productId];
         updateCartUI();
+        renderFilteredProducts();
       }
     };
 
-    // Update Tampilan Keranjang & Simpan ke LocalStorage
-    window.updateCartUI = function() {
-      const container = document.getElementById("cart-items");
+    function updateCartUI() {
+      const itemKeys = Object.keys(cart);
+      const totalJenisKue = itemKeys.length;
+      const totalPcs = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+      const grandTotal = Object.values(cart).reduce((sum, item) => sum + (item.qty * item.price), 0);
+
       const badge = document.getElementById("cart-badge");
-      const totalEl = document.getElementById("cart-total");
-      const checkoutBtn = document.getElementById("btn-checkout");
-      const form = document.getElementById("checkout-form");
+      const stickyBar = document.getElementById("sticky-cart");
 
-      container.innerHTML = "";
-      let totalQty = 0;
-      let grandTotal = 0;
+      let hasSoldOutTodayItem = false;
+      Object.values(cart).forEach(item => {
+        const liveProd = allProducts.find(p => p.id === item.id);
+        const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
+        if (liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0)) {
+          hasSoldOutTodayItem = true;
+        }
+      });
 
-      const keys = Object.keys(cart);
-      if (keys.length === 0) {
-        container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm italic">Keranjang masih kosong.</div>';
+      const dateInput = document.getElementById("order-date");
+      if (hasSoldOutTodayItem) {
+        if (dateInput.value === getTodayDateWIB()) {
+          dateInput.value = getTomorrowDateWIB();
+        }
+        dateInput.min = getTomorrowDateWIB();
+      } else {
+        dateInput.min = getTodayDateWIB();
+      }
+
+      if (totalJenisKue > 0) {
+        badge.innerText = totalJenisKue;
+        badge.classList.remove("hidden");
+        stickyBar.classList.remove("hidden");
+        
+        document.getElementById("cart-item-count").innerText = `${totalJenisKue} Jenis`;
+        document.getElementById("cart-qty-total").innerText = totalPcs;
+        document.getElementById("cart-price-total").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
+        document.getElementById("modal-subtotal").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
+      } else {
         badge.classList.add("hidden");
-        form.classList.add("hidden");
-        checkoutBtn.disabled = true;
-        totalEl.innerText = "Rp0";
-        // Hapus storage jika kosong
-        localStorage.removeItem('azri_cart');
+        stickyBar.classList.add("hidden");
+        toggleCartModal(false);
+      }
+
+      renderCartModalList();
+    }
+
+    function renderCartModalList() {
+      const container = document.getElementById("cart-items-container");
+      container.innerHTML = "";
+
+      const items = Object.values(cart);
+      if (items.length === 0) {
+        container.innerHTML = `<div class="text-center py-6 text-xs text-gray-400">Keranjang masih kosong.</div>`;
         return;
       }
 
-      keys.forEach(id => {
-        const item = cart[id];
-        totalQty += item.qty;
-        const subtotal = item.price * item.qty;
-        grandTotal += subtotal;
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&auto=format&fit=crop&q=60";
+
+      items.forEach(item => {
+        const liveProd = allProducts.find(p => p.id === item.id);
+        const liveStock = liveProd && liveProd.stock !== undefined ? Number(liveProd.stock) : 0;
+        const isSoldOutToday = liveProd && (liveProd.status === "OUT_OF_STOCK" || liveStock <= 0);
+        const imgUrl = (liveProd && liveProd.image_url) || item.image_url || fallbackImg;
 
         const row = document.createElement("div");
-        row.className = "flex items-center justify-between bg-white p-3 rounded-xl border border-gray-100 shadow-2xs";
+        row.className = "flex items-center gap-2.5 bg-gray-50/80 p-2.5 rounded-2xl border border-gray-100";
         row.innerHTML = `
-          <div class="flex-1 pr-3">
-            <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${item.name}</h4>
-            <p class="text-[11px] font-bold text-amber-600">Rp${item.price.toLocaleString('id-ID')}</p>
+          <img src="${imgUrl}" alt="${item.name}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200 shadow-2xs" onerror="this.src='${fallbackImg}'">
+
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-[11px] text-gray-400">Rp${item.price.toLocaleString('id-ID')}</span>
+              ${isSoldOutToday ? '<span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded font-semibold whitespace-nowrap">Pre-Order Besok</span>' : ''}
+            </div>
           </div>
-          <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg p-1">
-            <button onclick="changeCartQty('${id}', -1)" class="w-6 h-6 rounded bg-white text-gray-600 hover:bg-gray-200 text-xs font-bold">-</button>
-            <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
-            <button onclick="changeCartQty('${id}', 1)" class="w-6 h-6 rounded bg-amber-500 text-white hover:bg-amber-600 text-xs font-bold">+</button>
+
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <div class="flex items-center bg-white border border-gray-200 rounded-xl p-0.5 shadow-2xs">
+              <button type="button" onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
+              <input type="number" min="1" enterkeyhint="done" value="${item.qty}" onchange="setQtyManual('${item.id}', this.value)" class="w-8 text-center font-bold text-gray-900 text-xs outline-none bg-transparent">
+              <button type="button" onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center text-xs active:scale-90">+</button>
+            </div>
+
+            <span class="font-bold text-xs text-gray-900 text-right min-w-[55px]">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
+
+            <button type="button" onclick="removeItemFromCart('${item.id}')" title="Hapus menu ini" class="w-6 h-6 rounded-lg text-gray-300 hover:text-red-500 flex items-center justify-center transition">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
           </div>
         `;
         container.appendChild(row);
       });
+    }
 
-      badge.innerText = totalQty;
-      badge.classList.remove("hidden");
-      form.classList.remove("hidden");
-      checkoutBtn.disabled = false;
-      totalEl.innerText = "Rp" + grandTotal.toLocaleString('id-ID');
-
-      // SIMPAN OTOMATIS KE BROWSER
-      localStorage.setItem('azri_cart', JSON.stringify(cart));
+    // 6. Filter & Search
+    window.filterCategory = function(cat) {
+      currentFilter = cat;
+      document.querySelectorAll(".cat-btn").forEach(btn => {
+        btn.classList.remove("bg-gray-900", "text-white", "shadow-xs");
+        btn.classList.add("bg-white", "text-gray-600");
+      });
+      event.target.classList.remove("bg-white", "text-gray-600");
+      event.target.classList.add("bg-gray-900", "text-white", "shadow-xs");
+      renderFilteredProducts();
     };
 
-    // Proses Checkout ke Firebase & WhatsApp
+    window.handleSearch = function() {
+      searchQuery = document.getElementById("search-input").value;
+      const clearBtn = document.getElementById("btn-clear-search");
+      if (searchQuery.trim() !== "") {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      renderFilteredProducts();
+    };
+
+    window.toggleCartModal = function(show) {
+      const modal = document.getElementById("cart-modal");
+      if (show) modal.classList.remove("hidden");
+      else modal.classList.add("hidden");
+    };
+
+    window.toggleAddressField = function() {
+      const type = document.getElementById("delivery-type").value;
+      const addrBox = document.getElementById("address-box");
+      const addrInput = document.getElementById("cust-address");
+      if (type === "Diantar / Delivery") {
+        addrBox.classList.remove("hidden");
+        addrInput.setAttribute("required", "true");
+      } else {
+        addrBox.classList.add("hidden");
+        addrInput.removeAttribute("required");
+      }
+    };
+
+    // 7. Submit Order
     window.submitOrder = async function() {
-      const btn = document.getElementById("btn-checkout");
-      
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
-      const eventDate = document.getElementById("event-date").value;
-      
-      if (!name || !phone || !eventDate) {
-        alert("Mohon lengkapi Nama, No. WhatsApp, dan Tanggal Acara!");
+      const date = document.getElementById("order-date").value;
+      const time = document.getElementById("order-time").value;
+      const deliveryType = document.getElementById("delivery-type").value;
+      const address = document.getElementById("cust-address") ? document.getElementById("cust-address").value.trim() : "";
+      const notes = document.getElementById("order-notes").value.trim();
+
+      const items = Object.values(cart).map(c => ({
+        product_id: c.id,
+        name: c.name,
+        price: c.price,
+        qty: c.qty,
+        subtotal: c.price * c.qty
+      }));
+
+      if (items.length === 0) {
+        alert("Keranjang Anda masih kosong. Silakan pilih kue terlebih dahulu!");
         return;
       }
 
+      const grandTotal = items.reduce((sum, i) => sum + i.subtotal, 0);
+      const invoiceNo = "AZRI-" + Math.floor(100000 + Math.random() * 900000);
+
+      const btn = document.getElementById("btn-submit-order");
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses Pesanan...`;
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-lg"></i><span>Memproses...</span>`;
 
       try {
-        let grandTotal = 0;
-        const itemsArray = [];
-        
-        Object.keys(cart).forEach(id => {
-          const item = cart[id];
-          grandTotal += (item.price * item.qty);
-          itemsArray.push({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            qty: item.qty,
-            is_snackbox: false
-          });
-        });
-
-        // Generate Invoice Number acak (Contoh: AZRI-169812)
-        const invNo = "AZRI-" + Math.floor(100000 + Math.random() * 900000);
-
-        const payload = {
-          invoice_no: invNo,
+        await addDoc(collection(db, "orders"), {
+          invoice_no: invoiceNo,
           customer_name: name,
           customer_phone: phone,
-          event_date: eventDate,
-          event_time: document.getElementById("event-time").value || "-",
-          delivery_type: document.getElementById("delivery-type").value,
-          notes: document.getElementById("cust-notes").value.trim() || "-",
-          delivery_address: "-",
-          items: itemsArray,
+          event_date: date,
+          event_time: time,
+          delivery_type: deliveryType,
+          delivery_address: address || "-",
+          notes: notes || "-",
+          items: items,
           total_price: grandTotal,
           status: "PENDING",
           payment_status: "UNPAID",
-          dp_amount: 0,
           created_at: serverTimestamp()
-        };
-
-        // Simpan ke Firestore
-        await addDoc(collection(db, "orders"), payload);
-
-        // Format Pesan WhatsApp
-        let waText = `Halo *AZRI SNACK*,\nSaya ingin memesan kue.\n\n*Invoice:* #${invNo}\n*Nama:* ${name}\n*Tgl Acara:* ${eventDate}\n*Pengambilan:* ${payload.delivery_type}\n\n*Pesanan:*\n`;
-        
-        itemsArray.forEach(i => {
-          waText += `- ${i.name} (x${i.qty}) = Rp${(i.price * i.qty).toLocaleString('id-ID')}\n`;
         });
-        waText += `\n*Total Belanja: Rp${grandTotal.toLocaleString('id-ID')}*\n\nCatatan: ${payload.notes}`;
 
-        const waNumber = "6285892022079"; // Nomor WA Admin
-        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waText)}`;
+        const isOrderForToday = (date === getTodayDateWIB());
 
-        // Kosongkan keranjang di memori sistem (hapus localStorage)
+        if (isOrderForToday) {
+          for (const item of items) {
+            const productRef = doc(db, "products", item.product_id);
+            const pDoc = await getDoc(productRef);
+            if (pDoc.exists()) {
+              const currentStock = Number(pDoc.data().stock || 0);
+              const updatedStock = Math.max(0, currentStock - item.qty);
+              await updateDoc(productRef, {
+                stock: updatedStock,
+                status: updatedStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE"
+              });
+            }
+          }
+        }
+
+        let itemText = "";
+        items.forEach(i => {
+          itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+        });
+
+        let waMessage = `🍰 *PESANAN BARU - AZRI SNACK*\n`;
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*No. Invoice:* #${invoiceNo}\n`;
+        waMessage += `*Nama:* ${name}\n`;
+        waMessage += `*No. HP:* ${phone}\n`;
+        waMessage += `*Tgl Acara:* ${date} (Pukul ${time})\n`;
+        waMessage += `*Tipe Pesanan:* ${isOrderForToday ? 'Siap Saji Hari Ini' : 'Pre-Order / Jadwal Mendatang'}\n`;
+        waMessage += `*Pengambilan:* ${deliveryType}\n`;
+        if (deliveryType === "Diantar / Delivery") {
+          waMessage += `*Alamat:* ${address}\n`;
+        }
+        if (notes) {
+          waMessage += `*Catatan:* ${notes}\n`;
+        }
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*Rincian Menu:*\n${itemText}`;
+        waMessage += `━━━━━━━━━━━━━━━━━━━━\n`;
+        waMessage += `*TOTAL SEMENTARA:* Rp${grandTotal.toLocaleString('id-ID')}\n\n`;
+        waMessage += `_Halo Admin AZRI SNACK, mohon konfirmasi ketersediaan pesanan saya. Terima kasih!_`;
+
+        openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
+
         cart = {};
-        localStorage.removeItem('azri_cart');
         updateCartUI();
-
-        // Redirect ke WhatsApp
-        window.location.href = waUrl;
-
-      } catch (error) {
-        console.error("Gagal membuat pesanan:", error);
-        alert("Terjadi kesalahan saat memproses pesanan. Silakan coba lagi.");
+        renderFilteredProducts();
+        document.getElementById("order-form").reset();
+        document.getElementById("order-date").value = getTodayDateWIB();
+        btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i><span>Pesan via WhatsApp</span>`;
+
+      } catch (err) {
+        console.error("Gagal simpan pesanan:", err);
+        let itemText = "";
+        items.forEach(i => {
+          itemText += `• ${i.name} (${i.qty} pcs) = Rp${i.subtotal.toLocaleString('id-ID')}\n`;
+        });
+        let waMessage = `🍰 *PESANAN BARU - AZRI SNACK*\n*Nama:* ${name}\n*No. HP:* ${phone}\n*Tgl Acara:* ${date} (${time})\n*Menu:*\n${itemText}*Total:* Rp${grandTotal.toLocaleString('id-ID')}`;
+        
+        openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
+        
+        btn.innerHTML = `<i class="fa-brands fa-whatsapp text-lg"></i> <span>Kirim Pesanan ke WhatsApp Toko</span>`;
+        btn.disabled = false;
       }
+    };
+  </script>
+
+  <!-- PWA Service Worker -->
+  <script>
+    let deferredPrompt;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker aktif:', reg.scope))
+          .catch(err => console.log('Gagal pasang Service Worker:', err));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.remove('hidden');
+    });
+
+    window.triggerPWAInstall = function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Pelanggan memasang aplikasi');
+          }
+          deferredPrompt = null;
+          dismissPWABanner();
+        });
+      }
+    };
+
+    window.dismissPWABanner = function() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.add('hidden');
     };
   </script>
 </body>
