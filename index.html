@@ -157,10 +157,10 @@
     </div>
   </div>
 
-  <!-- ================= BAGIAN PALING ATAS (STAY / STICKY SAAT DIGULIR) ================= -->
+  <!-- ================= HEADER UTAMA (STICKY TETAP DI ATAS SAAT SCROLL) ================= -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-cream-200 shadow-soft">
-    <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
-      <!-- Logo Toko & Brand -->
+    <!-- Baris 1: Logo, Nama, No WA, Keranjang -->
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between border-b border-cream-100/60">
       <div class="flex items-center gap-3">
         <div id="store-logo-container" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-2 ring-gold-600/30">
           <div class="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden p-0.5">
@@ -174,7 +174,6 @@
         </div>
       </div>
 
-      <!-- Kontak Cepat & Keranjang Belanja -->
       <div class="flex items-center gap-2.5">
         <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin bertanya tentang menu kue.')" class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-emerald-100 transition border border-emerald-200/60 shadow-2xs">
           <i class="fa-brands fa-whatsapp text-sm"></i>
@@ -188,20 +187,10 @@
         </button>
       </div>
     </div>
-  </header>
 
-  <!-- ================= BAGIAN DI BAWAH HEADER (IKUT BERGERAK SAAT DIGULIR) ================= -->
-  <div class="relative z-30">
-    <!-- BANNER GAMBAR HERO -->
-    <div class="max-w-7xl mx-auto px-4 mt-3 mb-2">
-      <div class="w-full rounded-2xl overflow-hidden shadow-soft border border-cream-200 bg-black flex items-center justify-center">
-        <img src="./file_00000000e8d0820786eb9995a815b3cb.png" alt="Promo AZRI SNACK" class="w-full h-auto object-contain max-h-[220px] sm:max-h-[320px] md:max-h-[400px]">
-      </div>
-    </div>
-
-    <!-- Filter Tabs (Pilihan Menu di Atas) & Search Box di Bawahnya -->
-    <div class="max-w-7xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
-      <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
+    <!-- Baris 2: Pilihan Menu Kategori & Kolom Pencarian (Ikut Sticky Menempel di Bawah Header) -->
+    <div class="max-w-7xl mx-auto px-4 py-2 bg-white/90 backdrop-blur-md space-y-2">
+      <div class="flex gap-2 overflow-x-auto hide-scrollbar">
         <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap bg-ink-900 text-cream-100 shadow-soft transition">Semua Menu</button>
         <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Snack & Gorengan</button>
         <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Kue Basah</button>
@@ -209,11 +198,19 @@
 
       <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-        <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-white pl-9 pr-9 py-2.5 text-xs rounded-full focus:ring-2 focus:ring-gold-500/25 outline-none transition border border-cream-200 focus:border-gold-300 placeholder:text-ink-400">
+        <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-cream-50/80 pl-9 pr-9 py-2 text-xs rounded-full focus:ring-2 focus:ring-gold-500/25 outline-none transition border border-cream-200 focus:border-gold-300 placeholder:text-ink-400">
         <button type="button" id="btn-clear-search" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1">
           <i class="fa-solid fa-circle-xmark text-sm"></i>
         </button>
       </form>
+    </div>
+  </header>
+
+  <!-- ================= KONTEN DI BAWAH HEADER STICKY ================= -->
+  <!-- BANNER GAMBAR HERO -->
+  <div class="max-w-7xl mx-auto px-4 mt-3 mb-2">
+    <div class="w-full rounded-2xl overflow-hidden shadow-soft border border-cream-200 bg-black flex items-center justify-center">
+      <img src="./file_00000000e8d0820786eb9995a815b3cb.png" alt="Promo AZRI SNACK" class="w-full h-auto object-contain max-h-[220px] sm:max-h-[320px] md:max-h-[400px]">
     </div>
   </div>
 
@@ -306,7 +303,7 @@
   </div>
 
   <!-- Product Catalog Grid (Siap Saji / Ready Hari Ini - Urut A-Z) -->
-  <main id="catalog-section" class="max-w-7xl mx-auto px-4 mt-6 scroll-mt-24">
+  <main id="catalog-section" class="max-w-7xl mx-auto px-4 mt-6 scroll-mt-28">
     <div class="flex items-end justify-between mb-4">
       <div>
         <p class="eyebrow text-gold-600 mb-1">Katalog Harian</p>
@@ -324,7 +321,7 @@
   </main>
 
   <!-- BAGIAN PRODUK HABIS HARI INI (SCROLL KE BAWAH - Urut A-Z) -->
-  <section id="soldout-section" class="max-w-7xl mx-auto px-4 mt-12 scroll-mt-24 hidden">
+  <section id="soldout-section" class="max-w-7xl mx-auto px-4 mt-12 scroll-mt-28 hidden">
     <div class="rule-gold mb-6"></div>
       <div class="flex items-center justify-between mb-4">
         <div>
