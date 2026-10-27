@@ -165,8 +165,8 @@
     </div>
   </div>
 
-  <!-- Header / Navbar -->
-  <header class="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-cream-200 shadow-soft">
+  <!-- Header / Navbar (Diubah dari sticky menjadi relative agar ikut bergerak saat scroll) -->
+  <header class="relative z-30 bg-white/85 backdrop-blur-md border-b border-cream-200 shadow-soft">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <!-- Logo Toko & Brand -->
       <div class="flex items-center gap-3.5">
@@ -196,10 +196,10 @@
       </div>
     </div>
 
-    <!-- BANNER GAMBAR HERO (DI ATAS PENCARIAN) -->
-    <div class="max-w-7xl mx-auto px-4 mt-3 mb-2">
-      <div class="w-full rounded-2xl overflow-hidden shadow-soft border border-cream-200">
-        <img src="./file_00000000e8d0820786eb9995a815b3cb.png" alt="Promo AZRI SNACK" class="w-full h-auto object-cover max-h-48 sm:max-h-64 md:max-h-80 xl:max-h-96">
+    <!-- BANNER GAMBAR HERO (Ukuran proporsional & object-contain agar wajah tidak tertutup) -->
+    <div class="max-w-7xl mx-auto px-4 mt-2 mb-2">
+      <div class="w-full rounded-2xl overflow-hidden shadow-soft border border-cream-200 bg-black flex items-center justify-center">
+        <img src="./file_00000000e8d0820786eb9995a815b3cb.png" alt="Promo AZRI SNACK" class="w-full h-auto object-contain max-h-[220px] sm:max-h-[320px] md:max-h-[400px]">
       </div>
     </div>
 
@@ -322,7 +322,6 @@
       <span class="text-[11px] text-ink-400 hidden sm:block pb-1">Urut A-Z • Klik kartu untuk detail</span>
     </div>
 
-    <!-- UPDATE GRID COLUMNS DI SINI -->
     <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4.5 hidden">
       <!-- Diisi otomatis oleh JavaScript -->
     </div>
@@ -349,7 +348,6 @@
         <span>Stok siap saji untuk hari ini sudah habis terjual. Anda tetap bisa memasukkan menu di bawah ke keranjang untuk jadwal <strong class="text-ink-800">besok, lusa, atau acara mendatang</strong>.</span>
       </p>
 
-      <!-- UPDATE GRID COLUMNS DI SINI -->
       <div id="soldout-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4.5">
         <!-- Diisi otomatis oleh JavaScript -->
       </div>
