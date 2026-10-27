@@ -35,11 +35,8 @@
             serif: ['Playfair Display', 'serif'],
           },
           colors: {
-            // Ivory hangat sebagai kanvas utama
             cream: { 50:'#FDFBF6', 100:'#FAF5EC', 200:'#F1E7D6', 300:'#E3D3B8', 400:'#CBB38C' },
-            // Tinta batu untuk teks (lebih hangat dari gray murni)
             ink: { 900:'#1C1917', 800:'#292524', 700:'#44403C', 600:'#57534E', 500:'#78716C', 400:'#A8A29E', 300:'#D6D3D1', 200:'#E7E5E4', 100:'#F5F5F4' },
-            // Emas / amber premium sebagai aksen brand
             gold: { 50:'#FDF6EA', 100:'#F8E8CC', 200:'#EFD09B', 300:'#E2B365', 400:'#D19434', 500:'#B87516', 600:'#9A5B0F', 700:'#7C4608', 800:'#5C3306' }
           },
           boxShadow: {
@@ -70,7 +67,6 @@
     input[type=number] { -moz-appearance: textfield; }
     html { scroll-behavior: smooth; }
 
-    /* Animasi Preload */
     @keyframes pulseGlow {
       0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); }
       50% { transform: scale(1.04); box-shadow: 0 0 45px rgba(245, 158, 11, 0.6); }
@@ -86,7 +82,6 @@
       animation: shimmerBar 1.5s infinite linear;
     }
 
-    /* ==== DESIGN SYSTEM: ELEGAN PREMIUM ==== */
     body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     .eyebrow {
       font-size: 10px;
@@ -94,18 +89,15 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
     }
-    /* Permukaan hero: gradasi karamel tua yang kaya */
     .hero-surface {
       background:
         radial-gradient(120% 130% at 12% 0%, rgba(255,238,206,0.22) 0%, rgba(255,238,206,0) 55%),
         linear-gradient(135deg, #7C4608 0%, #9A5B0F 48%, #B87516 100%);
     }
-    /* Titik halus sebagai tekstur */
     .texture-dots {
       background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1px);
       background-size: 14px 14px;
     }
-    /* Garis emas tipis untuk pemisah elegan */
     .rule-gold {
       background: linear-gradient(90deg, transparent, #E2B365 20%, #E2B365 80%, transparent);
       height: 1px;
@@ -165,46 +157,56 @@
     </div>
   </div>
 
-  <!-- Header / Navbar (Diubah dari sticky menjadi relative agar ikut bergerak saat scroll) -->
-  <header class="relative z-30 bg-white/85 backdrop-blur-md border-b border-cream-200 shadow-soft">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+  <!-- ================= BAGIAN PALING ATAS (STAY / STICKY SAAT DIGULIR) ================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-cream-200 shadow-soft">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
       <!-- Logo Toko & Brand -->
-      <div class="flex items-center gap-3.5">
-        <div id="store-logo-container" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-2 ring-gold-600/30">
+      <div class="flex items-center gap-3">
+        <div id="store-logo-container" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-2 ring-gold-600/30">
           <div class="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden p-0.5">
-            <span id="store-logo-fallback" class="text-xl">🍰</span>
+            <span id="store-logo-fallback" class="text-base">🍰</span>
             <img id="store-logo-img" src="./logo.png" alt="Logo AZRI SNACK" class="w-full h-full object-cover rounded-full hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
           </div>
         </div>
         <div>
-          <h1 class="font-serif font-bold text-lg sm:text-xl text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
-          <p class="text-[9px] text-gold-600 font-semibold uppercase tracking-[0.18em] mt-1">Kue Tradisional & Snack Box</p>
+          <h1 class="font-serif font-bold text-base sm:text-lg text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
+          <p class="text-[8px] sm:text-[9px] text-gold-600 font-semibold uppercase tracking-[0.18em] mt-0.5">Kue Tradisional & Snack Box</p>
         </div>
       </div>
 
       <!-- Kontak Cepat & Keranjang Belanja -->
       <div class="flex items-center gap-2.5">
-        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin bertanya tentang menu kue.')" class="hidden sm:inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3.5 py-1.5 rounded-full text-xs font-semibold hover:bg-emerald-100 transition border border-emerald-200/60 shadow-2xs">
+        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin bertanya tentang menu kue.')" class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-emerald-100 transition border border-emerald-200/60 shadow-2xs">
           <i class="fa-brands fa-whatsapp text-sm"></i>
-          <span>0858-9202-2079</span>
+          <span class="hidden sm:inline">0858-9202-2079</span>
+          <span class="sm:hidden">WhatsApp</span>
         </button>
         
         <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-cream-100 rounded-2xl text-gold-700 hover:bg-cream-200/80 transition border border-cream-200 shadow-soft active:scale-95 focus:outline-none">
-          <i class="fa-solid fa-basket-shopping text-lg"></i>
+          <i class="fa-solid fa-basket-shopping text-base"></i>
           <span id="cart-badge" class="absolute -top-1 -right-1 bg-gold-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
         </button>
       </div>
     </div>
+  </header>
 
-    <!-- BANNER GAMBAR HERO (Ukuran proporsional & object-contain agar wajah tidak tertutup) -->
-    <div class="max-w-7xl mx-auto px-4 mt-2 mb-2">
+  <!-- ================= BAGIAN DI BAWAH HEADER (IKUT BERGERAK SAAT DIGULIR) ================= -->
+  <div class="relative z-30">
+    <!-- BANNER GAMBAR HERO -->
+    <div class="max-w-7xl mx-auto px-4 mt-3 mb-2">
       <div class="w-full rounded-2xl overflow-hidden shadow-soft border border-cream-200 bg-black flex items-center justify-center">
         <img src="./file_00000000e8d0820786eb9995a815b3cb.png" alt="Promo AZRI SNACK" class="w-full h-auto object-contain max-h-[220px] sm:max-h-[320px] md:max-h-[400px]">
       </div>
     </div>
 
-    <!-- Search Box & Filter Tabs -->
+    <!-- Filter Tabs (Pilihan Menu di Atas) & Search Box di Bawahnya -->
     <div class="max-w-7xl mx-auto px-4 pb-3 pt-1 space-y-2.5">
+      <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
+        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap bg-ink-900 text-cream-100 shadow-soft transition">Semua Menu</button>
+        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Snack & Gorengan</button>
+        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Kue Basah</button>
+      </div>
+
       <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
         <input type="text" id="search-input" enterkeyhint="search" oninput="handleSearch()" placeholder="Cari aneka kue (contoh: Pastel, Risol, Lemper)..." class="w-full bg-white pl-9 pr-9 py-2.5 text-xs rounded-full focus:ring-2 focus:ring-gold-500/25 outline-none transition border border-cream-200 focus:border-gold-300 placeholder:text-ink-400">
@@ -212,14 +214,8 @@
           <i class="fa-solid fa-circle-xmark text-sm"></i>
         </button>
       </form>
-
-      <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-0.5">
-        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap bg-ink-900 text-cream-100 shadow-soft transition">Semua Menu</button>
-        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Snack & Gorengan</button>
-        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Kue Basah</button>
-      </div>
     </div>
-  </header>
+  </div>
 
   <!-- Hero Banner -->
   <section class="max-w-7xl mx-auto px-4 mt-4">
@@ -597,13 +593,11 @@
     let currentFilter = "All";
     let searchQuery = "";
     
-    // PENYIMPANAN KERANJANG OTOMATIS (LocalStorage)
     let cart = JSON.parse(localStorage.getItem('azri_cart')) || {};
 
     let selectedModalProduct = null;
     let isInitialDataLoaded = false;
 
-    // -- MENAMPILKAN LOGO SECARA LANGSUNG SAAT HALAMAN DIMUAT --
     const logoImg = document.getElementById("store-logo-img");
     const fallback = document.getElementById("store-logo-fallback");
     if (logoImg) {
@@ -619,7 +613,6 @@
       preImg.classList.remove("hidden");
       if (preFallback) preFallback.classList.add("hidden");
     }
-    // ----------------------------------------------------------
 
     function hidePreloadScreen() {
       const preload = document.getElementById("app-preload-screen");
@@ -717,7 +710,6 @@
       openUniversalWhatsApp(WA_STORE_PHONE, msg);
     };
 
-    // 1. Sync Logo Toko dari Firebase (Opsional jika di-update dari dashboard admin)
     onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
       if (docSnap.exists() && docSnap.data().logo_url) {
         const logoUrl = docSnap.data().logo_url;
@@ -726,7 +718,6 @@
       }
     }, (err) => console.log("Gagal sync logo:", err));
 
-    // 2. Sync Realtime Produk
     onSnapshot(collection(db, "products"), (snapshot) => {
       allProducts = [];
       snapshot.forEach(docSnap => {
@@ -747,7 +738,6 @@
       hidePreloadScreen();
     });
 
-    // 3. Render Katalog Satuan (Siap Saji di Atas & Habis di Bawah - Urut A-Z)
     function renderFilteredProducts() {
       let filtered = [...allProducts];
 
@@ -903,7 +893,6 @@
       return card;
     }
 
-    // 4. Modal Detail Produk
     window.openProductDetailModal = function(productId) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
@@ -979,7 +968,6 @@
       closeProductDetailModal();
     };
 
-    // 5. Keranjang Belanja & LocalStorage
     window.updateQty = function(productId, delta) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
@@ -1061,14 +1049,12 @@
         document.getElementById("cart-price-total").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
         document.getElementById("modal-subtotal").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
         
-        // Simpan otomatis ke memori browser
         localStorage.setItem('azri_cart', JSON.stringify(cart));
       } else {
         badge.classList.add("hidden");
         stickyBar.classList.add("hidden");
         toggleCartModal(false);
         
-        // Hapus storage jika kosong
         localStorage.removeItem('azri_cart');
       }
 
@@ -1124,7 +1110,6 @@
       });
     }
 
-    // 6. Filter & Search
     window.filterCategory = function(cat) {
       currentFilter = cat;
       document.querySelectorAll(".cat-btn").forEach(btn => {
@@ -1166,7 +1151,6 @@
       }
     };
 
-    // 7. Submit Order
     window.submitOrder = async function() {
       const name = document.getElementById("cust-name").value.trim();
       const phone = document.getElementById("cust-phone").value.trim();
@@ -1257,7 +1241,6 @@
 
         openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
 
-        // Kosongkan keranjang & hapus penyimpanan browser setelah sukses checkout
         cart = {};
         localStorage.removeItem('azri_cart');
         updateCartUI();
