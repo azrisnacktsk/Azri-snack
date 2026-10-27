@@ -3,346 +3,653 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Karyawan - AZRI SNACK</title>
+  <title>Panel Update Stok Karyawan - AZRI SNACK</title>
   
-  <!-- Tailwind CSS CDN -->
+  <!-- Konfigurasi PWA Mandiri Khusus Karyawan -->
+  <link rel="manifest" href="./manifest-karyawan.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Azri Stok">
+  <link rel="apple-touch-icon" href="./logo.png">
+  <link rel="icon" type="image/png" href="./logo.png">
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Google Fonts: Poppins -->
+  <!-- Google Font Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
     body { font-family: 'Poppins', sans-serif; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] { -moz-appearance: textfield; }
+    html { scroll-behavior: smooth; }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen">
+<body class="bg-[#f4f5f8] text-gray-800 pb-32 min-h-screen">
 
-  <!-- ================= 1. LOGIN SCREEN (EMAIL & PASSWORD) ================= -->
-  <div id="login-screen" class="fixed inset-0 z-50 bg-gray-900 flex items-center justify-center p-4">
+  <!-- ================= LOGIN SCREEN (FIREBASE AUTH) ================= -->
+  <div id="karyawan-login" class="fixed inset-0 z-50 bg-gray-900/95 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 mx-auto shadow-md overflow-hidden flex items-center justify-center">
-        <div class="w-full h-full bg-emerald-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
-          <span class="text-3xl">🧑‍🍳</span>
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 mx-auto shadow-md overflow-hidden flex items-center justify-center">
+        <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-1">
+          <span class="text-3xl">🍰</span>
         </div>
       </div>
       <div>
-        <h2 class="text-xl font-bold text-gray-900">Panel Karyawan Dapur</h2>
-        <p class="text-xs text-gray-400 mt-1">Masuk untuk memantau pesanan dan stok kue</p>
+        <h2 class="text-xl font-bold text-gray-900">Panel Stok Dapur</h2>
+        <p class="text-xs text-gray-400 mt-1">Masuk dengan akun karyawan/admin toko</p>
       </div>
-
-      <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-4 pt-2">
-        <input type="email" id="email-input" placeholder="Email Karyawan" class="w-full text-center text-sm py-3 border-2 border-gray-200 rounded-2xl focus:border-emerald-500 focus:outline-none bg-gray-50 font-bold" required>
-        <input type="password" id="pass-input" placeholder="Password" class="w-full text-center text-sm py-3 border-2 border-gray-200 rounded-2xl focus:border-emerald-500 focus:outline-none bg-gray-50 font-bold" required>
-        <button type="submit" id="btn-login" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-semibold py-3 rounded-2xl text-sm transition shadow-md flex items-center justify-center gap-2">
-          <span>Masuk Panel</span>
+      <form onsubmit="event.preventDefault(); handleKaryawanLogin();" class="space-y-3 pt-2">
+        <input type="email" id="kl-email" placeholder="email@contoh.com" autocomplete="username" class="w-full text-center text-sm py-3 px-3 border-2 border-gray-200 rounded-2xl focus:border-amber-500 focus:outline-none bg-gray-50 font-semibold" required>
+        <input type="password" id="kl-password" placeholder="Password" autocomplete="current-password" class="w-full text-center text-sm py-3 px-3 border-2 border-gray-200 rounded-2xl focus:border-amber-500 focus:outline-none bg-gray-50 font-semibold" required>
+        <p id="kl-error" class="hidden text-[11px] text-red-600 font-semibold text-center bg-red-50 border border-red-200 rounded-xl py-2 px-3"></p>
+        <button type="submit" id="kl-btn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-98 text-white font-semibold py-3 rounded-2xl text-sm transition shadow-md flex items-center justify-center gap-2">
+          <span id="kl-btn-text">Masuk Panel Stok</span>
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       </form>
+      <p class="text-[10px] text-gray-400 leading-relaxed">Login diperlukan untuk mengubah stok. Hubungi admin jika belum punya akun.</p>
     </div>
   </div>
 
-  <!-- ================= 2. DASHBOARD KARYAWAN ================= -->
-  <div id="dashboard-screen" class="hidden flex flex-col min-h-screen">
-    
-    <!-- Top Navbar -->
-    <header class="bg-white shadow-xs sticky top-0 z-30 border-b border-gray-200">
-      <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 shadow-sm overflow-hidden flex items-center justify-center">
-            <div class="w-full h-full bg-emerald-50 rounded-[10px] flex items-center justify-center overflow-hidden p-0.5">
-              <span class="text-lg">🧑‍🍳</span>
-            </div>
-          </div>
-          <div>
-            <h1 class="font-bold text-sm text-gray-900 leading-tight">Panel Karyawan</h1>
-            <p class="text-[10px] text-gray-500 font-medium">Operasional Dapur AZRI SNACK</p>
-          </div>
-        </div>
-
-        <button onclick="handleLogout()" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl flex items-center gap-1.5 transition font-medium">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span class="hidden sm:inline">Keluar</span>
+  <!-- Banner PWA Install Khusus Karyawan -->
+  <div id="pwa-install-banner" class="hidden bg-gray-950 text-white px-4 py-2.5 shadow-md sticky top-0 z-40 border-b border-amber-500/20">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📲</span>
+        <span>Pasang aplikasi <strong>Azri Stok</strong> di layar utama HP!</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="triggerPWAInstall()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 font-bold px-3 py-1.5 rounded-xl shadow-xs transition whitespace-nowrap text-white">
+          Pasang App
+        </button>
+        <button onclick="dismissPWABanner()" class="text-gray-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-
-      <!-- Tab Navigasi -->
-      <div class="max-w-4xl mx-auto px-4 flex gap-2 overflow-x-auto hide-scrollbar border-t border-gray-100 pt-2 pb-2">
-        <button onclick="switchTab('orders')" id="tab-btn-orders" class="tab-btn active px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition">
-          <i class="fa-solid fa-clipboard-list"></i>
-          <span>Pesanan Dapur</span>
-          <span id="badge-pending-orders" class="bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full hidden">0</span>
-        </button>
-        <button onclick="switchTab('products')" id="tab-btn-products" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2 transition">
-          <i class="fa-solid fa-box-open"></i>
-          <span>Update Stok Etalase</span>
-        </button>
-      </div>
-    </header>
-
-    <main class="max-w-4xl w-full mx-auto px-4 py-6 flex-1">
-
-      <!-- ================= TAB 1: DATA PESANAN ================= -->
-      <section id="view-orders" class="tab-view space-y-4">
-        <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
-          <div>
-            <h2 class="font-bold text-gray-900 text-sm">Pesanan Hari Ini (Belum Selesai)</h2>
-            <p class="text-[10px] text-gray-400">Pilih status ke 'Diproses' atau 'Siap' jika kue sudah jadi.</p>
-          </div>
-        </div>
-
-        <div id="orders-container" class="space-y-3">
-          <!-- Pesanan dirender di sini -->
-        </div>
-      </section>
-
-      <!-- ================= TAB 2: UPDATE STOK ================= -->
-      <section id="view-products" class="tab-view hidden space-y-4">
-        <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
-          <h2 class="font-bold text-gray-900 text-sm">Kontrol Etalase Toko Web</h2>
-          <p class="text-[10px] text-gray-400">Jika kue habis di dapur, segera tandai 'Habis' agar pelanggan tidak bisa memesan via web.</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="products-container">
-          <!-- Produk dirender di sini -->
-        </div>
-      </section>
-
-    </main>
+    </div>
   </div>
 
-  <!-- ================= LOGIKA FIREBASE ================= -->
+  <!-- Header Panel Karyawan (Logo Terhubung Real-Time ke Web Admin) -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xs">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- Logo Container -->
+        <div id="store-logo-container" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden">
+          <div class="w-full h-full bg-amber-50 rounded-[14px] flex items-center justify-center overflow-hidden p-0.5">
+            <span id="store-logo-fallback" class="text-xl">🍰</span>
+            <img id="store-logo-img" src="./logo.png" alt="Logo" class="w-full h-full object-contain hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
+          </div>
+        </div>
+
+        <div>
+          <h1 class="font-bold text-sm sm:text-base text-gray-900 leading-tight">Update Stok Karyawan</h1>
+          <p class="text-[11px] text-amber-700 font-medium">AZRI SNACK Dapur & Outlet</p>
+        </div>
+      </div>
+
+      <!-- Nama Karyawan Aktif & Tombol Pasang App -->
+      <div class="flex items-center gap-2">
+        <button id="btn-manual-install" onclick="triggerPWAInstall()" class="hidden text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+          <i class="fa-solid fa-download text-[10px]"></i>
+          <span>App</span>
+        </button>
+
+        <button onclick="handleKaryawanLogout()" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1" title="Keluar dari panel">
+          <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
+          <span class="hidden sm:inline">Keluar</span>
+        </button>
+
+        <div class="text-right hidden sm:block">
+          <p class="text-[10px] text-gray-400">Petugas:</p>
+          <input type="text" id="staff-name-desktop" value="Tim Dapur" oninput="syncStaffName(this.value)" class="text-xs font-bold text-gray-800 bg-transparent text-right outline-none border-b border-dashed border-gray-300 w-28">
+        </div>
+        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="max-w-3xl mx-auto px-4 pb-3 pt-1 space-y-2">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Cari nama kue untuk update stok..." class="w-full bg-gray-50 pl-9 pr-8 py-2 text-xs rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500/30 outline-none transition border border-gray-200">
+        <button id="clear-search" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+          <i class="fa-solid fa-circle-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex gap-1.5 overflow-x-auto hide-scrollbar">
+          <button onclick="filterCategory('All')" class="cat-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-gray-900 text-white shadow-xs">Semua</button>
+          <button onclick="filterCategory('Snack')" class="cat-btn px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200">Snack</button>
+          <button onclick="filterCategory('Kue Basah')" class="cat-btn px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap bg-white text-gray-600 border border-gray-200">Kue Basah</button>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <!-- Tombol Pintasan Scroll ke Bawah -->
+          <button id="btn-scroll-soldout" onclick="scrollToSoldOut()" class="hidden text-[11px] font-bold text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg border border-red-200 flex items-center gap-1 transition">
+            <i class="fa-solid fa-arrow-down text-[10px]"></i>
+            <span id="soldout-btn-text">Menu Habis (0)</span>
+          </button>
+          <span id="product-count-badge" class="text-[11px] font-bold text-amber-800 bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 whitespace-nowrap">0 Menu</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Input Nama Karyawan untuk HP -->
+  <div class="max-w-3xl mx-auto px-4 mt-3 sm:hidden">
+    <div class="bg-white p-2.5 rounded-xl border border-gray-200 flex items-center justify-between gap-2 text-xs shadow-2xs">
+      <span class="text-gray-500 font-medium flex items-center gap-1.5">
+        <i class="fa-solid fa-user-pen text-amber-500"></i>
+        <span>Nama Anda:</span>
+      </span>
+      <input type="text" id="staff-name-mobile" value="Tim Dapur" oninput="syncStaffName(this.value)" class="font-bold text-gray-900 outline-none text-right flex-1 bg-transparent placeholder-gray-300" placeholder="Ketik nama...">
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="loading" class="max-w-3xl mx-auto px-4 py-20 text-center">
+    <div class="w-9 h-9 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+    <p class="mt-3 text-xs text-gray-400 font-medium">Sinkronisasi stok dengan toko...</p>
+  </div>
+
+  <!-- DAFTAR PRODUK READY (BAGIAN ATAS - DIURUTKAN A-Z) -->
+  <main class="max-w-3xl mx-auto px-4 mt-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Menu Siap Saji (Urut A-Z)</span>
+      </h2>
+      <span id="ready-badge-count" class="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">0 Ready</span>
+    </div>
+
+    <div id="ready-products-container" class="space-y-3">
+      <!-- Diisi via JavaScript -->
+    </div>
+  </main>
+
+  <!-- DAFTAR PRODUK HABIS (BAGIAN BAWAH - DIURUTKAN A-Z DENGAN SCROLL OTOMATIS) -->
+  <section id="soldout-section" class="max-w-3xl mx-auto px-4 mt-8 pt-6 border-t-2 border-dashed border-gray-300 space-y-3 hidden scroll-mt-24">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-1.5">
+        <div class="w-5 h-5 rounded bg-red-100 text-red-600 flex items-center justify-center text-[10px]">
+          <i class="fa-solid fa-ban"></i>
+        </div>
+        <h2 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Menu Habis (Urut A-Z)</h2>
+      </div>
+      <span id="soldout-badge-count" class="text-[11px] font-semibold text-red-800 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">0 Habis</span>
+    </div>
+
+    <p class="text-[11px] text-gray-500 bg-white p-2.5 rounded-xl border border-gray-200">
+      💡 <strong>Petunjuk:</strong> Tekan tombol <strong>Refill</strong> atau <strong>+ pcs</strong> saat adonan kue baru sudah siap saji.
+    </p>
+
+    <div id="soldout-products-container" class="space-y-3">
+      <!-- Diisi via JavaScript -->
+    </div>
+  </section>
+
+  <!-- Sticky Bottom Bar: Tombol Laporan WhatsApp Cepat -->
+  <div class="fixed bottom-3 left-3 right-3 max-w-lg mx-auto z-40">
+    <div class="bg-gray-900/95 text-white rounded-2xl p-3 px-4 shadow-2xl flex items-center justify-between backdrop-blur-xl border border-white/10 ring-1 ring-black/5">
+      <div>
+        <p class="text-[10px] text-gray-300 leading-tight">Laporan Harian Dapur</p>
+        <p class="text-xs font-bold text-amber-400 mt-0.5" id="summary-badge-text">0 Ready • 0 Habis</p>
+      </div>
+      <button onclick="sendStockReportToWA()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-emerald-600/30">
+        <i class="fa-brands fa-whatsapp text-base"></i>
+        <span>Kirim Laporan WA</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Firebase Script Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, updateDoc, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { 
+      getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // Konfigurasi Asli AZRI SNACK
     const firebaseConfig = {
       apiKey: "AIzaSyBZSDRItVU6-_a-j_4T0P39bxBtWelKxEM",
       authDomain: "azri-snack-db.firebaseapp.com",
       projectId: "azri-snack-db",
       storageBucket: "azri-snack-db.firebasestorage.app",
       messagingSenderId: "117431141487",
-      appId: "1:117431141487:web:4bf46d90590f02c657399a",
-      measurementId: "G-79T80VGNSY"
+      appId: "1:117431141487:web:4bf46d90590f02c657399a"
     };
+
+    const WA_STORE_PHONE = "6285892022079";
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    let ordersList = [];
-    let productsList = [];
+    let allProducts = [];
+    let currentFilter = "All";
+    let searchQuery = "";
+    let staffName = "Tim Dapur";
 
-    // ================= AUTENTIKASI KARYAWAN =================
-    window.handleLogin = function() {
-      const email = document.getElementById("email-input").value;
-      const pass = document.getElementById("pass-input").value;
-      const btn = document.getElementById("btn-login");
-      
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
-      btn.disabled = true;
+    window.syncStaffName = function(val) {
+      staffName = val.trim() || "Tim Dapur";
+      document.getElementById("staff-name-desktop").value = staffName;
+      document.getElementById("staff-name-mobile").value = staffName;
+    };
 
-      signInWithEmailAndPassword(auth, email, pass)
-        .then(() => {
-          document.getElementById("login-screen").classList.add("hidden");
-          document.getElementById("dashboard-screen").classList.remove("hidden");
-          initDashboard();
-          btn.innerHTML = `<span>Masuk Panel</span><i class="fa-solid fa-arrow-right"></i>`;
-          btn.disabled = false;
-        })
-        .catch(() => {
-          alert("Login gagal! Cek kembali email dan password Anda.");
-          btn.innerHTML = `<span>Masuk Panel</span><i class="fa-solid fa-arrow-right"></i>`;
-          btn.disabled = false;
+    // ==== AUTENTIKASI FIREBASE (Email & Password) ====
+    function showKaryawanLogin() {
+      document.getElementById("karyawan-login").classList.remove("hidden");
+    }
+
+    function hideKaryawanLogin() {
+      document.getElementById("karyawan-login").classList.add("hidden");
+    }
+
+    let panelInitialized = false;
+    function initPanel() {
+      if (panelInitialized) return;
+      panelInitialized = true;
+
+      // 1. Sinkronisasi Logo Real-time dari Web Admin
+      onSnapshot(doc(db, "settings", "store_config"), (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.logo_url) {
+            const logoImg = document.getElementById("store-logo-img");
+            const fallback = document.getElementById("store-logo-fallback");
+            logoImg.src = data.logo_url;
+            logoImg.classList.remove("hidden");
+            fallback.classList.add("hidden");
+          }
+        }
+      }, (err) => console.log("Gagal sync logo:", err));
+
+      // 2. Sinkronisasi Data Produk Realtime
+      onSnapshot(collection(db, "products"), (snapshot) => {
+        allProducts = [];
+        snapshot.forEach(docSnap => {
+          allProducts.push({ id: docSnap.id, ...docSnap.data() });
         });
-    };
 
-    window.handleLogout = function() {
-      signOut(auth).then(() => {
-        document.getElementById("dashboard-screen").classList.add("hidden");
-        document.getElementById("login-screen").classList.remove("hidden");
+        document.getElementById("loading").classList.add("hidden");
+        renderProductsList();
+      }, (err) => {
+        console.error("Gagal membaca produk:", err);
       });
-    };
+    }
 
+    // Status sesi: listener Firestore HANYA dibuka setelah login
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        document.getElementById("login-screen").classList.add("hidden");
-        document.getElementById("dashboard-screen").classList.remove("hidden");
-        initDashboard();
+        hideKaryawanLogin();
+        initPanel();
+      } else {
+        showKaryawanLogin();
       }
     });
 
-    // ================= NAVIGASI TAB =================
-    window.switchTab = function(tabName) {
-      document.querySelectorAll(".tab-view").forEach(el => el.classList.add("hidden"));
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.remove("bg-emerald-600", "text-white", "shadow-sm");
-        btn.classList.add("bg-gray-100", "text-gray-600");
-      });
+    window.handleKaryawanLogin = async function() {
+      const email = document.getElementById("kl-email").value.trim();
+      const password = document.getElementById("kl-password").value;
+      const errEl = document.getElementById("kl-error");
+      const btn = document.getElementById("kl-btn");
+      const btnText = document.getElementById("kl-btn-text");
 
-      document.getElementById(`view-${tabName}`).classList.remove("hidden");
-      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-      if (activeBtn) {
-        activeBtn.classList.remove("bg-gray-100", "text-gray-600");
-        activeBtn.classList.add("bg-emerald-600", "text-white", "shadow-sm");
-      }
-    };
+      errEl.classList.add("hidden");
+      btn.disabled = true;
+      btnText.innerText = "Memverifikasi...";
 
-    // ================= INISIALISASI DATA =================
-    function initDashboard() {
-      // Ambil Produk
-      onSnapshot(collection(db, "products"), (snapshot) => {
-        productsList = [];
-        snapshot.forEach(docSnap => productsList.push({ id: docSnap.id, ...docSnap.data() }));
-        renderProducts();
-      });
-
-      // Ambil Pesanan
-      onSnapshot(collection(db, "orders"), (snapshot) => {
-        ordersList = [];
-        snapshot.forEach(docSnap => ordersList.push({ id: docSnap.id, ...docSnap.data() }));
-        renderOrders();
-      });
-    }
-
-    // ================= RENDER PESANAN =================
-    function renderOrders() {
-      const container = document.getElementById("orders-container");
-      container.innerHTML = "";
-
-      // Hanya tampilkan yang belum COMPLETED atau CANCELLED
-      const activeOrders = ordersList.filter(o => o.status === "PENDING" || o.status === "PROCESSING" || o.status === "READY");
-      
-      const pendingCount = activeOrders.filter(o => o.status === "PENDING").length;
-      const badge = document.getElementById("badge-pending-orders");
-      if (pendingCount > 0) {
-        badge.innerText = pendingCount;
-        badge.classList.remove("hidden");
-      } else {
-        badge.classList.add("hidden");
-      }
-
-      if (activeOrders.length === 0) {
-        container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-xs text-gray-400 border border-gray-200">Tidak ada pesanan aktif yang perlu diproses. Dapur aman!</div>`;
-        return;
-      }
-
-      // Urutkan berdasarkan tanggal terdekat
-      activeOrders.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-
-      activeOrders.forEach(o => {
-        let itemsHtml = "";
-        if (o.items && Array.isArray(o.items)) {
-          itemsHtml = o.items.map(i => {
-            if (i.is_snackbox) {
-              return `<div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-2 rounded-xl mb-1.5 font-medium">🍱 <strong>${i.name}</strong> (${i.qty} Box)<br><span class="text-[10px] text-gray-500 italic">${i.description || ''}</span></div>`;
-            } else {
-              return `<span class="inline-block bg-gray-100 text-gray-700 text-[11px] px-2.5 py-1 rounded-lg mr-1 mb-1 font-medium">${i.name} x${i.qty}</span>`;
-            }
-          }).join("");
-        }
-
-        let stColor = "bg-amber-100 text-amber-800";
-        if(o.status === "PROCESSING") stColor = "bg-blue-100 text-blue-800";
-        if(o.status === "READY") stColor = "bg-emerald-100 text-emerald-800";
-
-        const card = document.createElement("div");
-        card.className = "bg-white p-4 rounded-2xl border border-gray-200 shadow-sm";
-        card.innerHTML = `
-          <div class="flex justify-between items-start mb-2 border-b border-gray-100 pb-2">
-            <div>
-              <span class="text-[10px] font-bold text-gray-400">#${o.invoice_no || o.id}</span>
-              <h3 class="font-bold text-sm text-gray-900">${o.customer_name || 'Pelanggan'}</h3>
-              <p class="text-[10px] text-gray-500 mt-0.5"><i class="fa-regular fa-clock"></i> Tgl Ambil: <strong>${o.event_date || '-'}</strong> (${o.event_time || ''})</p>
-            </div>
-            <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-[11px] font-bold px-2 py-1.5 rounded-lg border-none outline-none cursor-pointer ${stColor}">
-              <option value="PENDING" ${o.status === 'PENDING' ? 'selected' : ''}>Menunggu (Pending)</option>
-              <option value="PROCESSING" ${o.status === 'PROCESSING' ? 'selected' : ''}>Diproses Dapur</option>
-              <option value="READY" ${o.status === 'READY' ? 'selected' : ''}>Siap Diambil/Kirim</option>
-            </select>
-          </div>
-          <div class="mt-2">
-            ${itemsHtml}
-          </div>
-          <p class="text-[10px] text-gray-500 mt-2 bg-gray-50 p-1.5 rounded border border-gray-100">Catatan: <span class="italic text-gray-800">${o.notes || '-'}</span></p>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    window.updateOrderStatus = async function(id, newStatus) {
       try {
-        await updateDoc(doc(db, "orders", id), { status: newStatus });
-      } catch(e) {
-        alert("Gagal update status pesanan.");
+        await signInWithEmailAndPassword(auth, email, password);
+        // onAuthStateChanged akan memanggil hideKaryawanLogin() + initPanel()
+      } catch (err) {
+        let msg = "Login gagal. Coba lagi.";
+        if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+          msg = "Email atau password salah.";
+        } else if (err.code === "auth/invalid-email") {
+          msg = "Format email tidak valid.";
+        } else if (err.code === "auth/too-many-requests") {
+          msg = "Terlalu banyak percobaan. Coba lagi nanti.";
+        }
+        errEl.innerText = msg;
+        errEl.classList.remove("hidden");
+        document.getElementById("kl-password").value = "";
+      } finally {
+        btn.disabled = false;
+        btnText.innerText = "Masuk Panel Stok";
       }
     };
 
-    // ================= RENDER PRODUK ETALASE =================
-    function renderProducts() {
-      const container = document.getElementById("products-container");
-      container.innerHTML = "";
+    window.handleKaryawanLogout = async function() {
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.error("Gagal logout:", e);
+      }
+      // onAuthStateChanged akan memanggil showKaryawanLogin()
+      document.getElementById("kl-password").value = "";
+    };
 
-      // Urutkan A-Z
-      productsList.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    // Scroll Otomatis ke Bagian Produk Habis
+    window.scrollToSoldOut = function() {
+      const el = document.getElementById("soldout-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
 
-      productsList.forEach(p => {
-        const isOut = p.status === "OUT_OF_STOCK" || p.stock <= 0;
-        const stockNum = p.stock !== undefined ? p.stock : 0;
-        
-        const card = document.createElement("div");
-        card.className = `p-3 rounded-2xl border flex items-center justify-between transition ${isOut ? 'bg-red-50 border-red-200' : 'bg-white border-gray-200 shadow-sm'}`;
-        card.innerHTML = `
-          <div>
-            <h4 class="font-bold text-xs text-gray-900">${p.name}</h4>
-            <p class="text-[10px] text-gray-500">Sisa Stok Web: <strong>${stockNum}</strong></p>
+    // Render Produk Card (Diurutkan Abjad A-Z)
+    function renderProductsList() {
+      let filtered = [...allProducts];
+
+      if (currentFilter !== "All") {
+        filtered = filtered.filter(p => p.category === currentFilter);
+      }
+
+      if (searchQuery.trim() !== "") {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.category && p.category.toLowerCase().includes(q)));
+      }
+
+      const readyItems = [];
+      const soldOutItems = [];
+
+      filtered.forEach(p => {
+        const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+        const isSoldOut = p.status === "OUT_OF_STOCK" || liveStock <= 0;
+        if (isSoldOut) {
+          soldOutItems.push(p);
+        } else {
+          readyItems.push(p);
+        }
+      });
+
+      // PENGURUTAN ALFABETIS (A-Z)
+      readyItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOutItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+
+      // Update Badge Status
+      document.getElementById("ready-badge-count").innerText = `${readyItems.length} Ready`;
+      document.getElementById("soldout-badge-count").innerText = `${soldOutItems.length} Habis`;
+      document.getElementById("product-count-badge").innerText = `${filtered.length} Menu`;
+      document.getElementById("summary-badge-text").innerText = `${readyItems.length} Ready • ${soldOutItems.length} Habis`;
+
+      // Kontrol Tombol Pintasan Scroll
+      const scrollBtn = document.getElementById("btn-scroll-soldout");
+      if (soldOutItems.length > 0) {
+        scrollBtn.classList.remove("hidden");
+        document.getElementById("soldout-btn-text").innerText = `Menu Habis (${soldOutItems.length})`;
+      } else {
+        scrollBtn.classList.add("hidden");
+      }
+
+      const readyContainer = document.getElementById("ready-products-container");
+      const soldOutContainer = document.getElementById("soldout-products-container");
+      const soldOutSection = document.getElementById("soldout-section");
+
+      readyContainer.innerHTML = "";
+      soldOutContainer.innerHTML = "";
+
+      const fallbackImg = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60";
+
+      // 1. Render Menu Ready (Atas)
+      if (readyItems.length === 0 && soldOutItems.length === 0) {
+        readyContainer.innerHTML = `
+          <div class="bg-white rounded-2xl p-8 text-center text-xs text-gray-400 border border-gray-200">
+            <i class="fa-solid fa-cookie-bite text-3xl text-gray-300 mb-2"></i>
+            <p>Menu tidak ditemukan.</p>
           </div>
-          <div class="flex items-center gap-1.5">
-            <button onclick="changeStock('${p.id}', -1)" class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold">-</button>
-            <button onclick="changeStock('${p.id}', 1)" class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold">+</button>
-            
-            <button onclick="toggleStockStatus('${p.id}', '${p.status || 'AVAILABLE'}')" class="ml-2 px-3 py-1.5 rounded-xl text-[10px] font-bold border transition ${isOut ? 'bg-red-100 text-red-700 border-red-300' : 'bg-emerald-100 text-emerald-700 border-emerald-300'}">
-              ${isOut ? 'TANDAI READY' : 'TANDAI HABIS'}
+        `;
+      } else if (readyItems.length === 0) {
+        readyContainer.innerHTML = `
+          <div class="bg-amber-50/60 rounded-2xl p-6 text-center text-xs text-amber-800 border border-amber-200">
+            <p class="font-bold">Semua menu siap saji sedang habis.</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Lihat daftar menu di bawah untuk menambahkan stok baru.</p>
+          </div>
+        `;
+      } else {
+        readyItems.forEach(p => {
+          const card = createStaffProductCard(p, false, fallbackImg);
+          readyContainer.appendChild(card);
+        });
+      }
+
+      // 2. Render Menu Habis (Bawah)
+      if (soldOutItems.length > 0) {
+        soldOutSection.classList.remove("hidden");
+        soldOutItems.forEach(p => {
+          const card = createStaffProductCard(p, true, fallbackImg);
+          soldOutContainer.appendChild(card);
+        });
+      } else {
+        soldOutSection.classList.add("hidden");
+      }
+    }
+
+    // Helper Pembuat Kartu Produk Karyawan
+    function createStaffProductCard(p, isSoldOut, fallbackImg) {
+      const liveStock = p.stock !== undefined ? Number(p.stock) : 0;
+      const dailyQuota = p.daily_quota !== undefined ? Number(p.daily_quota) : 50;
+
+      const card = document.createElement("div");
+      card.className = `bg-white rounded-2xl p-3 sm:p-4 border transition shadow-2xs ${isSoldOut ? 'border-red-200 bg-red-50/20' : 'border-gray-200'}`;
+      
+      card.innerHTML = `
+        <div class="flex items-center gap-3">
+          <!-- Foto Kue (Tetap Berwarna) -->
+          <img src="${p.image_url || fallbackImg}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover flex-shrink-0 border border-gray-100" onerror="this.src='${fallbackImg}'">
+
+          <!-- Detail Info -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5">
+              <h3 class="font-bold text-xs sm:text-sm text-gray-900 truncate">${p.name}</h3>
+              <span class="text-[9px] font-semibold px-2 py-0.2 rounded-md ${isSoldOut ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">
+                ${isSoldOut ? 'HABIS' : 'READY'}
+              </span>
+            </div>
+            <p class="text-[11px] text-gray-400 mt-0.5">
+              <span class="text-amber-700 font-semibold">Rp${Number(p.price || 0).toLocaleString('id-ID')}</span> • Kuota Awal: ${dailyQuota} pcs
+            </p>
+          </div>
+
+          <!-- Kontrol Angka Stok -->
+          <div class="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
+            <button onclick="changeStock('${p.id}', -1)" class="w-7 h-7 rounded-lg bg-white hover:bg-gray-100 text-gray-700 font-bold text-sm shadow-2xs active:scale-90 transition">-</button>
+            <input type="number" min="0" value="${liveStock}" onchange="setStockDirect('${p.id}', this.value)" class="w-11 text-center text-xs sm:text-sm font-bold text-gray-900 bg-transparent outline-none">
+            <button onclick="changeStock('${p.id}', 1)" class="w-7 h-7 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-2xs active:scale-90 transition">+</button>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Cepat Bawah -->
+        <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between gap-1.5 text-[11px]">
+          <div class="flex items-center gap-1">
+            <button onclick="changeStock('${p.id}', 5)" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition active:scale-95">+5</button>
+            <button onclick="changeStock('${p.id}', 10)" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition active:scale-95">+10</button>
+            <button onclick="setStockDirect('${p.id}', ${dailyQuota})" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-lg transition active:scale-95 flex items-center gap-1" title="Isi Penuh Sesuai Kuota Harian">
+              <i class="fa-solid fa-arrows-rotate text-[10px]"></i> Refill (${dailyQuota})
             </button>
           </div>
-        `;
-        container.appendChild(card);
+
+          ${!isSoldOut ? `
+            <button onclick="setStockDirect('${p.id}', 0)" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-lg transition active:scale-95 flex items-center gap-1">
+              <i class="fa-solid fa-ban text-[10px]"></i>
+              <span>Set Habis (0)</span>
+            </button>
+          ` : `
+            <span class="text-[10px] text-red-500 font-semibold italic">Stok Kosong</span>
+          `}
+        </div>
+      `;
+      return card;
+    }
+
+    // Ubah Stok Secara Relatif (+ / -)
+    window.changeStock = async function(prodId, delta) {
+      const prod = allProducts.find(p => p.id === prodId);
+      if (!prod) return;
+
+      const current = prod.stock !== undefined ? Number(prod.stock) : 0;
+      const next = Math.max(0, current + delta);
+      const newStatus = next <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
+
+      try {
+        await updateDoc(doc(db, "products", prodId), {
+          stock: next,
+          status: newStatus,
+          updated_at: serverTimestamp()
+        });
+      } catch (err) {
+        alert("Gagal update stok: " + err.message);
+      }
+    };
+
+    // Ubah Stok Langsung
+    window.setStockDirect = async function(prodId, rawVal) {
+      const num = Math.max(0, parseInt(rawVal) || 0);
+      const newStatus = num <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
+
+      try {
+        await updateDoc(doc(db, "products", prodId), {
+          stock: num,
+          status: newStatus,
+          updated_at: serverTimestamp()
+        });
+      } catch (err) {
+        alert("Gagal update stok: " + err.message);
+      }
+    };
+
+    // Filter & Search
+    window.filterCategory = function(cat) {
+      currentFilter = cat;
+      document.querySelectorAll(".cat-btn").forEach(btn => {
+        btn.classList.remove("bg-gray-900", "text-white", "shadow-xs");
+        btn.classList.add("bg-white", "text-gray-600");
+      });
+      event.target.classList.remove("bg-white", "text-gray-600");
+      event.target.classList.add("bg-gray-900", "text-white", "shadow-xs");
+      renderProductsList();
+    };
+
+    window.handleSearch = function() {
+      searchQuery = document.getElementById("search-input").value;
+      const clearBtn = document.getElementById("clear-search");
+      if (searchQuery.trim() !== "") {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      renderProductsList();
+    };
+
+    window.clearSearch = function() {
+      document.getElementById("search-input").value = "";
+      handleSearch();
+    };
+
+    // Buat & Kirim Laporan Stok WhatsApp ke Admin/Pemilik (Otomatis Urut A-Z)
+    window.sendStockReportToWA = function() {
+      const now = new Date();
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const timeStr = now.toLocaleDateString('id-ID', options);
+
+      const readyItems = allProducts.filter(p => p.status !== "OUT_OF_STOCK" && Number(p.stock || 0) > 0);
+      const soldOutItems = allProducts.filter(p => p.status === "OUT_OF_STOCK" || Number(p.stock || 0) <= 0);
+
+      readyItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+      soldOutItems.sort((a, b) => (a.name || "").localeCompare(b.name || "", 'id', { sensitivity: 'base' }));
+
+      let msg = `📋 *LAPORAN UPDATE STOK - AZRI SNACK*\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `👤 *Petugas:* ${staffName}\n`;
+      msg += `⏰ *Waktu:* ${timeStr} WIB\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+      msg += `✅ *MENU READY SIAP SAJI (${readyItems.length} Menu):*\n`;
+      if (readyItems.length === 0) {
+        msg += `_(Semua menu saat ini sedang habis)_\n`;
+      } else {
+        readyItems.forEach(item => {
+          msg += `• ${item.name} : *${item.stock} pcs*\n`;
+        });
+      }
+
+      msg += `\n❌ *MENU HABIS (${soldOutItems.length} Menu):*\n`;
+      if (soldOutItems.length === 0) {
+        msg += `_(Tidak ada menu yang habis)_\n`;
+      } else {
+        soldOutItems.forEach(item => {
+          msg += `• ${item.name} *(HABIS / 0 pcs)*\n`;
+        });
+      }
+
+      msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `_Laporan otomatis dikirim dari Panel Karyawan AZRI SNACK._`;
+
+      const encoded = encodeURIComponent(msg);
+      const waUrl = `https://api.whatsapp.com/send?phone=${WA_STORE_PHONE}&text=${encoded}`;
+      window.open(waUrl, "_blank");
+    };
+  </script>
+
+  <!-- PWA Service Worker Khusus Karyawan -->
+  <script>
+    let deferredPrompt;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw-karyawan.js', { scope: './karyawan.html' })
+          .then(reg => console.log('Service Worker Karyawan aktif:', reg.scope))
+          .catch(err => console.log('Gagal pasang SW Karyawan:', err));
       });
     }
 
-    window.changeStock = async function(id, delta) {
-      const p = productsList.find(x => x.id === id);
-      if (!p) return;
-      const currentStock = p.stock !== undefined ? Number(p.stock) : 0;
-      const newStock = Math.max(0, currentStock + delta);
-      const newStatus = newStock <= 0 ? "OUT_OF_STOCK" : "AVAILABLE";
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
       
-      try {
-        await updateDoc(doc(db, "products", id), { stock: newStock, status: newStatus });
-      } catch(e) {
-        console.error(e);
-      }
-    };
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.remove('hidden');
 
-    window.toggleStockStatus = async function(id, currentStatus) {
-      const isOut = currentStatus === "OUT_OF_STOCK";
-      const p = productsList.find(x => x.id === id);
-      const dailyQuota = p?.daily_quota || 50;
-      
-      try {
-        await updateDoc(doc(db, "products", id), { 
-          status: isOut ? "AVAILABLE" : "OUT_OF_STOCK",
-          stock: isOut ? (p.stock > 0 ? p.stock : dailyQuota) : 0
+      const btnManual = document.getElementById('btn-manual-install');
+      if (btnManual) btnManual.classList.remove('hidden');
+    });
+
+    window.triggerPWAInstall = function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('App Stok Terpasang');
+          }
+          deferredPrompt = null;
+          dismissPWABanner();
         });
-      } catch(e) {
-        console.error(e);
+      } else {
+        alert("Untuk memasang aplikasi:\n1. Ketuk titik tiga (⋮) di pojok kanan atas Chrome\n2. Pilih 'Tambahkan ke Layar Utama' / 'Instal aplikasi'");
       }
     };
 
+    window.dismissPWABanner = function() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.add('hidden');
+    };
   </script>
 </body>
 </html>
