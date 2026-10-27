@@ -252,7 +252,6 @@
         </div>
         <div>
           <h3 class="font-serif font-bold text-base sm:text-lg text-ink-900 leading-tight tracking-tight">Mau Pesan Paket Custom Snack Box?</h3>
-          <!-- Subjudul yang diminta -->
           <p class="text-xs text-ink-500 mt-0.5">Praktis untuk meeting, kantor dan berbagai acara</p>
         </div>
       </div>
@@ -590,7 +589,10 @@
     let allProducts = [];
     let currentFilter = "All";
     let searchQuery = "";
-    let cart = {};
+    
+    // PENYIMPANAN KERANJANG OTOMATIS (LocalStorage)
+    let cart = JSON.parse(localStorage.getItem('azri_cart')) || {};
+
     let selectedModalProduct = null;
     let isInitialDataLoaded = false;
 
@@ -721,6 +723,7 @@
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
+      updateCartUI(); // Sinkronkan UI keranjang setelah produk termuat
 
       if (!isInitialDataLoaded) {
         isInitialDataLoaded = true;
@@ -963,7 +966,7 @@
       closeProductDetailModal();
     };
 
-    // 5. Keranjang Belanja
+    // 5. Keranjang Belanja & LocalStorage
     window.updateQty = function(productId, delta) {
       const prod = allProducts.find(p => p.id === productId);
       if (!prod) return;
@@ -1044,10 +1047,16 @@
         document.getElementById("cart-qty-total").innerText = totalPcs;
         document.getElementById("cart-price-total").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
         document.getElementById("modal-subtotal").innerText = "Rp" + grandTotal.toLocaleString("id-ID");
+        
+        // Simpan otomatis ke memori browser
+        localStorage.setItem('azri_cart', JSON.stringify(cart));
       } else {
         badge.classList.add("hidden");
         stickyBar.classList.add("hidden");
         toggleCartModal(false);
+        
+        // Hapus storage jika kosong
+        localStorage.removeItem('azri_cart');
       }
 
       renderCartModalList();
@@ -1235,7 +1244,9 @@
 
         openUniversalWhatsApp(WA_STORE_PHONE, waMessage);
 
+        // Kosongkan keranjang & hapus penyimpanan browser setelah sukses checkout
         cart = {};
+        localStorage.removeItem('azri_cart');
         updateCartUI();
         renderFilteredProducts();
         document.getElementById("order-form").reset();
