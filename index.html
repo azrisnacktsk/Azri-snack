@@ -26,9 +26,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- LANGKAH 1: CDN GSAP, ScrollTrigger & Lenis Smooth Scroll -->
+  <!-- GSAP & ScrollTrigger CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll CDN -->
   <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
 
   <script>
@@ -72,31 +73,20 @@
     input[type=number] { -moz-appearance: textfield; }
     html { scroll-behavior: smooth; }
 
-    /* CSS tambahan untuk efek smooth scroll & lenis */
-    html.lenis, html.lenis body {
-      height: auto;
-    }
-    .lenis.lenis-smooth {
-      scroll-behavior: auto !important;
-    }
-    .lenis.lenis-smooth [data-lenis-prevent] {
-      overscroll-behavior: contain;
-    }
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 
     @keyframes pulseGlow {
       0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); }
       50% { transform: scale(1.04); box-shadow: 0 0 45px rgba(245, 158, 11, 0.6); }
     }
-    .animate-pulse-glow {
-      animation: pulseGlow 2.2s infinite ease-in-out;
-    }
+    .animate-pulse-glow { animation: pulseGlow 2.2s infinite ease-in-out; }
     @keyframes shimmerBar {
       0% { transform: translateX(-100%); }
       100% { transform: translateX(250%); }
     }
-    .animate-shimmer {
-      animation: shimmerBar 1.5s infinite linear;
-    }
+    .animate-shimmer { animation: shimmerBar 1.5s infinite linear; }
 
     body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     .eyebrow {
@@ -160,58 +150,4 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
         <span class="text-base">📱</span>
-        <span>Pasang aplikasi <strong>AZRI SNACK</strong> di layar utama HP Anda!</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <button onclick="triggerPWAInstall()" class="bg-amber-500 hover:bg-amber-600 font-bold px-3 py-1.5 rounded-xl shadow-xs transition active:scale-95">
-          Pasang App
-        </button>
-        <button onclick="dismissPWABanner()" class="text-gray-400 hover:text-white p-1">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= HEADER UTAMA (STICKY TETAP DI ATAS SAAT SCROLL) ================= -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-cream-200 shadow-soft">
-    <!-- Baris 1: Logo, Nama, No WA, Keranjang -->
-    <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between border-b border-cream-100/60">
-      <div class="flex items-center gap-3">
-        <div id="store-logo-container" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 p-[2px] shadow-glow flex-shrink-0 flex items-center justify-center overflow-hidden ring-2 ring-gold-600/30">
-          <div class="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden p-0.5">
-            <span id="store-logo-fallback" class="text-base">🍰</span>
-            <img id="store-logo-img" src="./logo.png" alt="Logo AZRI SNACK" class="w-full h-full object-cover rounded-full hidden" onerror="this.classList.add('hidden'); document.getElementById('store-logo-fallback').classList.remove('hidden');">
-          </div>
-        </div>
-        <div>
-          <h1 class="font-serif font-bold text-base sm:text-lg text-gray-900 leading-none tracking-tight">AZRI SNACK</h1>
-          <p class="text-[8px] sm:text-[9px] text-gold-600 font-semibold uppercase tracking-[0.18em] mt-0.5">Kue Tradisional & Snack Box</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2.5">
-        <button onclick="openDirectWhatsApp('Halo Admin AZRI SNACK, saya ingin bertanya tentang menu kue.')" class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-emerald-100 transition border border-emerald-200/60 shadow-2xs">
-          <i class="fa-brands fa-whatsapp text-sm"></i>
-          <span class="hidden sm:inline">0858-9202-2079</span>
-          <span class="sm:hidden">WhatsApp</span>
-        </button>
-        
-        <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-cream-100 rounded-2xl text-gold-700 hover:bg-cream-200/80 transition border border-cream-200 shadow-soft active:scale-95 focus:outline-none">
-          <i class="fa-solid fa-basket-shopping text-base"></i>
-          <span id="cart-badge" class="absolute -top-1 -right-1 bg-gold-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white hidden">0</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Baris 2: Pilihan Menu Kategori & Kolom Pencarian -->
-    <div class="max-w-7xl mx-auto px-4 py-2 bg-white/90 backdrop-blur-md space-y-2">
-      <div class="flex gap-2 overflow-x-auto hide-scrollbar">
-        <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap bg-ink-900 text-cream-100 shadow-soft transition">Semua Menu</button>
-        <button onclick="filterCategory('Snack')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Snack & Gorengan</button>
-        <button onclick="filterCategory('Kue Basah')" class="cat-btn px-4 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap bg-white text-ink-700 border border-cream-200 hover:bg-cream-50 transition">Kue Basah</button>
-      </div>
-
-      <form action="javascript:void(0);" onsubmit="submitSearchOnEnter(event)" class="relative">
-        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-        <input type="text"
+        <span>Pasang aplikasi <strong>AZRI
