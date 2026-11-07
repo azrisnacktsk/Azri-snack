@@ -26,6 +26,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll CDN -->
+  <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -67,20 +73,20 @@
     input[type=number] { -moz-appearance: textfield; }
     html { scroll-behavior: smooth; }
 
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
     @keyframes pulseGlow {
       0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); }
       50% { transform: scale(1.04); box-shadow: 0 0 45px rgba(245, 158, 11, 0.6); }
     }
-    .animate-pulse-glow {
-      animation: pulseGlow 2.2s infinite ease-in-out;
-    }
+    .animate-pulse-glow { animation: pulseGlow 2.2s infinite ease-in-out; }
     @keyframes shimmerBar {
       0% { transform: translateX(-100%); }
       100% { transform: translateX(250%); }
     }
-    .animate-shimmer {
-      animation: shimmerBar 1.5s infinite linear;
-    }
+    .animate-shimmer { animation: shimmerBar 1.5s infinite linear; }
 
     body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     .eyebrow {
@@ -107,7 +113,7 @@
 <body class="bg-cream-100 text-ink-800 pb-36 min-h-screen selection:bg-gold-500 selection:text-white">
 
   <!-- ================= PRELOAD / SPLASH SCREEN PEMBUKA ================= -->
-  <div id="app-preload-screen" class="fixed inset-0 z-50 bg-[#faf8f5] flex flex-col items-center justify-center p-6 transition-all duration-700">
+  <div id="app-preload-screen" class="fixed inset-0 z-50 bg-[#faf8f5] flex flex-col items-center justify-center p-6 transition-all duration-500">
     <div class="flex flex-col items-center text-center max-w-xs w-full space-y-6">
       <div class="relative">
         <div class="absolute -inset-2 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-full blur-md opacity-70 animate-pulse"></div>
@@ -126,7 +132,7 @@
 
       <div class="w-full space-y-2.5 pt-2">
         <div class="w-48 h-2 bg-amber-100 rounded-full overflow-hidden mx-auto relative shadow-inner">
-          <div id="preload-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full w-1/3 transition-all duration-500"></div>
+          <div id="preload-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full w-1/3 transition-all duration-300"></div>
           <div class="absolute inset-0 bg-white/40 w-1/2 animate-shimmer"></div>
         </div>
         <p id="preload-status-text" class="text-[11px] text-gray-400 font-medium animate-pulse">
@@ -188,7 +194,7 @@
       </div>
     </div>
 
-    <!-- Baris 2: Pilihan Menu Kategori & Kolom Pencarian (Ikut Sticky Menempel di Bawah Header) -->
+    <!-- Baris 2: Pilihan Menu Kategori & Kolom Pencarian -->
     <div class="max-w-7xl mx-auto px-4 py-2 bg-white/90 backdrop-blur-md space-y-2">
       <div class="flex gap-2 overflow-x-auto hide-scrollbar">
         <button onclick="filterCategory('All')" id="btn-cat-all" class="cat-btn active px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap bg-ink-900 text-cream-100 shadow-soft transition">Semua Menu</button>
@@ -207,10 +213,10 @@
   </header>
 
   <!-- ================= KONTEN DI BAWAH HEADER STICKY ================= -->
-  <!-- BANNER GAMBAR HERO -->
-  <div class="max-w-7xl mx-auto px-4 mt-3 mb-2">
-    <div class="w-full rounded-2xl overflow-hidden shadow-soft border border-cream-200 bg-black flex items-center justify-center">
-      <img src="./file_00000000e8d0820786eb9995a815b3cb.png" alt="Promo AZRI SNACK" class="w-full h-auto object-contain max-h-[220px] sm:max-h-[320px] md:max-h-[400px]">
+  <!-- BANNER GAMBAR HERO WITH PARALLAX -->
+  <div id="parallax-banner-container" class="max-w-7xl mx-auto px-4 mt-3 mb-2 overflow-hidden">
+    <div class="w-full rounded-2xl overflow-hidden shadow-soft border border-cream-200 bg-black flex items-center justify-center relative">
+      <img id="parallax-banner-img" src="./file_00000000e8d0820786eb9995a815b3cb.png" alt="Promo AZRI SNACK" class="w-full h-auto object-contain max-h-[220px] sm:max-h-[320px] md:max-h-[400px] transition-transform duration-75">
     </div>
   </div>
 
@@ -302,7 +308,7 @@
     <p class="mt-3 text-xs sm:text-sm text-gray-400 font-medium">Menyiapkan aneka menu lezat...</p>
   </div>
 
-  <!-- Product Catalog Grid (Siap Saji / Ready Hari Ini - Urut A-Z) -->
+  <!-- Product Catalog Grid -->
   <main id="catalog-section" class="max-w-7xl mx-auto px-4 mt-6 scroll-mt-28">
     <div class="flex items-end justify-between mb-4">
       <div>
@@ -320,7 +326,7 @@
     </div>
   </main>
 
-  <!-- BAGIAN PRODUK HABIS HARI INI (SCROLL KE BAWAH - Urut A-Z) -->
+  <!-- BAGIAN PRODUK HABIS HARI INI -->
   <section id="soldout-section" class="max-w-7xl mx-auto px-4 mt-12 scroll-mt-28 hidden">
     <div class="rule-gold mb-6"></div>
       <div class="flex items-center justify-between mb-4">
@@ -565,12 +571,76 @@
     </div>
   </footer>
 
-  <!-- Firebase Module Script -->
+  <!-- SCRIPT UTAMA NON-MODULE UNTUK PENUTUP PRELOADER CEPAT & TANPA BLOKIR -->
+  <script>
+    function forceDismissPreloader() {
+      var preload = document.getElementById("app-preload-screen");
+      var pBar = document.getElementById("preload-progress-bar");
+      var pText = document.getElementById("preload-status-text");
+
+      if (pBar) pBar.style.width = "100%";
+      if (pText) pText.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Siap!';
+
+      setTimeout(function() {
+        if (preload) {
+          preload.style.opacity = "0";
+          preload.style.transform = "translateY(-20px)";
+          preload.style.pointerEvents = "none";
+          setTimeout(function() { preload.style.display = "none"; }, 500);
+        }
+      }, 300);
+    }
+
+    // Eksekusi penutupan splash screen maksimal dalam 800ms
+    setTimeout(forceDismissPreloader, 800);
+    window.addEventListener('DOMContentLoaded', forceDismissPreloader);
+  </script>
+
+  <!-- Firebase & App Script Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
       getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, getDoc, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // INISIALISASI LENIS & GSAP DENGAN SAFE GUARD
+    let lenis = null;
+    try {
+      if (typeof window.Lenis !== 'undefined') {
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true
+        });
+
+        if (typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined') {
+          gsap.registerPlugin(ScrollTrigger);
+          lenis.on('scroll', ScrollTrigger.update);
+          gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+          });
+          gsap.ticker.lagSmoothing(0);
+
+          const bannerContainer = document.getElementById('parallax-banner-container');
+          const bannerImg = document.getElementById('parallax-banner-img');
+
+          if (bannerContainer && bannerImg) {
+            gsap.to(bannerImg, {
+              yPercent: 12,
+              ease: "none",
+              scrollTrigger: {
+                trigger: bannerContainer,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true
+              }
+            });
+          }
+        }
+      }
+    } catch(e) {
+      console.warn("Lenis smooth scroll skipping:", e);
+    }
 
     const firebaseConfig = {
       apiKey: "AIzaSyBZSDRItVU6-_a-j_4T0P39bxBtWelKxEM",
@@ -591,9 +661,7 @@
     let searchQuery = "";
     
     let cart = JSON.parse(localStorage.getItem('azri_cart')) || {};
-
     let selectedModalProduct = null;
-    let isInitialDataLoaded = false;
 
     const logoImg = document.getElementById("store-logo-img");
     const fallback = document.getElementById("store-logo-fallback");
@@ -610,28 +678,6 @@
       preImg.classList.remove("hidden");
       if (preFallback) preFallback.classList.add("hidden");
     }
-
-    function hidePreloadScreen() {
-      const preload = document.getElementById("app-preload-screen");
-      const pBar = document.getElementById("preload-progress-bar");
-      const pText = document.getElementById("preload-status-text");
-
-      if (pBar) pBar.style.width = "100%";
-      if (pText) pText.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Siap disajikan!';
-
-      setTimeout(() => {
-        if (preload) {
-          preload.classList.add("opacity-0", "-translate-y-4", "pointer-events-none");
-          setTimeout(() => preload.remove(), 700);
-        }
-      }, 450);
-    }
-
-    setTimeout(() => {
-      if (!isInitialDataLoaded) {
-        hidePreloadScreen();
-      }
-    }, 2200);
 
     function getTodayDateWIB() {
       const now = new Date();
@@ -654,7 +700,11 @@
     window.scrollToSoldOutProducts = function() {
       const el = document.getElementById("soldout-section");
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (lenis) {
+          lenis.scrollTo(el, { offset: -100 });
+        } else {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
     };
 
@@ -664,7 +714,13 @@
       if (input) input.blur();
       handleSearch();
       const catalog = document.getElementById("catalog-section");
-      if (catalog) catalog.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (catalog) {
+        if (lenis) {
+          lenis.scrollTo(catalog, { offset: -100 });
+        } else {
+          catalog.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
     };
 
     window.clearSearchInput = function() {
@@ -724,15 +780,11 @@
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("product-grid").classList.remove("hidden");
       renderFilteredProducts();
-      updateCartUI(); 
-
-      if (!isInitialDataLoaded) {
-        isInitialDataLoaded = true;
-        hidePreloadScreen();
-      }
+      updateCartUI();
+      forceDismissPreloader();
     }, (err) => {
       console.warn("Firestore fallback aktif:", err);
-      hidePreloadScreen();
+      forceDismissPreloader();
     });
 
     function renderFilteredProducts() {
